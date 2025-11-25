@@ -1,0 +1,56 @@
+{
+  "name": "SpiceJax Dashboard Data",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "spicejax/dashboard",
+        "options": {}
+      },
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Sample response data - replace with your actual data sources\nreturn [\n  {\n    json: {\n      schedule: [\n        {\n          time: \"9:00 AM\",\n          task: \"Instagram Reel - Nashville Heat Wave demo\",\n          status: \"upcoming\"\n        },\n        {\n          time: \"11:30 AM\",\n          task: \"Email blast: Big Sales of Month (TD555777)\",\n          status: \"upcoming\"\n        },\n        {\n          time: \"2:00 PM\",\n          task: \"Product photoshoot - Birria Fiesta Blend\",\n          status: \"upcoming\"\n        }\n      ],\n      approvals: [\n        {\n          title: \"Recipe Blog: Birria Tacos with Our Fiesta Blend\",\n          type: \"Recipe Content\",\n          daysWaiting: 2\n        },\n        {\n          title: \"Social Campaign - BBQ Rub Set Summer Promo\",\n          type: \"Campaign\",\n          daysWaiting: 1\n        }\n      ],\n      contentIdeas: [\n        {\n          title: \"Recipe: Nashville Hot Chicken Wings Tutorial\",\n          category: \"Recipe Video\"\n        },\n        {\n          title: \"Behind the Blend: Birria Fiesta Story\",\n          category: \"Brand Story\"\n        }\n      ],\n      metrics: [\n        {\n          label: \"Content Published\",\n          value: \"12\",\n          change: \"+3\"\n        },\n        {\n          label: \"Engagement Rate\",\n          value: \"8.4%\",\n          change: \"+1.2%\"\n        },\n        {\n          label: \"New Followers\",\n          value: \"342\",\n          change: \"+52\"\n        },\n        {\n          label: \"Email Opens\",\n          value: \"24.5%\",\n          change: \"+2.1%\"\n        }\n      ]\n    }\n  }\n];"
+      },
+      "name": "Function",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {},
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [650, 300]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Function",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Function": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}
+

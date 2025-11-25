@@ -1,0 +1,386 @@
+"use client";
+
+import { useState } from "react";
+import MainLayout from "@/components/MainLayout";
+import Image from "next/image";
+import ScheduleModal from "@/components/ScheduleModal";
+
+interface ContentIdea {
+  id: string;
+  type: "image" | "caption" | "hook";
+  content: string;
+  imageUrl?: string;
+  status: "pending" | "approved" | "discarded";
+}
+
+export default function ContentStudioPage() {
+  const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  const [ingredients, setIngredients] = useState<string[]>([]);
+  const [newIngredient, setNewIngredient] = useState("");
+  const [generating, setGenerating] = useState(false);
+  const [contentIdeas, setContentIdeas] = useState<ContentIdea[]>([]);
+  
+  // Scheduling State
+  const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
+  const [selectedIdeaForSchedule, setSelectedIdeaForSchedule] = useState<ContentIdea | null>(null);
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setUploadedImage(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const addIngredient = () => {
+    if (newIngredient.trim()) {
+      setIngredients([...ingredients, newIngredient.trim()]);
+      setNewIngredient("");
+    }
+  };
+
+  const removeIngredient = (index: number) => {
+    setIngredients(ingredients.filter((_, i) => i !== index));
+  };
+
+  const generateContent = async () => {
+    console.log('🚀 Starting content generation...');
+    console.log('Image:', uploadedImage ? 'Present' : 'Missing');
+    console.log('Ingredients:', ingredients);
+    
+    setGenerating(true);
+    
+    try {
+      // Get n8n settings
+      const settings = JSON.parse(localStorage.getItem('spicejax_settings') || '{}');
+      console.log('n8n settings:', settings);
+      
+      const headers: HeadersInit = {
+        'Content-Type': 'application/json',
+      };
+      
+      if (settings.n8nUrl) headers['X-N8N-URL'] = settings.n8nUrl;
+      if (settings.apiKey) headers['X-N8N-API-KEY'] = settings.apiKey;
+
+      const payload = {
+        image: uploadedImage,
+        ingredients: ingredients,
+        productName: "SpiceJax Blend"
+      };
+      
+      console.log('📤 Calling workflow with payload:', payload);
+
+      // Call the content generation workflow
+      const response = await fetch('/api/n8n/content-generate', {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(payload),
+      });
+
+      console.log('📥 Response status:', response.status);
+      
+      const data = await response.json();
+      console.log('📥 Response data:', data);
+      
+      if (data.success && data.contentIdeas) {
+        console.log('✅ Success! Setting content ideas:', data.contentIdeas);
+        setContentIdeas(data.contentIdeas);
+      } else {
+        console.warn('⚠️ No content ideas in response, using fallback');
+        // Fallback if workflow fails
+        setContentIdeas([
+          {
+            id: "1",
+            type: "hook",
+            content: "🔥 Transform Your Dishes with Bold Flavors",
+            status: "pending",
+          },
+          {
+            id: "2",
+            type: "caption",
+            content: "Elevate your cooking game with our signature blend",
+            status: "pending",
+          },
+        ]);
+      }
+    } catch (error) {
+      console.error('❌ Content generation error:', error);
+      // Show error feedback
+      alert(`Error: ${error instanceof Error ? error.message : 'Unknown error'}. Check console for details.`);
+      setContentIdeas([
+        {
+          id: "error",
+          type: "caption",
+          content: `⚠️ Error: ${error instanceof Error ? error.message : 'Failed to generate content'}`,
+          status: "pending",
+        },
+      ]);
+    } finally {
+      setGenerating(false);
+      console.log('✅ Generation complete');
+    }
+  };
+
+  const updateStatus = (id: string, status: "approved" | "discarded") => {
+    if (status === "approved") {
+      const idea = contentIdeas.find(i => i.id === id);
+      if (idea) {
+        setSelectedIdeaForSchedule(idea);
+        setIsScheduleModalOpen(true);
+      }
+    } else {
+      setContentIdeas(
+        contentIdeas.map((idea) =>
+          idea.id === id ? { ...idea, status } : idea
+        )
+      );
+    }
+  };
+
+  const handleScheduleConfirm = async (date: string, time: string, platform: string) => {
+    if (!selectedIdeaForSchedule) return;
+
+    console.log(`📅 Scheduling for ${date} at ${time} on ${platform}`);
+    
+    try {
+      // 1. Save to LocalStorage (for immediate UI update in Calendar)
+      const scheduledPost = {
+        id: `post-${Date.now()}`,
+        day: new Date(date).toLocaleDateString('en-US', { weekday: 'long' }), // Derive day name
+        date: date,
+        time: time,
+        platform: platform,
+        content: selectedIdeaForSchedule.content,
+        image: uploadedImage, // Pass the image if available
+        status: "scheduled"
+      };
+
+      const existingSchedule = JSON.parse(localStorage.getItem('spicejax_schedule') || '[]');
+      localStorage.setItem('spicejax_schedule', JSON.stringify([...existingSchedule, scheduledPost]));
+
+      // 2. Send to n8n (Trigger 'content-schedule' workflow)
+      const settings = JSON.parse(localStorage.getItem('spicejax_settings') || '{}');
+      
+      if (settings.n8nUrl) {
+        const headers: HeadersInit = { 'Content-Type': 'application/json' };
+        if (settings.n8nUrl) headers['X-N8N-URL'] = settings.n8nUrl;
+        if (settings.apiKey) headers['X-N8N-API-KEY'] = settings.apiKey;
+
+        // Fire and forget - don't block UI
+        fetch('/api/n8n/content-schedule', {
+          method: 'POST',
+          headers,
+          body: JSON.stringify(scheduledPost),
+        }).catch(err => console.error("Failed to trigger n8n schedule workflow:", err));
+      }
+
+      // 3. Update UI state
+      setContentIdeas(
+        contentIdeas.map((idea) =>
+          idea.id === selectedIdeaForSchedule.id ? { ...idea, status: "approved" } : idea
+        )
+      );
+
+      alert("✅ Content scheduled successfully!");
+
+    } catch (error) {
+      console.error("Scheduling error:", error);
+      alert("Failed to schedule content");
+    }
+  };
+
+  return (
+    <MainLayout>
+      <ScheduleModal
+        isOpen={isScheduleModalOpen}
+        onClose={() => setIsScheduleModalOpen(false)}
+        onConfirm={handleScheduleConfirm}
+        content={selectedIdeaForSchedule?.content || ""}
+      />
+      <div className="space-y-6">
+        {/* Header */}
+        <div className="rounded-2xl border border-gray-200 bg-white p-6">
+          <h1 className="text-3xl font-bold text-gray-900">Content Studio</h1>
+          <p className="text-gray-500 mt-2">
+            Upload images, add ingredients, and generate AI-powered content
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
+          {/* Left: Upload & Ingredients */}
+          <div className="space-y-6">
+            {/* Image Upload */}
+            <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+              <h2 className="text-xl font-bold text-gray-900 mb-4">
+                📸 Upload Image
+              </h2>
+
+              <div className="relative">
+                {uploadedImage ? (
+                  <div className="relative w-full aspect-square rounded-lg overflow-hidden bg-gray-100">
+                    <Image
+                      src={uploadedImage}
+                      alt="Uploaded"
+                      fill
+                      className="object-cover"
+                    />
+                    <button
+                      onClick={() => setUploadedImage(null)}
+                      className="absolute top-2 right-2 bg-white/90 text-[#4f7f00] p-2 rounded-full border border-[#d2e6b5] hover:bg-[#8bc53f] hover:text-white transition"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ) : (
+                  <label className="flex flex-col items-center justify-center w-full aspect-square border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors">
+                    <div className="flex flex-col items-center justify-center py-10">
+                      <p className="text-6xl mb-4">📤</p>
+                      <p className="text-sm font-semibold text-gray-700">
+                        Click to upload image
+                      </p>
+                      <p className="text-xs text-gray-500 mt-1">
+                        PNG, JPG or WEBP
+                      </p>
+                    </div>
+                    <input
+                      type="file"
+                      className="hidden"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                    />
+                  </label>
+                )}
+              </div>
+            </div>
+
+            {/* Ingredients */}
+            <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+              <h2 className="text-xl font-bold text-gray-900 mb-4">
+                🌶️ Ingredient Breakdown
+              </h2>
+
+              <div className="flex gap-2 mb-4">
+                <input
+                  type="text"
+                  value={newIngredient}
+                  onChange={(e) => setNewIngredient(e.target.value)}
+                  onKeyPress={(e) => e.key === "Enter" && addIngredient()}
+                  placeholder="Add ingredient..."
+                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#8bc53f]"
+                />
+                <button
+                  onClick={addIngredient}
+                  className="px-4 sm:px-6 py-2 bg-[#8bc53f] text-white font-medium rounded-lg hover:bg-[#77a933] transition-colors"
+                >
+                  Add
+                </button>
+              </div>
+
+              <div className="space-y-2">
+                {ingredients.map((ingredient, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center justify-between bg-gray-50 px-4 py-2 rounded-lg"
+                  >
+                    <span className="text-gray-700">{ingredient}</span>
+                    <button
+                      onClick={() => removeIngredient(index)}
+                      className="text-gray-400 hover:text-gray-600"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ))}
+              </div>
+
+              {ingredients.length === 0 && (
+                <p className="text-center text-gray-400 text-sm py-4">
+                  No ingredients added yet
+                </p>
+              )}
+            </div>
+
+            {/* Generate Button */}
+            <button
+              onClick={generateContent}
+              disabled={!uploadedImage || generating}
+              className="w-full py-3 sm:py-4 bg-[#8bc53f] text-white font-bold text-base sm:text-lg rounded-xl hover:bg-[#77a933] disabled:bg-gray-200 disabled:text-gray-500 disabled:cursor-not-allowed transition-all shadow-lg"
+            >
+              {generating ? "✨ Generating..." : "🚀 Generate Content"}
+            </button>
+          </div>
+
+          {/* Right: AI Content Ideas */}
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+            <h2 className="text-xl font-bold text-gray-900 mb-4">
+              💡 AI-Generated Ideas
+            </h2>
+
+            {contentIdeas.length === 0 ? (
+              <div className="text-center py-20">
+                <p className="text-6xl mb-4">🤖</p>
+                <p className="text-gray-500">
+                  Upload an image and generate content to see AI suggestions
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {contentIdeas.map((idea) => (
+                  <div
+                    key={idea.id}
+                    className={`border-2 rounded-xl p-4 ${
+                      idea.status === "approved"
+                        ? "border-[#4f7f00] bg-[#eef7e2]"
+                        : idea.status === "discarded"
+                        ? "border-gray-200 bg-gray-50 opacity-60"
+                        : "border-gray-200"
+                    }`}
+                  >
+                    <div className="flex items-start justify-between mb-2">
+                      <span className="px-3 py-1 bg-spice-100 text-spice-700 text-xs font-bold rounded-full">
+                        {idea.type.toUpperCase()}
+                      </span>
+                      {idea.status === "pending" && (
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => updateStatus(idea.id, "approved")}
+                            className="px-3 py-1 bg-[#8bc53f] text-white text-sm font-medium rounded-lg hover:bg-[#77a933]"
+                          >
+                            ✓ Approve
+                          </button>
+                          <button
+                            onClick={() => updateStatus(idea.id, "discarded")}
+                            className="px-3 py-1 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-200"
+                          >
+                            ✕ Discard
+                          </button>
+                        </div>
+                      )}
+                    </div>
+
+                    {idea.imageUrl && (
+                      <div className="relative w-full aspect-video rounded-lg overflow-hidden mb-2 bg-gray-100">
+                        <Image
+                          src={idea.imageUrl}
+                          alt="Content variant"
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
+                    )}
+
+                    <p className="text-gray-700">{idea.content}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </MainLayout>
+  );
+}
+
