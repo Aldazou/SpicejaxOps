@@ -8,8 +8,8 @@ export default function MainLayout({
 }) {
   return (
     <div className="min-h-screen bg-slate-50">
-      <Header />
-      <main className="p-8 animate-fade-in">{children}</main>
+        <Header />
+        <main className="p-8 animate-fade-in">{children}</main>
       <ChatAssistant />
     </div>
   );

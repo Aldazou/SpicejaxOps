@@ -144,9 +144,9 @@ export default function SettingsPage() {
                 }`}
               >
                 <p
-                className={`text-sm whitespace-pre-line ${
+                  className={`text-sm whitespace-pre-line ${
                   testResult.success ? 'text-green-800' : 'text-gray-700'
-                }`}
+                  }`}
                 >
                   {testResult.message}
                 </p>

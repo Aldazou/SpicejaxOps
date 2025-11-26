@@ -175,25 +175,25 @@ export default function ImageEnhancerPage() {
                 </div>
               </div>
 
-              {uploadedImage ? (
+                {uploadedImage ? (
                 <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-gray-50 ring-1 ring-gray-100">
-                  <Image
-                    src={uploadedImage}
-                    alt="Original"
-                    fill
+                    <Image
+                      src={uploadedImage}
+                      alt="Original"
+                      fill
                     className="object-contain p-6"
-                  />
-                  <button
-                    onClick={() => {
-                      setUploadedImage(null);
-                      setEnhancedImage(null);
-                    }}
+                    />
+                    <button
+                      onClick={() => {
+                        setUploadedImage(null);
+                        setEnhancedImage(null);
+                      }}
                     className="absolute top-3 right-3 bg-white/90 text-[#4f7f00] p-2 rounded-full border border-[#d2e6b5] hover:bg-[#8bc53f] hover:text-white transition-colors shadow-sm"
-                  >
+                    >
                     <Trash2 className="w-4 h-4" />
-                  </button>
-                </div>
-              ) : (
+                    </button>
+                  </div>
+                ) : (
                 <label className="flex flex-col items-center justify-center w-full aspect-square border-2 border-dashed border-gray-300 rounded-xl cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors">
                   <div className="flex flex-col items-center justify-center py-10 space-y-3">
                     <span className="rounded-full bg-white shadow px-6 py-3 text-sm font-semibold text-gray-700">
@@ -201,15 +201,15 @@ export default function ImageEnhancerPage() {
                     </span>
                     <p className="text-xs text-gray-500">
                       High-res PNG, JPG or WEBP for best results
-                    </p>
-                  </div>
-                  <input
-                    type="file"
-                    className="hidden"
-                    accept="image/*"
-                    onChange={handleImageUpload}
-                  />
-                </label>
+                      </p>
+                    </div>
+                    <input
+                      type="file"
+                      className="hidden"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                    />
+                  </label>
               )}
               <div className="space-y-3">
                 <p className="text-sm font-semibold text-gray-900">Scene vibe</p>
@@ -290,7 +290,7 @@ export default function ImageEnhancerPage() {
                   />
                   <div className="absolute top-4 left-4 flex gap-2">
                     <div className="px-3 py-1 bg-green-500 text-white text-xs font-bold rounded-full shadow-lg flex items-center gap-1">
-                      ✨ ENHANCED
+                    ✨ ENHANCED
                     </div>
                     <div className="px-3 py-1 bg-white/90 text-gray-700 text-xs font-semibold rounded-full shadow">
                       Studio Build: Backyard Ember
@@ -306,14 +306,14 @@ export default function ImageEnhancerPage() {
                     >
                       <Expand className="w-5 h-5" />
                     </button>
-                    <button
-                      onClick={handleDownload}
+                  <button
+                    onClick={handleDownload}
                       className="flex items-center justify-center rounded-xl bg-black text-white p-2 hover:bg-gray-900 transition shadow"
-                    >
+                  >
                       <Download className="w-5 h-5" />
-                    </button>
-                    <button
-                      onClick={() => setEnhancedImage(null)}
+                  </button>
+                  <button
+                    onClick={() => setEnhancedImage(null)}
                       className="flex items-center justify-center rounded-xl border border-gray-200 text-gray-600 p-2 hover:bg-gray-50 transition"
                     >
                       <Trash2 className="w-5 h-5" />

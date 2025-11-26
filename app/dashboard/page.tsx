@@ -62,7 +62,7 @@ export default function DashboardPage() {
     return [
       { time: "9:00 AM", task: "Prep Birria Fiesta reel", status: "upcoming" },
       { time: "11:30 AM", task: "Plan Nashville Heat drop", status: "upcoming" },
-    ];
+  ];
   }, [data?.schedule, localSchedule]);
 
   const approvals = data?.approvals?.length ? data.approvals : defaultApprovals;
@@ -155,7 +155,7 @@ export default function DashboardPage() {
             <DashboardCard title="Approvals" icon="✅">
               <div className="space-y-4">
                 {approvals.map((item, index) => (
-                  <div
+                <div
                     key={`${item.title}-${index}`}
                     className="rounded-2xl border border-gray-200 p-4 hover:border-gray-300 transition"
                 >

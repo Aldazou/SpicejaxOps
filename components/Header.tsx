@@ -9,6 +9,7 @@ const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: "📊" },
   { name: "Content Studio", href: "/content", icon: "🎨" },
   { name: "Image Enhancer", href: "/enhance", icon: "✨" },
+  { name: "Library", href: "/library", icon: "bh" },
   { name: "Calendar", href: "/calendar", icon: "📅" },
   { name: "Chat Assistant", href: "/chat", icon: "💬" },
   { name: "Workflows", href: "/workflows", icon: "⚡" },

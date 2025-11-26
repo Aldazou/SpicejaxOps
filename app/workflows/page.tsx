@@ -313,8 +313,8 @@ export default function WorkflowsPage() {
                     </p>
                     <pre
                       className={`p-4 rounded-lg overflow-x-auto text-xs font-mono ${
-                        exec.success
-                          ? 'bg-gray-900 text-green-400'
+                      exec.success
+                        ? 'bg-gray-900 text-green-400'
                           : 'bg-gray-900 text-amber-200'
                       }`}
                     >
