@@ -409,7 +409,7 @@ export default function SettingsPage() {
         </button>
         <button
           onClick={isEditing ? handleSaveEditedProduct : handleSaveNewProduct}
-          className="px-6 py-3 bg-dark-forest text-white rounded-xl hover:bg-dark-forest/90 transition-colors text-sm font-medium flex items-center gap-2 shadow-lg"
+          className="px-6 py-3 bg-[#243530] text-white rounded-xl hover:bg-[#1a2824] transition-colors text-sm font-medium flex items-center gap-2 shadow-lg"
         >
           <Save className="w-4 h-4" />
           {isEditing ? "Save Changes" : "Add Product"}
