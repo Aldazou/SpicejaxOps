@@ -383,7 +383,9 @@ const FORMAT_PRESETS = [
   { id: "twitter", label: "Twitter/X", platform: "twitter", ratio: "16:9", pixels: "1200×675", desc: "Timeline images" },
   
   // LinkedIn
-  { id: "linkedin", label: "LinkedIn", platform: "linkedin", ratio: "1.91:1", pixels: "1200×628", desc: "Feed posts" },
+  { id: "linkedin-landscape", label: "LinkedIn Landscape", platform: "linkedin", ratio: "1.91:1", pixels: "1200×628", desc: "Feed posts, articles" },
+  { id: "linkedin-square", label: "LinkedIn Square", platform: "linkedin", ratio: "1:1", pixels: "1080×1080", desc: "Feed posts (higher engagement)" },
+  { id: "linkedin-portrait", label: "LinkedIn Portrait", platform: "linkedin", ratio: "4:5", pixels: "1080×1350", desc: "Mobile-optimized posts" },
   
   // YouTube
   { id: "youtube-thumb", label: "YouTube Thumbnail", platform: "youtube", ratio: "16:9", pixels: "1280×720", desc: "Video thumbnails" },
@@ -947,6 +949,8 @@ IMPORTANT: This is a product lineup/collection shot. Make sure each jar is clear
                     { id: "tiktok", label: "TikTok", icon: "🎵" },
                     { id: "pinterest", label: "Pinterest", icon: "📌" },
                     { id: "twitter", label: "X/Twitter", icon: "𝕏" },
+                    { id: "linkedin", label: "LinkedIn", icon: "💼" },
+                    { id: "youtube", label: "YouTube", icon: "▶️" },
                     { id: "ecommerce", label: "E-comm", icon: "🛒" },
                     { id: "print", label: "Print", icon: "🖨️" },
                   ].map((plat) => (
