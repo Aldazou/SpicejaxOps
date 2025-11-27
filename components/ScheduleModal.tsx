@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface ScheduleModalProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: (date: string, time: string, platform: string) => void;
   content: string;
+  defaultPlatform?: string;
 }
 
 export default function ScheduleModal({
@@ -14,11 +15,31 @@ export default function ScheduleModal({
   onClose,
   onConfirm,
   content,
+  defaultPlatform,
 }: ScheduleModalProps) {
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [platform, setPlatform] = useState("Instagram");
   const [loading, setLoading] = useState(false);
+
+  // Set default platform when modal opens
+  useEffect(() => {
+    if (defaultPlatform) {
+      // Map platform IDs to display names
+      const platformMap: Record<string, string> = {
+        instagram: "Instagram",
+        facebook: "Facebook",
+        tiktok: "TikTok",
+        twitter: "Twitter",
+        linkedin: "LinkedIn",
+        pinterest: "Pinterest",
+        youtube: "YouTube",
+        ecommerce: "Instagram", // fallback
+        print: "Instagram", // fallback
+      };
+      setPlatform(platformMap[defaultPlatform] || "Instagram");
+    }
+  }, [defaultPlatform, isOpen]);
 
   if (!isOpen) return null;
 

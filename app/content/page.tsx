@@ -262,6 +262,7 @@ function ContentStudioContent() {
         onClose={() => setIsScheduleModalOpen(false)}
         onConfirm={handleScheduleConfirm}
         content={selectedIdeaForSchedule?.content || ""}
+        defaultPlatform={platform}
       />
       <div className="space-y-6">
         {/* Header */}
