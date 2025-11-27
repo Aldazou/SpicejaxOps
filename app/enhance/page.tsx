@@ -310,12 +310,20 @@ const FORMAT_PRESETS = [
   // YouTube
   { id: "youtube-thumb", label: "YouTube Thumbnail", platform: "youtube", ratio: "16:9", pixels: "1280×720", desc: "Video thumbnails" },
   
-  // E-commerce
-  { id: "shopify", label: "Shopify/Amazon", platform: "ecommerce", ratio: "1:1", pixels: "2048×2048", desc: "Product listings" },
+  // E-commerce / WooCommerce
+  { id: "woo-main", label: "WooCommerce Main", platform: "ecommerce", ratio: "1:1", pixels: "1000×1000", desc: "Product page hero image" },
+  { id: "woo-gallery", label: "WooCommerce Gallery", platform: "ecommerce", ratio: "1:1", pixels: "800×800", desc: "Product gallery images" },
+  { id: "woo-thumbnail", label: "WooCommerce Thumb", platform: "ecommerce", ratio: "1:1", pixels: "300×300", desc: "Cart & catalog thumbnails" },
+  { id: "woo-zoom", label: "WooCommerce Zoom", platform: "ecommerce", ratio: "1:1", pixels: "1200×1200", desc: "Hover zoom (high-res)" },
+  { id: "shopify", label: "Shopify", platform: "ecommerce", ratio: "1:1", pixels: "2048×2048", desc: "Shopify product images" },
+  { id: "amazon", label: "Amazon", platform: "ecommerce", ratio: "1:1", pixels: "2000×2000", desc: "Amazon main image (white bg)" },
+  { id: "etsy", label: "Etsy", platform: "ecommerce", ratio: "4:3", pixels: "2000×1500", desc: "Etsy listing images" },
   
   // Print/General
   { id: "print-4x6", label: "Print 4×6", platform: "print", ratio: "3:2", pixels: "1800×1200", desc: "Standard photo print" },
   { id: "print-5x7", label: "Print 5×7", platform: "print", ratio: "7:5", pixels: "2100×1500", desc: "Portrait print" },
+  { id: "print-8x10", label: "Print 8×10", platform: "print", ratio: "5:4", pixels: "2400×1920", desc: "Portrait/frame print" },
+  { id: "print-11x14", label: "Print 11×14", platform: "print", ratio: "7:5.5", pixels: "3300×2520", desc: "Large frame print" },
 ];
 
 export default function ImageEnhancerPage() {
