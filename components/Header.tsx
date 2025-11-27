@@ -4,16 +4,27 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
+import {
+  LayoutDashboard,
+  PenTool,
+  Sparkles,
+  FolderOpen,
+  Calendar,
+  MessageCircle,
+  Zap,
+  Settings,
+  CalendarDays,
+} from "lucide-react";
 
 const navigation = [
-  { name: "Dashboard", href: "/dashboard", icon: "📊" },
-  { name: "Content Studio", href: "/content", icon: "🎨" },
-  { name: "Image Enhancer", href: "/enhance", icon: "✨" },
-  { name: "Library", href: "/library", icon: "🖼️" },
-  { name: "Calendar", href: "/calendar", icon: "📅" },
-  { name: "Chat Assistant", href: "/chat", icon: "💬" },
-  { name: "Workflows", href: "/workflows", icon: "⚡" },
-  { name: "Settings", href: "/settings", icon: "⚙️" },
+  { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+  { name: "Content Studio", href: "/content", icon: PenTool },
+  { name: "Image Enhancer", href: "/enhance", icon: Sparkles },
+  { name: "Library", href: "/library", icon: FolderOpen },
+  { name: "Calendar", href: "/calendar", icon: Calendar },
+  { name: "Chat Assistant", href: "/chat", icon: MessageCircle },
+  { name: "Workflows", href: "/workflows", icon: Zap },
+  { name: "Settings", href: "/settings", icon: Settings },
 ];
 
 export default function Header() {
@@ -56,7 +67,7 @@ export default function Header() {
           <div className="flex items-center gap-2 sm:gap-4">
             {/* Date pill */}
             <div className="hidden sm:flex items-center gap-2 px-4 py-2 bg-brand-sage rounded-2xl border border-brand-gold/20 text-sm">
-              <span className="text-brand-gold">📅</span>
+              <CalendarDays className="w-4 h-4 text-brand-gold" />
               <span className="font-medium text-brand-text">{currentDate}</span>
             </div>
             
@@ -83,17 +94,18 @@ export default function Header() {
         <nav className="flex gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar snap-x pb-1 -mx-1 px-1">
           {navigation.map((item) => {
             const isActive = pathname === item.href;
+            const Icon = item.icon;
             return (
               <Link
                 key={item.name}
                 href={item.href}
                 className={`inline-flex items-center gap-1.5 sm:gap-2 rounded-xl sm:rounded-2xl px-3 py-2 sm:px-4 sm:py-2.5 text-xs sm:text-sm font-semibold transition-all duration-300 snap-start whitespace-nowrap ${
                   isActive
-                    ? "bg-gradient-to-r from-brand-title to-brand-black text-white shadow-lg"
+                    ? "bg-[#243530] text-white shadow-lg"
                     : "text-brand-text hover:text-brand-title hover:bg-brand-sage border border-transparent hover:border-brand-gold/20"
                 }`}
               >
-                <span className="text-base sm:text-lg">{item.icon}</span>
+                <Icon className="w-4 h-4" />
                 <span className="hidden sm:inline">{item.name}</span>
               </Link>
             );
