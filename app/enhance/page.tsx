@@ -264,6 +264,83 @@ const SCENE_PRESETS = [
   },
 
   // ═══════════════════════════════════════════════════════════════
+  // PREMIUM — Over-the-top editorial, award-winning, showstopper shots
+  // These are your "make them stop scrolling" images. Magazine covers.
+  // ═══════════════════════════════════════════════════════════════
+  { 
+    id: "levitation", 
+    label: "Levitation", 
+    category: "premium",
+    prompt: "The spice jar floating in mid-air, defying gravity, surrounded by a dynamic explosion of its contents—individual spice particles, herbs, and ingredients suspended in perfect frozen motion around it. Ultra high-speed photography aesthetic, 1/10000s freeze. Dramatic rim lighting from behind creating halos around each floating element. Deep black background for maximum contrast. Every particle sharp and defined. The jar rotates slightly, catching light on its edge. Mood: magic, impossibility, premium advertising. Style: Hasselblad H6D, Phase One, Super Bowl commercial quality. This is the hero shot that wins awards." 
+  },
+  { 
+    id: "splash", 
+    label: "Liquid Splash", 
+    category: "premium",
+    prompt: "The spice jar at the center of a dramatic liquid splash—olive oil or honey creating a perfect crown splash around the base, frozen at the peak moment. Individual droplets suspended in air, catching light like liquid gold. The jar remains pristine and sharp while chaos erupts around it. Dramatic side lighting creating reflections in every droplet. Dark moody background. High-speed flash photography, 1/8000s. Mood: dynamic, premium, appetite appeal. Style: Broncolor advertising photography, food commercial hero shot. Print-ad worthy." 
+  },
+  { 
+    id: "smoke-art", 
+    label: "Smoke Dance", 
+    category: "premium",
+    prompt: "The spice jar surrounded by ethereal, sculpted smoke forming beautiful organic shapes—wisps curling and dancing around the product like living art. The smoke is backlit, creating depth and dimension, some areas glowing warmly. The jar is tack-sharp, the smoke soft and dreamlike. Deep shadows, selective lighting only on the jar and smoke edges. Long exposure smoke art combined with flash-frozen product. Mood: mysterious, artistic, gallery-worthy. Style: fine art product photography, museum exhibition quality." 
+  },
+  { 
+    id: "ingredient-explosion", 
+    label: "Ingredient Burst", 
+    category: "premium",
+    prompt: "The spice jar with a spectacular explosion of whole ingredients bursting outward in all directions—dried chilies, peppercorns, garlic cloves, herb leaves, citrus zest, all frozen in a perfect radial burst pattern. Each ingredient lit individually, colors vibrant and saturated. The jar at the calm center of the storm, label clearly visible. Pure black background. Composite photography technique, each element perfectly placed. Mood: abundance, flavor explosion, sensory overload. Style: Modernist Cuisine photography, Nathan Myhrvold aesthetic." 
+  },
+  { 
+    id: "mirror-world", 
+    label: "Mirror Reflection", 
+    category: "premium",
+    prompt: "The spice jar on a flawless black mirror surface creating a perfect reflection below—the reflection subtly distorted by a thin layer of water creating gentle ripples. Symmetrical composition, the jar and its reflection forming a complete visual. Single dramatic light source from above-left. Minimal styling, maximum impact. The surface extends to infinity, no visible edges. Mood: luxury, perfection, high-end retail. Style: Cartier jewelry advertising, luxury brand campaign. Absolute precision." 
+  },
+  { 
+    id: "fire-ring", 
+    label: "Ring of Fire", 
+    category: "premium",
+    prompt: "The spice jar surrounded by a perfect ring of real fire—flames dancing in a controlled circle around the product, creating warmth and drama. The jar is untouched by the flames, sitting calmly at the center. Fire reflects on the dark surface below. Smoke rises and curls above. The heat is palpable, the spice connection obvious. Long exposure for flame movement, flash freeze on the jar. Mood: heat, intensity, bold flavor. Style: high-end hot sauce advertising, dramatic food photography." 
+  },
+  { 
+    id: "botanical-art", 
+    label: "Botanical Study", 
+    category: "premium",
+    prompt: "The spice jar as the centerpiece of an elaborate botanical arrangement—fresh and dried herbs, edible flowers, whole spices, and ingredients arranged with scientific precision like a vintage botanical illustration come to life. Overhead shot, symmetrical arrangement radiating outward from the jar. Each element labeled with elegant typography in the style of old apothecary drawings. Soft, even lighting, muted earth tones with pops of color. Mood: educational, artisanal, heritage. Style: Taschen botanical book, natural history museum exhibit." 
+  },
+  { 
+    id: "crystal-cave", 
+    label: "Crystal Formation", 
+    category: "premium",
+    prompt: "The spice jar nestled among dramatic salt crystals and mineral formations—large pink Himalayan salt crystals, black lava salt formations, white fleur de sel clusters. The jar emerges from this crystalline landscape like a discovered treasure. Dramatic side lighting making crystals glow and sparkle. Cave-like atmosphere, mysterious and premium. Macro detail on crystal structures. Mood: precious, geological, rare. Style: National Geographic meets luxury advertising, discovery aesthetic." 
+  },
+  { 
+    id: "noir-cinema", 
+    label: "Film Noir", 
+    category: "premium",
+    prompt: "The spice jar in a dramatic film noir scene—harsh shadows from venetian blinds cutting across the frame, the jar sitting on a dark wooden surface, a shaft of light illuminating just the label. Black and white with subtle sepia toning. Smoke or steam drifting through the light beams. Cinematic 2.39:1 aspect ratio feel. A vintage chef's knife in the shadows. Mood: mysterious, classic, timeless. Style: 1940s Hollywood cinematography, Citizen Kane lighting, Roger Deakins aesthetic." 
+  },
+  { 
+    id: "frozen-time", 
+    label: "Frozen Moment", 
+    category: "premium",
+    prompt: "The spice jar captured at the exact moment of seasoning—a hand tilts the jar, and a stream of spice blend is frozen mid-pour, each granule individually visible, suspended in time. The receiving dish below shows the beginning of the pile forming. Ultra-macro detail, you can see the texture of individual spice particles. Time has stopped. Dramatic lighting catches each falling piece. Mood: precision, the perfect moment, culinary artistry. Style: Harold Edgerton high-speed photography, MIT strobe lab aesthetic." 
+  },
+  { 
+    id: "golden-hour-hero", 
+    label: "Golden Hour Glory", 
+    category: "premium",
+    prompt: "The spice jar bathed in the most perfect golden hour light imaginable—warm, honeyed sunlight streaming through a window, dust particles floating in the beams like gold flakes. The jar glows with warmth, casting a long dramatic shadow. A simple rustic surface, perhaps aged wood or linen. Everything else falls away—this is product worship. Lens flare acceptable, even desirable. Mood: warmth, home, the golden moment. Style: Terrence Malick cinematography, magic hour perfection." 
+  },
+  { 
+    id: "deconstructed", 
+    label: "Deconstructed", 
+    category: "premium",
+    prompt: "The spice jar shown deconstructed—the jar, lid, label, and contents all separated and floating in space in an exploded view diagram style. Each component casting its own shadow on a white background. Technical precision meets artistic arrangement. Small piles of individual spices that make up the blend arranged below with tiny labels. Mood: transparency, craftsmanship, nothing to hide. Style: Apple product photography meets culinary art, Dieter Rams aesthetic." 
+  },
+
+  // ═══════════════════════════════════════════════════════════════
   // CUSTOM — Full creative control
   // ═══════════════════════════════════════════════════════════════
   { 
@@ -535,6 +612,7 @@ export default function ImageEnhancerPage() {
                     { id: "cuisine", label: "Cuisine", desc: "Use cases" },
                     { id: "seasonal", label: "Seasonal", desc: "Campaigns" },
                     { id: "social", label: "Social", desc: "Platform-ready" },
+                    { id: "premium", label: "Premium ✨", desc: "Showstoppers" },
                     { id: "custom", label: "Custom", desc: "Your vision" },
                   ].map((cat) => (
                     <button
