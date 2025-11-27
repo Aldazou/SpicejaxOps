@@ -150,7 +150,12 @@ function ContentStudioContent() {
       
       if (data.success && data.contentIdeas) {
         console.log('✅ Success! Setting content ideas:', data.contentIdeas);
-        setContentIdeas(data.contentIdeas);
+        // Add status: "pending" to each idea if not present
+        const ideasWithStatus = data.contentIdeas.map((idea: ContentIdea) => ({
+          ...idea,
+          status: idea.status || "pending",
+        }));
+        setContentIdeas(ideasWithStatus);
       } else {
         console.warn('⚠️ No content ideas in response, using fallback');
         // Fallback if workflow fails
