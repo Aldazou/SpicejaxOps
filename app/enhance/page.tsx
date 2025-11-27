@@ -274,6 +274,50 @@ const SCENE_PRESETS = [
   },
 ];
 
+/*
+ * ═══════════════════════════════════════════════════════════════════════════════
+ * PLATFORM FORMAT PRESETS
+ * ═══════════════════════════════════════════════════════════════════════════════
+ * 
+ * Each platform has optimal dimensions for maximum engagement.
+ * These are 2024 best practices—update annually as platforms evolve.
+ */
+
+const FORMAT_PRESETS = [
+  // Instagram
+  { id: "ig-square", label: "Instagram Square", platform: "instagram", ratio: "1:1", pixels: "1080×1080", desc: "Feed posts, carousels" },
+  { id: "ig-portrait", label: "Instagram Portrait", platform: "instagram", ratio: "4:5", pixels: "1080×1350", desc: "Feed posts (more real estate)" },
+  { id: "ig-story", label: "Instagram Story", platform: "instagram", ratio: "9:16", pixels: "1080×1920", desc: "Stories, Reels" },
+  
+  // Facebook
+  { id: "fb-square", label: "Facebook Square", platform: "facebook", ratio: "1:1", pixels: "1080×1080", desc: "Feed posts" },
+  { id: "fb-landscape", label: "Facebook Landscape", platform: "facebook", ratio: "1.91:1", pixels: "1200×628", desc: "Link shares, ads" },
+  { id: "fb-story", label: "Facebook Story", platform: "facebook", ratio: "9:16", pixels: "1080×1920", desc: "Stories" },
+  
+  // TikTok
+  { id: "tiktok", label: "TikTok", platform: "tiktok", ratio: "9:16", pixels: "1080×1920", desc: "Videos, stills" },
+  
+  // Pinterest
+  { id: "pin-standard", label: "Pinterest Standard", platform: "pinterest", ratio: "2:3", pixels: "1000×1500", desc: "Standard pins" },
+  { id: "pin-long", label: "Pinterest Long", platform: "pinterest", ratio: "1:2.1", pixels: "1000×2100", desc: "Infographics, recipes" },
+  
+  // Twitter/X
+  { id: "twitter", label: "Twitter/X", platform: "twitter", ratio: "16:9", pixels: "1200×675", desc: "Timeline images" },
+  
+  // LinkedIn
+  { id: "linkedin", label: "LinkedIn", platform: "linkedin", ratio: "1.91:1", pixels: "1200×628", desc: "Feed posts" },
+  
+  // YouTube
+  { id: "youtube-thumb", label: "YouTube Thumbnail", platform: "youtube", ratio: "16:9", pixels: "1280×720", desc: "Video thumbnails" },
+  
+  // E-commerce
+  { id: "shopify", label: "Shopify/Amazon", platform: "ecommerce", ratio: "1:1", pixels: "2048×2048", desc: "Product listings" },
+  
+  // Print/General
+  { id: "print-4x6", label: "Print 4×6", platform: "print", ratio: "3:2", pixels: "1800×1200", desc: "Standard photo print" },
+  { id: "print-5x7", label: "Print 5×7", platform: "print", ratio: "7:5", pixels: "2100×1500", desc: "Portrait print" },
+];
+
 export default function ImageEnhancerPage() {
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [enhancedImage, setEnhancedImage] = useState<string | null>(null);
@@ -285,16 +329,22 @@ export default function ImageEnhancerPage() {
   const [sceneId, setSceneId] = useState<string>("hero-dark");
   const [activeCategory, setActiveCategory] = useState<string>("hero");
   const [customScene, setCustomScene] = useState<string>("");
+  const [formatId, setFormatId] = useState<string>("ig-square");
+
+  const activeFormat = useMemo(() => {
+    return FORMAT_PRESETS.find((f) => f.id === formatId) || FORMAT_PRESETS[0];
+  }, [formatId]);
 
   const activeScenePrompt = useMemo(() => {
-    if (sceneId === "custom") {
-      return customScene.trim();
-    }
-    return (
-      SCENE_PRESETS.find((scene) => scene.id === sceneId)?.prompt ??
-      "Backyard grill at dusk with ember glow and smoke trails."
-    );
-  }, [sceneId, customScene]);
+    const basePrompt = sceneId === "custom" 
+      ? customScene.trim()
+      : SCENE_PRESETS.find((scene) => scene.id === sceneId)?.prompt ?? "";
+    
+    // Append format instructions to the prompt
+    const formatInstruction = `Output image dimensions: ${activeFormat.ratio} aspect ratio (${activeFormat.pixels}). Compose the scene to work perfectly in this format with appropriate headroom and subject placement.`;
+    
+    return `${basePrompt} ${formatInstruction}`;
+  }, [sceneId, customScene, activeFormat]);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -535,6 +585,101 @@ export default function ImageEnhancerPage() {
                     rows={4}
                   />
                 )}
+              </div>
+
+              {/* Format Selection */}
+              <div className="bg-white rounded-3xl border border-brand-gold/20 shadow-[0_2px_20px_-4px_rgba(0,0,0,0.06)] p-6">
+                <p className="text-sm font-bold text-brand-title mb-4">Output format</p>
+                
+                {/* Platform Tabs */}
+                <div className="flex gap-1 overflow-x-auto no-scrollbar pb-3 mb-4 border-b border-brand-gold/10">
+                  {[
+                    { id: "instagram", label: "Instagram", icon: "📸" },
+                    { id: "facebook", label: "Facebook", icon: "📘" },
+                    { id: "tiktok", label: "TikTok", icon: "🎵" },
+                    { id: "pinterest", label: "Pinterest", icon: "📌" },
+                    { id: "twitter", label: "X/Twitter", icon: "𝕏" },
+                    { id: "ecommerce", label: "E-comm", icon: "🛒" },
+                    { id: "print", label: "Print", icon: "🖨️" },
+                  ].map((plat) => (
+                    <button
+                      key={plat.id}
+                      onClick={() => {
+                        const firstFormat = FORMAT_PRESETS.find((f) => f.platform === plat.id);
+                        if (firstFormat) setFormatId(firstFormat.id);
+                      }}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1 ${
+                        activeFormat.platform === plat.id
+                          ? "bg-[#243530] text-white"
+                          : "text-brand-text/60 hover:text-brand-title hover:bg-brand-sage"
+                      }`}
+                    >
+                      <span>{plat.icon}</span>
+                      <span className="hidden sm:inline">{plat.label}</span>
+                    </button>
+                  ))}
+                </div>
+
+                {/* Format Options */}
+                <div className="grid grid-cols-1 gap-2">
+                  {FORMAT_PRESETS
+                    .filter((f) => f.platform === activeFormat.platform)
+                    .map((format) => (
+                      <button
+                        key={format.id}
+                        onClick={() => setFormatId(format.id)}
+                        className={`px-4 py-3 rounded-xl text-left transition-all flex items-center justify-between ${
+                          formatId === format.id
+                            ? "bg-[#243530] text-white shadow-lg"
+                            : "bg-brand-sage text-brand-text hover:bg-spice-100 border border-transparent hover:border-brand-gold/20"
+                        }`}
+                      >
+                        <div>
+                          <p className="font-semibold text-sm">{format.label}</p>
+                          <p className={`text-xs mt-0.5 ${formatId === format.id ? "text-white/60" : "text-brand-text/50"}`}>
+                            {format.desc}
+                          </p>
+                        </div>
+                        <div className={`text-right ${formatId === format.id ? "text-white/80" : "text-brand-text/40"}`}>
+                          <p className="text-xs font-mono">{format.ratio}</p>
+                          <p className="text-[10px] font-mono">{format.pixels}</p>
+                        </div>
+                      </button>
+                    ))}
+                </div>
+
+                {/* Format Preview */}
+                <div className="mt-4 flex items-center gap-3 p-3 bg-brand-sage rounded-xl border border-brand-gold/10">
+                  <div 
+                    className="bg-[#243530] rounded flex-shrink-0 flex items-center justify-center text-white/30 text-[8px] font-mono"
+                    style={{
+                      width: activeFormat.ratio === "1:1" ? 40 : 
+                             activeFormat.ratio === "4:5" ? 32 :
+                             activeFormat.ratio === "9:16" ? 24 :
+                             activeFormat.ratio === "16:9" ? 48 :
+                             activeFormat.ratio === "2:3" ? 28 :
+                             activeFormat.ratio === "1:2.1" ? 20 :
+                             activeFormat.ratio === "1.91:1" ? 48 :
+                             activeFormat.ratio === "3:2" ? 42 :
+                             activeFormat.ratio === "7:5" ? 38 : 40,
+                      height: activeFormat.ratio === "1:1" ? 40 :
+                              activeFormat.ratio === "4:5" ? 40 :
+                              activeFormat.ratio === "9:16" ? 42 :
+                              activeFormat.ratio === "16:9" ? 27 :
+                              activeFormat.ratio === "2:3" ? 42 :
+                              activeFormat.ratio === "1:2.1" ? 42 :
+                              activeFormat.ratio === "1.91:1" ? 25 :
+                              activeFormat.ratio === "3:2" ? 28 :
+                              activeFormat.ratio === "7:5" ? 27 : 40,
+                    }}
+                  >
+                    {activeFormat.ratio}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-semibold text-brand-title">{activeFormat.label}</p>
+                    <p className="text-[10px] text-brand-text/50">{activeFormat.pixels} • {activeFormat.desc}</p>
+                  </div>
+                </div>
               </div>
 
               {/* Enhance Button */}
