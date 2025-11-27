@@ -3,42 +3,24 @@
 import { useMemo, useState } from "react";
 import MainLayout from "@/components/MainLayout";
 import Image from "next/image";
-import { Expand, Download, Trash2, Sparkles, ImageIcon } from "lucide-react";
+import { Expand, Download, Trash2, Sparkles, ImageIcon, Check, X } from "lucide-react";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 
 const SCENE_PRESETS = [
   { id: "ember", label: "Backyard Ember", prompt: "Backyard grill at dusk, glowing embers, smoke drifting, warm rim light, cozy outdoor dinner vibes." },
-  { id: "chef-pass", label: "Chef’s Pass Heat Lamp", prompt: "Restaurant pass, stainless counter, heat lamps glowing, plated tacos waiting, steam curling under moody overhead light." },
-  { id: "midnight-kitchen", label: "Midnight Test Kitchen", prompt: "Marble island, stacks of cookbooks, scribbled notes, single desk lamp casting dramatic pools of warm light." },
-  { id: "heritage-stove", label: "Heritage Stove Top", prompt: "Vintage cast-iron on an heirloom stove, flour dust floating in amber window light, rustic spoon and spices around." },
-  { id: "grinding-ritual", label: "Spice Grinding Ritual", prompt: "Close up mortar and pestle in motion, dried chiles mid-air, vibrant spices scattered, gritty artisan workbench." },
-  { id: "sous-vide", label: "Modern Sous Vide Lab", prompt: "Minimal induction setup, sous-vide bags steaming, cool blue accent light, precision chef tools, stainless surfaces." },
-  { id: "campfire", label: "Campfire Cast-Iron", prompt: "Rustic campfire ring, cast-iron skillet sizzling over open flame, pine forest at dusk, enamel mugs nearby." },
-  { id: "tailgate", label: "Tailgate Smoke Show", prompt: "Pickup truck bed setup, portable smoker, stadium lights in background, fans blurred, energetic game-day vibe." },
-  { id: "pitmaster", label: "Pitmaster Tent", prompt: "Massive offset smoker, chalkboard menu, butcher paper, midday sun haze, pitmaster tools leaning nearby." },
+  { id: "chef-pass", label: "Chef's Pass", prompt: "Restaurant pass, stainless counter, heat lamps glowing, plated tacos waiting, steam curling under moody overhead light." },
+  { id: "midnight-kitchen", label: "Midnight Kitchen", prompt: "Marble island, stacks of cookbooks, scribbled notes, single desk lamp casting dramatic pools of warm light." },
+  { id: "heritage-stove", label: "Heritage Stove", prompt: "Vintage cast-iron on an heirloom stove, flour dust floating in amber window light, rustic spoon and spices around." },
+  { id: "grinding-ritual", label: "Spice Ritual", prompt: "Close up mortar and pestle in motion, dried chiles mid-air, vibrant spices scattered, gritty artisan workbench." },
+  { id: "campfire", label: "Campfire", prompt: "Rustic campfire ring, cast-iron skillet sizzling over open flame, pine forest at dusk, enamel mugs nearby." },
+  { id: "tailgate", label: "Tailgate", prompt: "Pickup truck bed setup, portable smoker, stadium lights in background, fans blurred, energetic game-day vibe." },
   { id: "seaside", label: "Seaside Grill", prompt: "Beach bonfire pit, driftwood seating, sea spray mist, sunset horizon, grilled seafood props shimmering." },
-  { id: "feast-table", label: "Family Feast Table", prompt: "Long farmhouse table, mismatched plates, multiple dishes mid-serve, hands reaching, golden hour sunlight." },
-  { id: "tapas", label: "Tapas Night", prompt: "Dim candlelight, small plates, olives and crostini, warm golden tones, wine glasses catching reflections." },
-  { id: "street-taco", label: "Street Taco Counter", prompt: "Griddle with sizzling meats, cilantro and diced onions, neon signage, urban night energy, motion blur crowd." },
-  { id: "brunch", label: "Brunch Board", prompt: "Cast-iron frittata, jars of pickled veg, linen napkins, bright morning backlight, airy weekend vibe." },
-  { id: "wine", label: "Wine & Spice Pairing", prompt: "Charcuterie board, deep red wine glass, slate serving board, moody shadows, sophisticated tasting room feel." },
-  { id: "market-shelf", label: "Gourmet Market Shelf", prompt: "Dark wood shelving, multiple jars lined up, hand-written price tags, artisanal grocery environment." },
-  { id: "popup", label: "Pop-up Booth", prompt: "Branded tablecloth, tasting spoons, curious customer hand reaching, soft fair lighting." },
-  { id: "subscription", label: "Subscription Unboxing", prompt: "Stylized top-down shot, tissue paper, branded cards, herb bundles, natural daylight." },
-  { id: "food-truck", label: "Food Truck Pass", prompt: "Service window, stainless counter, order slips, busy city street blurred, afternoon sun streaks." },
-  { id: "studio-clean", label: "Clean Studio Sweep", prompt: "Minimal white cyclorama, glossy reflections, controlled softbox lighting, editorial product focus." },
-  { id: "herb-garden", label: "Herb Garden Morning", prompt: "Fresh basil and rosemary pots, dew on leaves, soft morning window light, earthy textures." },
-  { id: "citrus-zest", label: "Citrus Zest Burst", prompt: "Sliced oranges and lemons, microplane mid-action, bright highlights, vibrant yellow pops." },
-  { id: "global-pantry", label: "Global Pantry Map", prompt: "Saffron threads, star anise, turmeric roots spread over aged atlas, brass compass props." },
-  { id: "smoked-pepper", label: "Smoked Pepper Lab", prompt: "Hanging dried peppers, smoke haze, industrial fan, gritty warehouse vibe." },
-  { id: "dessert-spice", label: "Dessert Spice Spread", prompt: "Cinnamon sticks, vanilla beans, pastries dusted in powdered sugar, soft studio light." },
-  { id: "motion-splash", label: "Motion Splash", prompt: "High-speed capture of marinade pouring over protein, frozen droplets, jar sharp in foreground." },
-  { id: "xray-flavor", label: "X-Ray Flavor", prompt: "Cutaway look showing rub, smoke ring, charred crust, scientific yet appetizing aesthetic." },
-  { id: "flavor-wave", label: "Flavor Wave", prompt: "Abstract colored spice powders exploding behind the jar, vibrant editorial feel." },
-  { id: "spice-trail", label: "Spice Trail Map", prompt: "Jar atop aged travel map with passport stamps, brass compass, explorer vibe." },
-  { id: "future-lab", label: "Future Flavor Lab", prompt: "Chrome lab surfaces, holographic UI overlays, neon accent lighting, experimental culinary tech mood." },
-  { id: "custom", label: "Custom", prompt: "" },
+  { id: "feast-table", label: "Feast Table", prompt: "Long farmhouse table, mismatched plates, multiple dishes mid-serve, hands reaching, golden hour sunlight." },
+  { id: "street-taco", label: "Street Taco", prompt: "Griddle with sizzling meats, cilantro and diced onions, neon signage, urban night energy, motion blur crowd." },
+  { id: "studio-clean", label: "Studio Clean", prompt: "Minimal white cyclorama, glossy reflections, controlled softbox lighting, editorial product focus." },
+  { id: "herb-garden", label: "Herb Garden", prompt: "Fresh basil and rosemary pots, dew on leaves, soft morning window light, earthy textures." },
+  { id: "custom", label: "Custom Scene", prompt: "" },
 ];
 
 export default function ImageEnhancerPage() {
@@ -48,6 +30,7 @@ export default function ImageEnhancerPage() {
   const [error, setError] = useState<string | null>(null);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [approving, setApproving] = useState(false);
+  const [approved, setApproved] = useState(false);
   const [sceneId, setSceneId] = useState<string>("ember");
   const [customScene, setCustomScene] = useState<string>("");
 
@@ -67,8 +50,9 @@ export default function ImageEnhancerPage() {
       const reader = new FileReader();
       reader.onloadend = () => {
         setUploadedImage(reader.result as string);
-        setEnhancedImage(null); // Reset enhanced image on new upload
+        setEnhancedImage(null);
         setError(null);
+        setApproved(false);
       };
       reader.readAsDataURL(file);
     }
@@ -79,6 +63,7 @@ export default function ImageEnhancerPage() {
 
     setEnhancing(true);
     setError(null);
+    setApproved(false);
 
     try {
       const settings = JSON.parse(localStorage.getItem('spicejax_settings') || '{}');
@@ -113,10 +98,6 @@ export default function ImageEnhancerPage() {
     } catch (err) {
       console.error("Enhancement error:", err);
       setError(err instanceof Error ? err.message : "Unknown error occurred");
-      
-      // Fallback for demo purposes if n8n isn't connected yet
-      // In a real app, remove this or make it clear it's a demo
-      // setEnhancedImage(uploadedImage); // Just show original as fallback for now
     } finally {
       setEnhancing(false);
     }
@@ -148,6 +129,7 @@ export default function ImageEnhancerPage() {
           scenePrompt: activeScenePrompt,
         }),
       });
+      setApproved(true);
     } catch (err) {
       console.error("Failed to upload to library:", err);
     } finally {
@@ -157,51 +139,69 @@ export default function ImageEnhancerPage() {
 
   return (
     <>
-    <MainLayout>
-      <div className="space-y-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Left: Upload */}
-          <div className="space-y-6">
-            <div className="bg-white rounded-2xl border border-gray-200 shadow-lg shadow-slate-100 p-6 space-y-6">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="h-10 w-10 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center">
-                  <ImageIcon className="w-5 h-5" />
-                </div>
-                <div>
-                  <p className="text-xs uppercase tracking-[0.3em] text-gray-400">
-                    Step 01
-                  </p>
-                  <h2 className="text-xl font-bold text-gray-900">Original Image</h2>
-                </div>
+      <MainLayout>
+        <div className="space-y-8">
+          {/* Header */}
+          <div>
+            <div className="flex items-center gap-2 mb-2">
+              <div className="h-8 w-8 rounded-xl bg-gradient-to-br from-purple-500 to-indigo-500 flex items-center justify-center shadow-lg shadow-purple-500/20">
+                <Sparkles className="w-4 h-4 text-white" />
               </div>
+              <p className="uppercase tracking-[0.3em] text-[10px] font-bold text-purple-500">
+                AI Studio
+              </p>
+            </div>
+            <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight">
+              Image Lab
+            </h1>
+            <p className="text-gray-500 mt-1">
+              Transform product shots with AI-powered scene generation
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+            {/* Left: Upload */}
+            <div className="space-y-6">
+              <div className="bg-white rounded-3xl border border-gray-100 shadow-[0_2px_20px_-4px_rgba(0,0,0,0.06)] p-6">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-gray-100 to-gray-50 flex items-center justify-center">
+                    <ImageIcon className="w-5 h-5 text-gray-400" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Step 01</p>
+                    <h2 className="font-bold text-gray-900">Upload Original</h2>
+                  </div>
+                </div>
 
                 {uploadedImage ? (
-                <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-gray-50 ring-1 ring-gray-100">
+                  <div className="relative aspect-square rounded-2xl overflow-hidden bg-gradient-to-br from-gray-100 to-gray-50 ring-1 ring-gray-200/50">
                     <Image
                       src={uploadedImage}
                       alt="Original"
                       fill
-                    className="object-contain p-6"
+                      className="object-contain p-4"
                     />
                     <button
                       onClick={() => {
                         setUploadedImage(null);
                         setEnhancedImage(null);
+                        setApproved(false);
                       }}
-                    className="absolute top-3 right-3 bg-white/90 text-[#4f7f00] p-2 rounded-full border border-[#d2e6b5] hover:bg-[#8bc53f] hover:text-white transition-colors shadow-sm"
+                      className="absolute top-3 right-3 w-10 h-10 bg-white/90 backdrop-blur rounded-xl flex items-center justify-center text-gray-500 hover:text-red-500 hover:bg-red-50 transition-colors shadow-lg"
                     >
-                    <Trash2 className="w-4 h-4" />
+                      <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
                 ) : (
-                <label className="flex flex-col items-center justify-center w-full aspect-square border-2 border-dashed border-gray-300 rounded-xl cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors">
-                  <div className="flex flex-col items-center justify-center py-10 space-y-3">
-                    <span className="rounded-full bg-white shadow px-6 py-3 text-sm font-semibold text-gray-700">
-                      Drag & drop or click to upload
-                    </span>
-                    <p className="text-xs text-gray-500">
-                      High-res PNG, JPG or WEBP for best results
-                      </p>
+                  <label className="flex flex-col items-center justify-center aspect-square border-2 border-dashed border-gray-200 rounded-2xl cursor-pointer bg-gradient-to-br from-gray-50 to-white hover:border-[#8bc53f]/50 hover:bg-[#f8fdf3] transition-all group">
+                    <div className="flex flex-col items-center justify-center py-10 space-y-4">
+                      <div className="w-16 h-16 rounded-2xl bg-gray-100 group-hover:bg-[#8bc53f]/10 flex items-center justify-center transition-colors">
+                        <ImageIcon className="w-8 h-8 text-gray-300 group-hover:text-[#8bc53f] transition-colors" />
+                      </div>
+                      <div className="text-center">
+                        <p className="font-semibold text-gray-700">Drop your image here</p>
+                        <p className="text-sm text-gray-400 mt-1">or click to browse</p>
+                      </div>
                     </div>
                     <input
                       type="file"
@@ -210,18 +210,21 @@ export default function ImageEnhancerPage() {
                       onChange={handleImageUpload}
                     />
                   </label>
-              )}
-              <div className="space-y-3">
-                <p className="text-sm font-semibold text-gray-900">Scene vibe</p>
-                <div className="grid grid-cols-2 gap-2">
+                )}
+              </div>
+
+              {/* Scene Selection */}
+              <div className="bg-white rounded-3xl border border-gray-100 shadow-[0_2px_20px_-4px_rgba(0,0,0,0.06)] p-6">
+                <p className="text-sm font-bold text-gray-900 mb-4">Choose a scene vibe</p>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                   {SCENE_PRESETS.map((scene) => (
                     <button
                       key={scene.id}
                       onClick={() => setSceneId(scene.id)}
-                      className={`px-3 py-2 rounded-xl text-sm border text-left ${
+                      className={`px-3 py-2.5 rounded-xl text-sm font-medium text-left transition-all ${
                         sceneId === scene.id
-                          ? "border-black bg-black text-white"
-                          : "border-gray-200 text-gray-600 hover:border-gray-300"
+                          ? "bg-gray-900 text-white shadow-lg"
+                          : "bg-gray-50 text-gray-600 hover:bg-gray-100"
                       }`}
                     >
                       {scene.label}
@@ -233,152 +236,186 @@ export default function ImageEnhancerPage() {
                     value={customScene}
                     onChange={(e) => setCustomScene(e.target.value)}
                     placeholder="Describe the exact scene you want..."
-                    className="w-full rounded-2xl border border-gray-200 focus:border-black focus:ring-black text-sm p-3"
+                    className="mt-4 w-full rounded-2xl border border-gray-200 focus:border-[#8bc53f] focus:ring-2 focus:ring-[#8bc53f]/20 text-sm p-4 transition-all"
                     rows={3}
                   />
                 )}
               </div>
-            </div>
 
-            <button
-              onClick={enhanceImage}
-              disabled={!uploadedImage || enhancing}
-              className="w-full py-3 sm:py-4 bg-black text-white font-semibold text-base sm:text-lg rounded-2xl hover:bg-gray-900 disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-3 shadow-lg"
-            >
-              {enhancing ? (
-                <>
-                  <Sparkles className="w-5 h-5 animate-spin" />
-                  Generating Scene…
-                </>
-              ) : (
-                <>
-                  <Sparkles className="w-5 h-5" />
-                  Run Enhancement
-                </>
-              )}
-            </button>
-
-            {error && (
-              <div className="p-4 bg-[#f3fbe3] text-[#4f7f00] rounded-2xl border border-[#cfe7b1]">
-                ⚠️ {error}
-              </div>
-            )}
-          </div>
-
-          {/* Right: Result */}
-          <div className="bg-white rounded-2xl border border-gray-200 shadow-lg shadow-slate-100 p-6 flex flex-col gap-4">
-            <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-full bg-green-100 text-green-600 flex items-center justify-center">
-                <Sparkles className="w-5 h-5" />
-              </div>
-              <div>
-                <p className="text-xs uppercase tracking-[0.3em] text-gray-400">
-                  Step 02
-                </p>
-                <h2 className="text-xl font-bold text-gray-900">Enhanced Result</h2>
-              </div>
-            </div>
-
-            {enhancedImage ? (
-              <div className="space-y-4">
-                <div className="relative w-full aspect-square rounded-2xl overflow-hidden bg-gray-100 shadow-inner">
-                  <Image
-                    src={enhancedImage}
-                    alt="Enhanced"
-                    fill
-                    className="object-cover"
-                  />
-                  <div className="absolute top-4 left-4 flex gap-2">
-                    <div className="px-3 py-1 bg-green-500 text-white text-xs font-bold rounded-full shadow-lg flex items-center gap-1">
-                    ✨ ENHANCED
-                    </div>
-                    <div className="px-3 py-1 bg-white/90 text-gray-700 text-xs font-semibold rounded-full shadow">
-                      Studio Build: Backyard Ember
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex flex-wrap gap-2 items-center">
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => setIsPreviewOpen(true)}
-                      className="flex items-center justify-center rounded-xl border border-gray-200 p-2 text-gray-700 hover:bg-gray-50 transition"
-                    >
-                      <Expand className="w-5 h-5" />
-                    </button>
-                  <button
-                    onClick={handleDownload}
-                      className="flex items-center justify-center rounded-xl bg-black text-white p-2 hover:bg-gray-900 transition shadow"
-                  >
-                      <Download className="w-5 h-5" />
-                  </button>
-                  <button
-                    onClick={() => setEnhancedImage(null)}
-                      className="flex items-center justify-center rounded-xl border border-gray-200 text-gray-600 p-2 hover:bg-gray-50 transition"
-                    >
-                      <Trash2 className="w-5 h-5" />
-                    </button>
-                  </div>
-                  <button
-                    onClick={handleApprove}
-                    disabled={approving}
-                    className="flex-1 min-w-[160px] py-2 rounded-xl bg-[#8bc53f] text-white font-semibold text-sm hover:bg-[#77a933] transition disabled:bg-gray-300 disabled:text-gray-500"
-                  >
-                    {approving ? "Saving..." : "Approve & Save"}
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <div className="flex flex-col items-center justify-center h-full min-h-[400px] text-gray-400 bg-gray-50 rounded-lg border-2 border-dashed border-gray-200">
+              {/* Enhance Button */}
+              <button
+                onClick={enhanceImage}
+                disabled={!uploadedImage || enhancing}
+                className="w-full py-4 bg-gradient-to-r from-gray-900 to-gray-800 text-white font-bold text-lg rounded-2xl hover:from-gray-800 hover:to-gray-700 disabled:from-gray-200 disabled:to-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-3 shadow-xl shadow-gray-900/20 disabled:shadow-none"
+              >
                 {enhancing ? (
-                  <div className="text-center">
-                    <div className="text-6xl mb-4 animate-bounce">🪄</div>
-                    <p className="font-medium">Working on it...</p>
-                    <p className="text-sm mt-2">Sending to n8n for enhancement</p>
-                  </div>
+                  <>
+                    <Sparkles className="w-5 h-5 animate-spin" />
+                    Generating Scene…
+                  </>
                 ) : (
-                  <div className="text-center">
-                    <p className="text-6xl mb-4">🖼️</p>
-                    <p>Upload an image and click Enhance</p>
-                  </div>
+                  <>
+                    <Sparkles className="w-5 h-5" />
+                    Run Enhancement
+                  </>
                 )}
+              </button>
+
+              {error && (
+                <div className="p-4 bg-amber-50 text-amber-700 rounded-2xl border border-amber-100 text-sm">
+                  ⚠️ {error}
+                </div>
+              )}
+            </div>
+
+            {/* Right: Result */}
+            <div className="bg-white rounded-3xl border border-gray-100 shadow-[0_2px_20px_-4px_rgba(0,0,0,0.06)] p-6 flex flex-col">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#8bc53f] to-[#6ba82a] flex items-center justify-center shadow-lg shadow-[#8bc53f]/20">
+                  <Sparkles className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Step 02</p>
+                  <h2 className="font-bold text-gray-900">Enhanced Result</h2>
+                </div>
               </div>
-            )}
+
+              {enhancedImage ? (
+                <div className="flex-1 flex flex-col gap-4">
+                  <div className="relative flex-1 min-h-[400px] rounded-2xl overflow-hidden bg-gradient-to-br from-gray-100 to-gray-50">
+                    <Image
+                      src={enhancedImage}
+                      alt="Enhanced"
+                      fill
+                      className="object-cover"
+                    />
+                    {/* Badges */}
+                    <div className="absolute top-4 left-4 flex gap-2">
+                      <span className="px-3 py-1.5 bg-[#8bc53f] text-white text-xs font-bold rounded-lg shadow-lg flex items-center gap-1.5">
+                        <Sparkles className="w-3 h-3" />
+                        ENHANCED
+                      </span>
+                    </div>
+                    {approved && (
+                      <div className="absolute top-4 right-4">
+                        <span className="px-3 py-1.5 bg-white text-[#8bc53f] text-xs font-bold rounded-lg shadow-lg flex items-center gap-1.5">
+                          <Check className="w-3 h-3" />
+                          SAVED
+                        </span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Actions */}
+                  <div className="flex flex-wrap items-center gap-2">
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => setIsPreviewOpen(true)}
+                        className="w-11 h-11 flex items-center justify-center rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-all"
+                        title="Preview"
+                      >
+                        <Expand className="w-5 h-5" />
+                      </button>
+                      <button
+                        onClick={handleDownload}
+                        className="w-11 h-11 flex items-center justify-center rounded-xl bg-gray-900 text-white hover:bg-gray-800 transition-all shadow-lg"
+                        title="Download"
+                      >
+                        <Download className="w-5 h-5" />
+                      </button>
+                      <button
+                        onClick={() => {
+                          setEnhancedImage(null);
+                          setApproved(false);
+                        }}
+                        className="w-11 h-11 flex items-center justify-center rounded-xl border border-gray-200 text-gray-400 hover:text-red-500 hover:border-red-200 hover:bg-red-50 transition-all"
+                        title="Discard"
+                      >
+                        <X className="w-5 h-5" />
+                      </button>
+                    </div>
+                    <button
+                      onClick={handleApprove}
+                      disabled={approving || approved}
+                      className={`flex-1 min-w-[160px] py-3 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 ${
+                        approved
+                          ? "bg-[#f0f9e8] text-[#5a8c1a] border border-[#d4ebc4]"
+                          : "bg-gradient-to-r from-[#8bc53f] to-[#7ab82f] text-white shadow-lg shadow-[#8bc53f]/30 hover:shadow-xl hover:shadow-[#8bc53f]/40 disabled:opacity-50"
+                      }`}
+                    >
+                      {approved ? (
+                        <>
+                          <Check className="w-4 h-4" />
+                          Saved to Library
+                        </>
+                      ) : approving ? (
+                        "Saving..."
+                      ) : (
+                        <>
+                          <Check className="w-4 h-4" />
+                          Approve & Save
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex-1 flex flex-col items-center justify-center min-h-[400px] text-gray-400 bg-gradient-to-br from-gray-50 to-white rounded-2xl border-2 border-dashed border-gray-200">
+                  {enhancing ? (
+                    <div className="text-center">
+                      <div className="relative mb-6">
+                        <div className="absolute inset-0 bg-[#8bc53f]/20 rounded-full blur-2xl animate-pulse"></div>
+                        <div className="relative text-6xl animate-bounce">🪄</div>
+                      </div>
+                      <p className="font-semibold text-gray-600">Creating magic...</p>
+                      <p className="text-sm mt-1">AI is building your scene</p>
+                    </div>
+                  ) : (
+                    <div className="text-center">
+                      <div className="w-20 h-20 rounded-3xl bg-gray-100 flex items-center justify-center mx-auto mb-4">
+                        <ImageIcon className="w-10 h-10 text-gray-300" />
+                      </div>
+                      <p className="font-semibold text-gray-600">No result yet</p>
+                      <p className="text-sm mt-1">Upload an image and hit enhance</p>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
         </div>
+      </MainLayout>
 
-      </div>
-    </MainLayout>
-    {isPreviewOpen && enhancedImage && (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm px-4">
-        <div className="relative w-full max-w-5xl max-h-[90vh] bg-white rounded-3xl shadow-2xl p-6">
-          <button
-            onClick={() => setIsPreviewOpen(false)}
-            className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-2xl"
-          >
-            ✕
-          </button>
-          <Zoom zoomMargin={32}>
-            <div
-              className="relative w-full rounded-2xl overflow-hidden bg-gray-100"
-              style={{ aspectRatio: "3 / 4", maxHeight: "80vh", margin: "0 auto" }}
+      {/* Preview Modal */}
+      {isPreviewOpen && enhancedImage && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm p-4">
+          <div className="relative w-full max-w-5xl max-h-[90vh] bg-white rounded-3xl shadow-2xl p-6 overflow-hidden">
+            <button
+              onClick={() => setIsPreviewOpen(false)}
+              className="absolute top-4 right-4 w-10 h-10 flex items-center justify-center rounded-xl bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-gray-700 transition-colors z-10"
             >
-              <Image
-                src={enhancedImage}
-                alt="Enhanced preview"
-                fill
-                className="object-contain p-4"
-                priority
-              />
-            </div>
-          </Zoom>
-          <p className="text-sm text-gray-500 text-center mt-4">
-            Click or tap to zoom. Scroll or pinch to inspect details.
-          </p>
+              <X className="w-5 h-5" />
+            </button>
+            <Zoom zoomMargin={32}>
+              <div
+                className="relative w-full rounded-2xl overflow-hidden bg-gray-100"
+                style={{ aspectRatio: "3 / 4", maxHeight: "75vh", margin: "0 auto" }}
+              >
+                <Image
+                  src={enhancedImage}
+                  alt="Enhanced preview"
+                  fill
+                  className="object-contain"
+                  priority
+                />
+              </div>
+            </Zoom>
+            <p className="text-sm text-gray-400 text-center mt-4">
+              Click to zoom • Scroll to inspect details
+            </p>
+          </div>
         </div>
-      </div>
-    )}
+      )}
     </>
   );
 }
-

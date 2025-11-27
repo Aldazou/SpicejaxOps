@@ -9,11 +9,10 @@ const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: "📊" },
   { name: "Content Studio", href: "/content", icon: "🎨" },
   { name: "Image Enhancer", href: "/enhance", icon: "✨" },
-  { name: "Library", href: "/library", icon: "bh" },
+  { name: "Library", href: "/library", icon: "🖼️" },
   { name: "Calendar", href: "/calendar", icon: "📅" },
   { name: "Chat Assistant", href: "/chat", icon: "💬" },
   { name: "Workflows", href: "/workflows", icon: "⚡" },
-  { name: "Test Workflow", href: "/test", icon: "🧪" },
   { name: "Settings", href: "/settings", icon: "⚙️" },
 ];
 
@@ -26,8 +25,7 @@ export default function Header() {
       const now = new Date();
       const options: Intl.DateTimeFormatOptions = {
         weekday: "long",
-        year: "numeric",
-        month: "long",
+        month: "short",
         day: "numeric",
       };
       setCurrentDate(now.toLocaleDateString("en-US", options));
@@ -38,62 +36,64 @@ export default function Header() {
   }, []);
 
   return (
-    <header className="sticky top-0 z-40 backdrop-blur-xl bg-white/70 border-b border-gray-200/50 shadow-sm">
-      <div className="px-8 py-4 space-y-4">
-        <div className="flex items-center justify-between gap-4 flex-wrap">
-          <div className="flex items-center gap-4">
+    <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-2xl border-b border-gray-100">
+      <div className="px-4 sm:px-8 py-3 sm:py-4">
+        {/* Top row */}
+        <div className="flex items-center justify-between gap-4 mb-4">
+          {/* Logo */}
+          <Link href="/dashboard" className="flex items-center gap-3 group">
             <Image
               src="/logo.svg"
               alt="SpiceJax"
-              width={220}
-              height={60}
+              width={180}
+              height={48}
               priority
-              className="h-12 w-auto"
+              className="h-10 sm:h-12 w-auto transition-transform group-hover:scale-105"
             />
-          </div>
+          </Link>
 
           {/* Right Section */}
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl border border-gray-200/50 text-sm">
-              <span className="text-xl">📅</span>
-              <span className="font-semibold text-gray-700">
-                {currentDate}
+          <div className="flex items-center gap-2 sm:gap-4">
+            {/* Date pill */}
+            <div className="hidden sm:flex items-center gap-2 px-4 py-2 bg-gray-50 rounded-2xl border border-gray-100 text-sm">
+              <span className="text-gray-400">📅</span>
+              <span className="font-medium text-gray-600">{currentDate}</span>
+            </div>
+            
+            {/* Status */}
+            <div className="hidden lg:flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#f0f9e8] to-[#e8f5db] rounded-2xl border border-[#d4ebc4]">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#8bc53f] opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#8bc53f]"></span>
               </span>
+              <span className="text-sm font-semibold text-[#5a8c1a]">Live</span>
             </div>
-            <div className="hidden lg:flex items-center space-x-4 mr-4">
-              <div className="px-4 py-2 bg-green-50 rounded-xl border border-green-100/50">
-                <div className="flex items-center space-x-2">
-                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                  <span className="text-sm font-semibold text-green-700">
-                    All Systems Operational
-                  </span>
-                </div>
-              </div>
-            </div>
+            
+            {/* Avatar */}
             <div className="relative group cursor-pointer">
-              <div className="absolute inset-0 bg-gradient-to-r from-spice-500 to-spice-600 rounded-full blur-md opacity-50 group-hover:opacity-75 transition-opacity"></div>
-              <div className="relative w-11 h-11 bg-gradient-to-br from-spice-500 to-spice-600 rounded-full flex items-center justify-center text-white font-bold shadow-lg ring-2 ring-white group-hover:scale-105 transition-transform">
+              <div className="absolute -inset-1 bg-gradient-to-r from-[#8bc53f] to-[#a8d96a] rounded-full blur opacity-40 group-hover:opacity-70 transition-opacity"></div>
+              <div className="relative w-10 h-10 sm:w-11 sm:h-11 bg-gradient-to-br from-[#8bc53f] to-[#6ba82a] rounded-full flex items-center justify-center text-white font-bold text-sm shadow-lg ring-2 ring-white group-hover:scale-105 transition-transform">
                 SJ
               </div>
             </div>
           </div>
         </div>
 
-        {/* Top navigation */}
-        <nav className="flex gap-2 overflow-x-auto no-scrollbar snap-x pb-1">
+        {/* Navigation */}
+        <nav className="flex gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar snap-x pb-1 -mx-1 px-1">
           {navigation.map((item) => {
             const isActive = pathname === item.href;
             return (
               <Link
                 key={item.name}
                 href={item.href}
-                className={`inline-flex items-center gap-2 rounded-full border px-3 py-2 text-xs font-semibold transition snap-start sm:px-4 sm:py-2 sm:text-sm ${
+                className={`inline-flex items-center gap-1.5 sm:gap-2 rounded-xl sm:rounded-2xl px-3 py-2 sm:px-4 sm:py-2.5 text-xs sm:text-sm font-semibold transition-all duration-300 snap-start whitespace-nowrap ${
                   isActive
-                    ? "border-[#8bc53f] bg-[#8bc53f] text-white shadow"
-                    : "border-gray-200 text-gray-600 hover:bg-gray-50"
+                    ? "bg-gradient-to-r from-[#8bc53f] to-[#7ab82f] text-white shadow-[0_4px_20px_-4px_rgba(139,197,63,0.5)]"
+                    : "text-gray-500 hover:text-gray-900 hover:bg-gray-100"
                 }`}
               >
-                <span>{item.icon}</span>
+                <span className="text-base sm:text-lg">{item.icon}</span>
                 <span className="hidden sm:inline">{item.name}</span>
               </Link>
             );

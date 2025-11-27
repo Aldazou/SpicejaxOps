@@ -3,8 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import MainLayout from "@/components/MainLayout";
-import DashboardCard from "@/components/DashboardCard";
 import { useN8N } from "@/hooks/useN8N";
+import { Sparkles, Calendar, CheckCircle2, Lightbulb, Clock, ArrowRight } from "lucide-react";
 
 interface DashboardData {
   schedule?: any[];
@@ -29,13 +29,14 @@ const defaultApprovals = [
 const defaultIdeas = [
   { title: "Taco Tuesday takeover", category: "Social" },
   { title: "Spice lab BTS reel", category: "Video" },
+  { title: "Recipe collaboration", category: "Partnership" },
 ];
 
 const quickActions = [
-  { icon: "🪄", label: "Image Lab", href: "/enhance" },
-  { icon: "📝", label: "Content Studio", href: "/content" },
-  { icon: "📅", label: "Calendar", href: "/calendar" },
-  { icon: "⚡", label: "Workflows", href: "/workflows" },
+  { icon: Sparkles, label: "Image Lab", href: "/enhance", color: "from-purple-500 to-indigo-500" },
+  { icon: Calendar, label: "Calendar", href: "/calendar", color: "from-blue-500 to-cyan-500" },
+  { icon: CheckCircle2, label: "Approvals", href: "/content", color: "from-emerald-500 to-green-500" },
+  { icon: Lightbulb, label: "Ideas", href: "/content", color: "from-amber-500 to-orange-500" },
 ];
 
 export default function DashboardPage() {
@@ -62,210 +63,218 @@ export default function DashboardPage() {
     return [
       { time: "9:00 AM", task: "Prep Birria Fiesta reel", status: "upcoming" },
       { time: "11:30 AM", task: "Plan Nashville Heat drop", status: "upcoming" },
-  ];
+      { time: "2:00 PM", task: "Review influencer content", status: "upcoming" },
+    ];
   }, [data?.schedule, localSchedule]);
 
   const approvals = data?.approvals?.length ? data.approvals : defaultApprovals;
   const ideas = data?.contentIdeas?.length ? data.contentIdeas : defaultIdeas;
-  const activityItems = useMemo(() => {
-    const upcoming = scheduleItems.slice(0, 2).map((item) => ({
-      label: item.task,
-      meta: item.time,
-      badge: "Schedule",
-    }));
-    const approvalEvents = approvals.slice(0, 2).map((item) => ({
-      label: item.title,
-      meta: item.type,
-      badge: "Approval",
-    }));
-    return [...upcoming, ...approvalEvents];
-  }, [scheduleItems, approvals]);
 
   return (
     <MainLayout>
       <div className="space-y-8">
-        {/* Slim header */}
-        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-            <div>
-            <p className="uppercase tracking-[0.4em] text-xs text-gray-400">
-              SpiceJax
-            </p>
-            <h1 className="text-3xl font-semibold text-gray-900">Dashboard</h1>
+        {/* Header */}
+        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
+          <div>
+            <div className="flex items-center gap-2 mb-2">
+              <div className="h-8 w-8 rounded-xl bg-gradient-to-br from-[#8bc53f] to-[#6ba82a] flex items-center justify-center shadow-lg shadow-[#8bc53f]/20">
+                <Sparkles className="w-4 h-4 text-white" />
               </div>
-          <div className="flex flex-wrap gap-2">
+              <p className="uppercase tracking-[0.3em] text-[10px] font-bold text-[#8bc53f]">
+                Command Center
+              </p>
+            </div>
+            <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight">
+              Good {new Date().getHours() < 12 ? "morning" : new Date().getHours() < 18 ? "afternoon" : "evening"}
+            </h1>
+            <p className="text-gray-500 mt-1">
+              {new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}
+            </p>
+          </div>
+          
+          {/* Quick Actions */}
+          <div className="flex gap-2 flex-wrap">
             {quickActions.map((action) => (
               <Link
-                key={`chip-${action.href}`}
+                key={action.href + action.label}
                 href={action.href}
-                aria-label={action.label}
-                className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[#8bc53f] text-white text-xl shadow hover:bg-[#77a933] transition"
+                className="group flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-200 rounded-2xl hover:border-[#8bc53f]/30 hover:shadow-lg hover:shadow-[#8bc53f]/10 transition-all duration-300"
               >
-                <span>{action.icon}</span>
+                <div className={`w-8 h-8 rounded-xl bg-gradient-to-br ${action.color} flex items-center justify-center shadow-sm`}>
+                  <action.icon className="w-4 h-4 text-white" />
+                </div>
+                <span className="text-sm font-semibold text-gray-700 group-hover:text-gray-900 hidden sm:inline">
+                  {action.label}
+                </span>
               </Link>
             ))}
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
-          {/* Column 1 */}
-          <div className="space-y-6 col-span-1 xl:col-span-1">
-            <DashboardCard title="Today" icon="📅">
-              <p className="text-xs uppercase tracking-[0.3em] text-gray-400 mb-2">
-                {new Date().toLocaleDateString(undefined, {
-                  weekday: "short",
-                  month: "short",
-                  day: "numeric",
-                })}
-              </p>
-            {loading ? (
-                <div className="text-center py-10 text-gray-500">Loading...</div>
-              ) : scheduleItems.length === 0 ? (
-                <div className="text-center py-10 text-gray-500">
-                  No scheduled items for today
+        {/* Main Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Today's Schedule */}
+          <div className="lg:col-span-1 bg-white rounded-3xl border border-gray-100 shadow-[0_2px_20px_-4px_rgba(0,0,0,0.06)] p-6">
+            <div className="flex items-center justify-between mb-5">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-blue-500/20">
+                  <Calendar className="w-5 h-5 text-white" />
                 </div>
+                <div>
+                  <h2 className="font-bold text-gray-900">Today</h2>
+                  <p className="text-xs text-gray-400">{scheduleItems.length} items</p>
+                </div>
+              </div>
+            </div>
+            
+            {loading ? (
+              <div className="text-center py-10 text-gray-500">Loading...</div>
             ) : (
               <div className="space-y-3">
-                  {scheduleItems.map((item, index) => (
-                <div
-                      key={`${item.task}-${index}`}
-                      className="flex items-center justify-between rounded-2xl border border-gray-200 px-4 py-3 hover:border-gray-300 transition"
-                >
-                      <div className="flex items-center gap-3">
-                        <span className="h-2 w-2 rounded-full bg-[#4f7f00]" />
-                    <div>
-                          <p className="font-semibold text-gray-900">{item.task}</p>
-                      <p className="text-sm text-gray-500">{item.time}</p>
+                {scheduleItems.map((item, index) => (
+                  <div
+                    key={`${item.task}-${index}`}
+                    className="flex items-center gap-4 p-4 rounded-2xl bg-gray-50 hover:bg-gray-100 transition-colors group"
+                  >
+                    <div className="flex-shrink-0 w-12 text-center">
+                      <p className="text-xs font-bold text-[#8bc53f]">{item.time?.split(" ")[0]}</p>
+                      <p className="text-[10px] text-gray-400">{item.time?.split(" ")[1]}</p>
                     </div>
-                  </div>
-                      <span className="px-3 py-1 text-xs font-semibold rounded-full bg-[#eef7e2] text-[#4f7f00] capitalize">
-                        {item.status || "upcoming"}
-                  </span>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-semibold text-gray-900 truncate">{item.task}</p>
+                    </div>
+                    <span className="flex-shrink-0 w-2 h-2 rounded-full bg-[#8bc53f]"></span>
                   </div>
                 ))}
               </div>
             )}
-              <Link
-                href="/calendar"
-                className="mt-4 inline-flex w-full items-center justify-center rounded-xl border border-[#8bc53f] py-2 text-sm font-semibold text-[#4f7f00] hover:bg-[#f3fbe3] transition"
-              >
-                Open calendar
-              </Link>
-          </DashboardCard>
+            
+            <Link
+              href="/calendar"
+              className="mt-5 flex items-center justify-center gap-2 w-full py-3 rounded-2xl border border-[#8bc53f]/20 text-[#5a8c1a] font-semibold text-sm hover:bg-[#f8fdf3] transition-colors"
+            >
+              View Calendar
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
 
-            <DashboardCard title="Approvals" icon="✅">
-              <div className="space-y-4">
-                {approvals.map((item, index) => (
+          {/* Approvals */}
+          <div className="lg:col-span-1 bg-white rounded-3xl border border-gray-100 shadow-[0_2px_20px_-4px_rgba(0,0,0,0.06)] p-6">
+            <div className="flex items-center justify-between mb-5">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center shadow-lg shadow-amber-500/20">
+                  <CheckCircle2 className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <h2 className="font-bold text-gray-900">Approvals</h2>
+                  <p className="text-xs text-gray-400">{approvals.length} pending</p>
+                </div>
+              </div>
+            </div>
+            
+            <div className="space-y-3">
+              {approvals.map((item, index) => (
                 <div
-                    key={`${item.title}-${index}`}
-                    className="rounded-2xl border border-gray-200 p-4 hover:border-gray-300 transition"
+                  key={`${item.title}-${index}`}
+                  className="p-4 rounded-2xl border border-gray-100 hover:border-[#8bc53f]/30 hover:shadow-md transition-all"
                 >
-                  <div className="flex items-start justify-between">
-                      <div>
-                        <p className="font-semibold text-gray-900">{item.title}</p>
-                        <p className="text-xs text-gray-500">{item.type}</p>
+                  <div className="flex items-start justify-between mb-3">
+                    <div>
+                      <p className="font-semibold text-gray-900">{item.title}</p>
+                      <p className="text-xs text-gray-400 mt-0.5">{item.type}</p>
                     </div>
-                      <span className="text-xs font-medium text-amber-600 bg-amber-50 px-2 py-1 rounded-full">
+                    <span className="px-2 py-1 text-xs font-bold text-amber-600 bg-amber-50 rounded-lg">
                       {item.daysWaiting}d
                     </span>
                   </div>
-                    <div className="mt-3 flex gap-2">
-                      <Link
-                        href="/content"
-                        className="flex-1 rounded-lg bg-[#8bc53f] py-1.5 text-center text-sm font-semibold text-white hover:bg-[#77a933] transition"
-                      >
+                  <div className="flex gap-2">
+                    <Link
+                      href="/content"
+                      className="flex-1 py-2 rounded-xl bg-gradient-to-r from-[#8bc53f] to-[#7ab82f] text-center text-sm font-semibold text-white shadow-sm hover:shadow-md transition-shadow"
+                    >
                       Approve
-                      </Link>
-                      <Link
-                        href="/content"
-                        className="flex-1 rounded-lg bg-gray-100 py-1.5 text-center text-sm font-semibold text-gray-700 hover:bg-gray-200 transition"
-                      >
+                    </Link>
+                    <Link
+                      href="/content"
+                      className="flex-1 py-2 rounded-xl bg-gray-100 text-center text-sm font-semibold text-gray-700 hover:bg-gray-200 transition-colors"
+                    >
                       Review
-                      </Link>
+                    </Link>
                   </div>
                 </div>
               ))}
             </div>
-          </DashboardCard>
           </div>
 
-          {/* Column 2 */}
-          <div className="space-y-6 col-span-1 xl:col-span-1">
-            <DashboardCard title="Content queue" icon="✨">
-              <p className="text-sm text-gray-500">
-                Pull fresh hooks or captions without leaving the dashboard.
-              </p>
-              <div className="space-y-3 mt-3">
-                {ideas.map((idea, index) => (
-                  <div
-                    key={`${idea.title}-${index}`}
-                    className="rounded-2xl border border-gray-200 p-3 flex items-center justify-between hover:border-gray-300 transition"
-                  >
-                    <div>
-                      <p className="font-semibold text-gray-900">{idea.title}</p>
-                      <p className="text-xs text-gray-500">{idea.category}</p>
-                    </div>
-                    <Link
-                      href="/content"
-                      className="rounded-full bg-[#8bc53f] text-white px-3 py-1 text-xs font-semibold hover:bg-[#77a933] transition"
-                    >
-                      Use
-                    </Link>
-                  </div>
-                ))}
+          {/* Content Ideas */}
+          <div className="lg:col-span-1 bg-white rounded-3xl border border-gray-100 shadow-[0_2px_20px_-4px_rgba(0,0,0,0.06)] p-6">
+            <div className="flex items-center justify-between mb-5">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-purple-500 to-indigo-500 flex items-center justify-center shadow-lg shadow-purple-500/20">
+                  <Lightbulb className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <h2 className="font-bold text-gray-900">Content Queue</h2>
+                  <p className="text-xs text-gray-400">{ideas.length} ideas</p>
+                </div>
               </div>
-              <Link
-                href="/content"
-                className="mt-4 inline-flex w-full items-center justify-center rounded-xl bg-[#8bc53f] py-2.5 text-sm font-semibold text-white hover:bg-[#77a933] transition"
-              >
-                Generate new ideas
-              </Link>
-            </DashboardCard>
-
-            <DashboardCard title="Image Lab" icon="🪄">
-              <div className="rounded-2xl border border-dashed border-gray-300 bg-gray-50 p-5 text-center">
-                <p className="text-sm text-gray-500">
-                  Need a refreshed hero shot? Jump straight into the enhancer with the
-                  latest scene presets.
-                </p>
-                <Link
-                  href="/enhance"
-                  className="mt-3 inline-flex items-center justify-center rounded-xl bg-[#8bc53f] px-4 py-2 text-sm font-semibold text-white shadow hover:bg-[#77a933] transition"
+            </div>
+            
+            <div className="space-y-3">
+              {ideas.map((idea, index) => (
+                <div
+                  key={`${idea.title}-${index}`}
+                  className="flex items-center justify-between p-4 rounded-2xl bg-gray-50 hover:bg-gray-100 transition-colors group"
                 >
-                  Open Image Lab
-                </Link>
-            </div>
-          </DashboardCard>
-          </div>
-
-          {/* Column 3 */}
-          <div className="space-y-6 col-span-1 xl:col-span-1">
-            <DashboardCard title="Activity" icon="🕒">
-              <div className="space-y-3">
-                {activityItems.map((event, index) => (
-                  <div
-                    key={`${event.label}-${index}`}
-                    className="rounded-2xl border border-gray-200 px-4 py-3 flex items-center justify-between hover:border-gray-300 transition"
-                  >
-                    <div>
-                      <p className="font-semibold text-gray-900">{event.label}</p>
-                      <p className="text-xs text-gray-500">{event.meta}</p>
-                    </div>
-                    <span className="px-3 py-1 text-xs font-semibold rounded-full bg-[#eef7e2] text-[#4f7f00]">
-                      {event.badge}
-                    </span>
+                  <div>
+                    <p className="font-semibold text-gray-900">{idea.title}</p>
+                    <p className="text-xs text-gray-400 mt-0.5">{idea.category}</p>
                   </div>
-                ))}
-                {activityItems.length === 0 && (
-                  <p className="text-sm text-gray-500 text-center py-10">
-                    Nothing logged yet. Approvals and schedule updates will show here.
-                  </p>
-                )}
+                  <Link
+                    href="/content"
+                    className="px-4 py-1.5 rounded-xl bg-[#8bc53f] text-white text-xs font-bold hover:bg-[#7ab82f] transition-colors shadow-sm"
+                  >
+                    Use
+                  </Link>
+                </div>
+              ))}
             </div>
-          </DashboardCard>
+            
+            <Link
+              href="/content"
+              className="mt-5 flex items-center justify-center gap-2 w-full py-3 rounded-2xl bg-gradient-to-r from-[#8bc53f] to-[#7ab82f] text-white font-semibold text-sm shadow-lg shadow-[#8bc53f]/20 hover:shadow-xl hover:shadow-[#8bc53f]/30 transition-all"
+            >
+              Generate Ideas
+              <Sparkles className="w-4 h-4" />
+            </Link>
+          </div>
+        </div>
+
+        {/* Image Lab CTA */}
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 p-8 sm:p-10">
+          {/* Background decoration */}
+          <div className="absolute top-0 right-0 w-96 h-96 bg-[#8bc53f]/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+          <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#8bc53f]/10 rounded-full blur-2xl translate-y-1/2 -translate-x-1/2"></div>
+          
+          <div className="relative flex flex-col sm:flex-row items-center justify-between gap-6">
+            <div className="text-center sm:text-left">
+              <h3 className="text-2xl sm:text-3xl font-bold text-white mb-2">
+                Ready to create magic?
+              </h3>
+              <p className="text-gray-400 max-w-md">
+                Transform your product shots with AI-powered scene generation. Pick a vibe, hit enhance.
+              </p>
+            </div>
+            <Link
+              href="/enhance"
+              className="flex-shrink-0 inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-[#8bc53f] to-[#7ab82f] text-white font-bold text-lg rounded-2xl shadow-[0_8px_30px_-4px_rgba(139,197,63,0.5)] hover:shadow-[0_12px_40px_-4px_rgba(139,197,63,0.6)] hover:scale-105 transition-all"
+            >
+              <Sparkles className="w-5 h-5" />
+              Open Image Lab
+            </Link>
           </div>
         </div>
       </div>
     </MainLayout>
   );
 }
-
