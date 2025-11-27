@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import MainLayout from "@/components/MainLayout";
+import { Zap, Search, RefreshCw, FolderOpen, Loader2, X, CheckCircle2, XCircle, Archive } from "lucide-react";
 
 interface N8NWorkflow {
   id: string;
@@ -27,7 +28,7 @@ export default function WorkflowsPage() {
   const [executions, setExecutions] = useState<WorkflowExecution[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [hideArchived, setHideArchived] = useState(true);
-  // Fetch workflows from n8n on mount
+
   useEffect(() => {
     fetchWorkflows();
   }, []);
@@ -61,14 +62,11 @@ export default function WorkflowsPage() {
     }
   };
 
-  // Filter workflows based on search query and archive status
   const filteredWorkflows = workflows
     .filter((wf) => {
-      // Filter by archive status
       if (hideArchived && (wf as any).isArchived === true) {
         return false;
       }
-      // Filter by search query
       return (
         wf.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         wf.id.toLowerCase().includes(searchQuery.toLowerCase())
@@ -132,128 +130,152 @@ export default function WorkflowsPage() {
   return (
     <MainLayout>
       <div className="space-y-6">
-            {/* Header */}
-            <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-8">
-              <div className="flex items-center justify-between mb-6">
-                <div>
-                  <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                    Your n8n Workflows
-                  </h1>
-                  <p className="text-gray-600">
-                    Execute workflows directly from n8n
-                  </p>
-                </div>
-                <div className="flex gap-3">
-                  <button
-                    onClick={() => setHideArchived(!hideArchived)}
-                    className={`px-4 py-2 font-medium rounded-lg transition-colors ${
-                      hideArchived
-                        ? 'bg-[#8bc53f] text-white hover:bg-[#77a933]'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    }`}
-                  >
-                    {hideArchived ? '📁 Show Archived' : '✓ Hide Archived'}
-                  </button>
-                  <button
-                    onClick={fetchWorkflows}
-                    disabled={loading}
-                    className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg transition-colors"
-                  >
-                    {loading ? '⟳ Loading...' : '↻ Refresh'}
-                  </button>
-                </div>
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-2 mb-2">
+              <div className="h-8 w-8 rounded-xl bg-gradient-to-br from-brand-lime to-spice-600 flex items-center justify-center shadow-lg shadow-brand-lime/20">
+                <Zap className="w-4 h-4 text-white" />
               </div>
-              
-              {/* Search Bar */}
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="🔍 Search workflows by name or ID..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-lg focus:border-[#8bc53f] focus:outline-none text-gray-900 placeholder-gray-400"
-                />
-                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-2xl">
-                  🔍
-                </span>
-                {searchQuery && (
-                  <button
-                    onClick={() => setSearchQuery("")}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 font-bold"
-                  >
-                    ✕
-                  </button>
-                )}
-              </div>
-              
-              {workflows.length > 0 && (
-                <p className="text-sm text-gray-500 mt-3">
-                  Showing {filteredWorkflows.length} of {workflows.length} workflows
-                </p>
-              )}
+              <p className="uppercase tracking-[0.3em] text-[10px] font-bold text-brand-lime">
+                Automation
+              </p>
             </div>
+            <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">
+              n8n Workflows
+            </h1>
+            <p className="text-brand-text/70 mt-1 text-sm">
+              Execute workflows directly from your dashboard
+            </p>
+          </div>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setHideArchived(!hideArchived)}
+              className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl text-sm font-semibold transition-all ${
+                hideArchived
+                  ? 'bg-[#243530] text-white'
+                  : 'bg-white border border-brand-gold/30 text-brand-text hover:bg-brand-sage'
+              }`}
+            >
+              <Archive className="w-4 h-4" />
+              <span className="hidden sm:inline">{hideArchived ? 'Show Archived' : 'Hide Archived'}</span>
+            </button>
+            <button
+              onClick={fetchWorkflows}
+              disabled={loading}
+              className="inline-flex items-center gap-2 px-4 py-2.5 bg-white border border-brand-gold/30 rounded-2xl hover:bg-brand-sage hover:border-brand-gold transition-all text-sm font-semibold text-brand-text disabled:opacity-50"
+            >
+              <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+              <span className="hidden sm:inline">Refresh</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Search */}
+        <div className="bg-white rounded-3xl border border-brand-gold/20 shadow-[0_2px_20px_-4px_rgba(0,0,0,0.06)] p-6">
+          <div className="relative">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-brand-text/40" />
+            <input
+              type="text"
+              placeholder="Search workflows by name or ID..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full px-4 py-3 pl-12 bg-brand-sage border border-brand-gold/20 rounded-2xl focus:border-brand-lime focus:ring-2 focus:ring-brand-lime/20 focus:outline-none text-brand-title placeholder-brand-text/40 transition-all"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery("")}
+                className="absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center rounded-full bg-brand-text/10 text-brand-text/50 hover:bg-brand-text/20 hover:text-brand-text transition-colors"
+              >
+                <X className="w-3 h-3" />
+              </button>
+            )}
+          </div>
+          
+          {workflows.length > 0 && (
+            <p className="text-sm text-brand-text/60 mt-3">
+              Showing {filteredWorkflows.length} of {workflows.length} workflows
+            </p>
+          )}
+        </div>
 
         {/* Workflows Grid */}
         {loading ? (
-          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-12 text-center">
-            <div className="text-5xl mb-4">⏳</div>
-            <p className="text-gray-600">Loading workflows from n8n...</p>
+          <div className="bg-white rounded-3xl border border-brand-gold/20 shadow-[0_2px_20px_-4px_rgba(0,0,0,0.06)] p-16 text-center">
+            <div className="relative inline-block mb-4">
+              <div className="absolute inset-0 bg-brand-lime/20 rounded-full blur-xl animate-pulse"></div>
+              <Loader2 className="w-10 h-10 animate-spin text-brand-lime relative" />
+            </div>
+            <p className="text-brand-text/60">Loading workflows from n8n...</p>
           </div>
         ) : filteredWorkflows.length === 0 ? (
-          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-12 text-center">
-            <div className="text-5xl mb-4">📋</div>
+          <div className="bg-white rounded-3xl border border-brand-gold/20 shadow-[0_2px_20px_-4px_rgba(0,0,0,0.06)] p-16 text-center">
+            <div className="w-16 h-16 rounded-2xl bg-brand-sage flex items-center justify-center mx-auto mb-4 border border-brand-gold/20">
+              <FolderOpen className="w-8 h-8 text-brand-text/30" />
+            </div>
             {searchQuery ? (
               <>
-                <p className="text-gray-600 mb-2">No workflows match "{searchQuery}"</p>
+                <p className="text-brand-title font-semibold mb-1">No workflows match "{searchQuery}"</p>
                 <button
                   onClick={() => setSearchQuery("")}
-                  className="text-sm text-[#4f7f00] hover:text-[#8bc53f] font-medium"
+                  className="text-sm text-brand-lime hover:text-spice-600 font-medium"
                 >
                   Clear search
                 </button>
               </>
             ) : (
               <>
-                <p className="text-gray-600 mb-2">No workflows found in n8n</p>
-                <p className="text-sm text-gray-500">Create a workflow in n8n to see it here</p>
+                <p className="text-brand-title font-semibold mb-1">No workflows found</p>
+                <p className="text-sm text-brand-text/60">Create a workflow in n8n to see it here</p>
               </>
             )}
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {filteredWorkflows.map((workflow) => (
               <div
                 key={workflow.id}
-                className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow overflow-hidden"
+                className="bg-white rounded-3xl border border-brand-gold/20 shadow-[0_2px_20px_-4px_rgba(0,0,0,0.06)] hover:shadow-[0_8px_40px_-8px_rgba(139,197,63,0.15)] hover:border-brand-lime/30 transition-all duration-500 overflow-hidden"
               >
                 <div className="p-6">
                   <div className="flex items-start justify-between mb-4">
-                    <div className="flex-1">
-                      <h3 className="text-lg font-bold text-gray-900 mb-1">
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-lg font-bold text-brand-title mb-1 truncate">
                         {workflow.name}
                       </h3>
-                      <p className="text-xs text-gray-500 font-mono">
+                      <p className="text-xs text-brand-text/50 font-mono truncate">
                         ID: {workflow.id}
                       </p>
                     </div>
                     <span
-                      className={`px-3 py-1 rounded-full text-xs font-bold ${
+                      className={`flex-shrink-0 ml-3 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 ${
                         workflow.active
-                          ? 'bg-green-100 text-green-700'
-                          : 'bg-gray-100 text-gray-500'
+                          ? 'bg-spice-50 text-brand-lime border border-brand-lime/20'
+                          : 'bg-brand-sage text-brand-text/50 border border-brand-gold/20'
                       }`}
                     >
-                      {workflow.active ? '● Active' : '○ Inactive'}
+                      <span className={`w-1.5 h-1.5 rounded-full ${workflow.active ? 'bg-brand-lime' : 'bg-brand-text/30'}`}></span>
+                      {workflow.active ? 'Active' : 'Inactive'}
                     </span>
                   </div>
                   
-                      <button
-                        onClick={() => executeWorkflow(workflow)}
-                        disabled={executing === workflow.id}
-                        className="w-full py-3 bg-[#8bc53f] hover:bg-[#77a933] disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-bold rounded-lg transition-colors"
-                      >
-                        {executing === workflow.id ? '⏳ Executing...' : '⚡ Execute'}
-                      </button>
+                  <button
+                    onClick={() => executeWorkflow(workflow)}
+                    disabled={executing === workflow.id}
+                    className="w-full py-3 bg-gradient-to-r from-brand-lime to-spice-600 hover:from-spice-600 hover:to-brand-lime disabled:from-gray-200 disabled:to-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed text-white font-bold rounded-2xl transition-all shadow-lg shadow-brand-lime/20 disabled:shadow-none flex items-center justify-center gap-2"
+                  >
+                    {executing === workflow.id ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        Executing...
+                      </>
+                    ) : (
+                      <>
+                        <Zap className="w-4 h-4" />
+                        Execute
+                      </>
+                    )}
+                  </button>
                 </div>
               </div>
             ))}
@@ -262,60 +284,70 @@ export default function WorkflowsPage() {
 
         {/* Execution Results */}
         {executions.length > 0 && (
-          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-8">
+          <div className="bg-white rounded-3xl border border-brand-gold/20 shadow-[0_2px_20px_-4px_rgba(0,0,0,0.06)] p-6">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-gray-900">
+              <h2 className="text-xl font-bold text-brand-title">
                 Execution Results
               </h2>
               <button
                 onClick={() => setExecutions([])}
-                className="px-4 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+                className="px-4 py-2 text-sm text-brand-text/60 hover:text-brand-title hover:bg-brand-sage rounded-xl transition-colors"
               >
-                Clear
+                Clear all
               </button>
             </div>
             <div className="space-y-4">
               {executions.map((exec, index) => (
                 <div
                   key={index}
-                  className={`border-2 rounded-xl p-6 ${
+                  className={`rounded-2xl p-5 border ${
                     exec.success
-                      ? 'border-green-200 bg-green-50'
-                      : 'border-gray-200 bg-gray-50'
+                      ? 'border-brand-lime/30 bg-spice-50'
+                      : 'border-brand-rust/20 bg-rust-50'
                   }`}
                 >
                   <div className="flex items-start justify-between mb-4">
                     <div>
                       <span
-                        className={`px-3 py-1 rounded-full text-xs font-bold ${
+                        className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold ${
                           exec.success
-                            ? 'bg-green-500 text-white'
-                            : 'bg-gray-300 text-gray-700'
+                            ? 'bg-brand-lime text-white'
+                            : 'bg-brand-rust text-white'
                         }`}
                       >
-                        {exec.success ? '✓ SUCCESS' : '✗ ERROR'}
+                        {exec.success ? (
+                          <>
+                            <CheckCircle2 className="w-3 h-3" />
+                            SUCCESS
+                          </>
+                        ) : (
+                          <>
+                            <XCircle className="w-3 h-3" />
+                            ERROR
+                          </>
+                        )}
                       </span>
-                      <p className="font-bold text-gray-900 mt-2">
+                      <p className="font-bold text-brand-title mt-2">
                         {exec.workflowName}
                       </p>
-                      <p className="text-xs text-gray-500 font-mono">
+                      <p className="text-xs text-brand-text/50 font-mono">
                         {exec.workflowId}
                       </p>
                     </div>
-                    <span className="text-xs text-gray-500">
+                    <span className="text-xs text-brand-text/50">
                       {new Date(exec.timestamp).toLocaleString()}
                     </span>
                   </div>
 
                   <div>
-                    <p className="text-xs font-semibold text-gray-600 mb-2">
+                    <p className="text-xs font-semibold text-brand-text/60 mb-2">
                       {exec.success ? 'Result:' : 'Error:'}
                     </p>
                     <pre
-                      className={`p-4 rounded-lg overflow-x-auto text-xs font-mono ${
-                      exec.success
-                        ? 'bg-gray-900 text-green-400'
-                          : 'bg-gray-900 text-amber-200'
+                      className={`p-4 rounded-xl overflow-x-auto text-xs font-mono ${
+                        exec.success
+                          ? 'bg-[#243530] text-brand-lime'
+                          : 'bg-[#243530] text-brand-rust'
                       }`}
                     >
                       {exec.success
@@ -332,4 +364,3 @@ export default function WorkflowsPage() {
     </MainLayout>
   );
 }
-
