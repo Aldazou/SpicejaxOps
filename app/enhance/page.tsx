@@ -430,6 +430,7 @@ export default function ImageEnhancerPage() {
   }, []);
 
   const activeProduct = useMemo(() => {
+    if (products.length === 0) return null;
     return products.find((p) => p.id === productId) || products[0];
   }, [productId, products]);
 
@@ -442,8 +443,8 @@ export default function ImageEnhancerPage() {
       ? customScene.trim()
       : SCENE_PRESETS.find((scene) => scene.id === sceneId)?.prompt ?? "";
     
-    // Build product context for the AI
-    const productContext = `
+    // Build product context for the AI (only if product is loaded)
+    const productContext = activeProduct ? `
 PRODUCT INFORMATION:
 - Product Name: SpiceJax ${activeProduct.name}
 - Key Ingredients: ${activeProduct.ingredients.slice(0, 5).join(", ")}
@@ -451,7 +452,7 @@ PRODUCT INFORMATION:
 - Flavor Profile: ${activeProduct.description}
 - Heat Level: ${activeProduct.heat}/5
 
-IMPORTANT: Incorporate these actual ingredients as props in the scene where appropriate. For example, if the blend contains "Guajillo Chili", show dried guajillo chilies. If it contains "Honey", show a honey dipper or honeycomb. If it contains "Garlic", show fresh garlic cloves. Make the ingredients visually prominent and appetizing.`;
+IMPORTANT: Incorporate these actual ingredients as props in the scene where appropriate. For example, if the blend contains "Guajillo Chili", show dried guajillo chilies. If it contains "Honey", show a honey dipper or honeycomb. If it contains "Garlic", show fresh garlic cloves. Make the ingredients visually prominent and appetizing.` : "";
 
     // Append format instructions to the prompt
     const formatInstruction = `Output image dimensions: ${activeFormat.ratio} aspect ratio (${activeFormat.pixels}). Compose the scene to work perfectly in this format with appropriate headroom and subject placement.`;
@@ -536,7 +537,7 @@ IMPORTANT: Incorporate these actual ingredients as props in the scene where appr
     // Get scene, format, and product labels for the filename
     const sceneLabel = SCENE_PRESETS.find((s) => s.id === sceneId)?.label || "Custom";
     const formatLabel = activeFormat.label;
-    const productLabel = activeProduct.shortName;
+    const productLabel = activeProduct?.shortName || "Product";
     const timestamp = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
     
     // Create a descriptive filename: SpiceJax_BirriaFiesta_DarkDramatic_InstagramSquare_2024-01-15
@@ -682,26 +683,28 @@ IMPORTANT: Incorporate these actual ingredients as props in the scene where appr
                 </div>
 
                 {/* Selected Product Details */}
-                <div className="mt-4 p-4 bg-brand-sage rounded-xl border border-brand-gold/10">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div 
-                      className="w-3 h-3 rounded-full" 
-                      style={{ backgroundColor: activeProduct.color }}
-                    />
-                    <p className="text-xs font-bold text-brand-title">{activeProduct.name}</p>
+                {activeProduct && (
+                  <div className="mt-4 p-4 bg-brand-sage rounded-xl border border-brand-gold/10">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div 
+                        className="w-3 h-3 rounded-full" 
+                        style={{ backgroundColor: activeProduct.color }}
+                      />
+                      <p className="text-xs font-bold text-brand-title">{activeProduct.name}</p>
+                    </div>
+                    <p className="text-[11px] text-brand-text/60 mb-2">{activeProduct.description}</p>
+                    <div className="flex flex-wrap gap-1">
+                      {activeProduct.ingredients.map((ing) => (
+                        <span 
+                          key={ing} 
+                          className="px-2 py-0.5 bg-white rounded-full text-[10px] font-medium text-brand-text/70 border border-brand-gold/20"
+                        >
+                          {ing}
+                        </span>
+                      ))}
+                    </div>
                   </div>
-                  <p className="text-[11px] text-brand-text/60 mb-2">{activeProduct.description}</p>
-                  <div className="flex flex-wrap gap-1">
-                    {activeProduct.ingredients.map((ing) => (
-                      <span 
-                        key={ing} 
-                        className="px-2 py-0.5 bg-white rounded-full text-[10px] font-medium text-brand-text/70 border border-brand-gold/20"
-                      >
-                        {ing}
-                      </span>
-                    ))}
-                  </div>
-                </div>
+                )}
               </div>
 
               {/* Scene Selection */}
