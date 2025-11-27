@@ -1,121 +1,157 @@
-// SpiceJax Product Catalog
-// Data sourced from https://spicejaxseasonings.com/
+/**
+ * SpiceJax Product Management
+ * 
+ * Products are stored in localStorage so you can add/edit them
+ * without touching code. The default products are your original 5.
+ */
 
-export interface Product {
+export interface SpiceProduct {
   id: string;
   name: string;
-  category: string;
-  price: number;
-  rating: number;
+  shortName: string;
+  ingredients: string[];
+  goodOn: string[];
   description: string;
-  tags: string[];
+  heat: number; // 1-5
+  color: string; // hex color
 }
 
-export const categories = [
-  "BBQ Rubs",
-  "Global Flavors",
-  "Spice Blends",
-  "Hot Blends",
-  "Sweet & Spicy",
-] as const;
-
-export const products: Product[] = [
-  {
-    id: "birria-fiesta",
-    name: "Birria Fiesta Taco Blend",
-    category: "Global Flavors",
-    price: 7.0,
-    rating: 5.0,
-    description: "Authentic Mexican seasoning for tacos, stews, and meats. Smoky and slightly sweet spice inspired by authentic Mexican birria.",
-    tags: ["Mexican", "Tacos", "Authentic", "No Fillers"],
-  },
-  {
-    id: "nashville-heat-wave",
-    name: "Nashville Heat Wave",
-    category: "Hot Blends",
-    price: 7.0,
-    rating: 5.0,
-    description: "Authentic heat is always the best choice. Fiery, smoky, and flavorful hot chicken spice blend.",
-    tags: ["Hot Chicken", "Spicy", "Southern", "BBQ"],
-  },
-  {
-    id: "honey-chipotle-bbq",
-    name: "Honey Chipotle BBQ Rub",
-    category: "BBQ Rubs",
-    price: 7.0,
-    rating: 5.0,
-    description: "Sweet, smoky grilling spice with smoky chipotle and honey sweetness. Perfect for chicken, pork, or veggies.",
-    tags: ["BBQ", "Sweet", "Smoky", "Grilling"],
-  },
-  {
-    id: "honey-habanero",
-    name: "Smoky Honey Habanero Rub",
-    category: "Sweet & Spicy",
-    price: 7.0,
-    rating: 5.0,
-    description: "Fiery sweet BBQ seasoning. Hot, smoky, and sweet with habanero heat and honey balance.",
-    tags: ["Habanero", "Sweet Heat", "BBQ", "Spicy"],
-  },
+// Default products - your original 5
+export const DEFAULT_PRODUCTS: SpiceProduct[] = [
   {
     id: "shichimi-togarashi",
     name: "Shichimi Togarashi Fusion",
-    category: "Global Flavors",
-    price: 7.0,
-    rating: 5.0,
-    description: "Japanese seven-spice blend. Spicy, citrusy flavor perfect for rice, noodles, seafood, and more.",
-    tags: ["Japanese", "Seven Spice", "Asian", "Fusion"],
+    shortName: "Shichimi Togarashi",
+    ingredients: ["Black Sesame", "Sesame", "Sea Salt", "Korean Chili", "Garlic", "Orange Peel", "Ginger"],
+    goodOn: ["Rice", "Noodles", "Chicken", "Seafood", "Vegetables"],
+    description: "A Japanese-inspired spicy and savory blend with chili, sesame, and citrus notes, perfect for global fusion dishes",
+    heat: 2,
+    color: "#dc2626",
+  },
+  {
+    id: "birria-fiesta",
+    name: "Birria Fiesta Taco Blend",
+    shortName: "Birria Fiesta",
+    ingredients: ["Guajillo Chili Powder", "Brown Sugar", "Sea Salt", "Ancho Chili Powder", "Garlic", "Cumin", "Coriander", "Onion", "Cloves", "Black Pepper", "Cinnamon", "Oregano"],
+    goodOn: ["Beef", "Lamb", "Pork", "Chicken", "Vegetables"],
+    description: "A vibrant, smoky, and slightly sweet spice blend inspired by traditional birria tacos",
+    heat: 1,
+    color: "#eab308",
+  },
+  {
+    id: "smokey-honey-habanero",
+    name: "Smokey Honey Habanero Rub",
+    shortName: "Smokey Honey Habanero",
+    ingredients: ["Pink Himalayan Salt", "Honey", "Habanero", "Garlic", "Cayenne", "Paprika", "Hickory Smoke"],
+    goodOn: ["Chicken", "Pork", "Seafood", "Vegetables", "Beef"],
+    description: "A fiery, sweet, and smoky rub with habanero heat and hickory smoke, balanced by honey",
+    heat: 3,
+    color: "#ea580c",
+  },
+  {
+    id: "nashville-heat",
+    name: "Nashville Heat Wave",
+    shortName: "Nashville Heat",
+    ingredients: ["Cayenne", "Brown Sugar", "Sea Salt", "Paprika", "Garlic", "Onion", "Black Pepper", "Ancho Chili"],
+    goodOn: ["Chicken", "Pork", "Seafood", "Vegetables", "Beef"],
+    description: "A bold, fiery spice blend inspired by Nashville hot chicken, with intense heat and rich flavor",
+    heat: 4,
+    color: "#171717",
+  },
+  {
+    id: "honey-chipotle",
+    name: "Honey Chipotle BBQ Rub",
+    shortName: "Honey Chipotle",
+    ingredients: ["Kosher Salt", "Chipotle Powder", "Honey", "Garlic", "Paprika", "Black Pepper", "Cumin"],
+    goodOn: ["Chicken", "Pork", "Seafood", "Vegetables", "Beef"],
+    description: "A sweet, smoky, and spicy rub perfect for grilling, with a hint of honey and chipotle heat",
+    heat: 3,
+    color: "#7f1d1d",
   },
 ];
 
-export const bundles = [
-  {
-    id: "global-flavors-duo",
-    name: "Global Flavors Duo",
-    description: "Take your tastebuds on a world tour with the Global Flavors Duo.",
-    products: ["Birria Fiesta", "Shichimi Togarashi"],
-  },
-  {
-    id: "grill-master-trio",
-    name: "Grill Master Trio",
-    description: "Designed for backyard heroes and BBQ bosses.",
-    products: ["BBQ Rubs Collection"],
-  },
-  {
-    id: "sweet-heat-smoke-duo",
-    name: "Sweet Heat & Smoke Duo",
-    description: "Irresistible combo of sweet, smoky, and spicy.",
-    products: ["Honey Chipotle", "Honey Habanero"],
-  },
-  {
-    id: "heat-lovers-trio",
-    name: "Heat Lover's Trio",
-    description: "Turn up the heat with this fiery trio made for spice enthusiasts!",
-    products: ["Nashville Heat Wave", "Honey Habanero", "Shichimi Togarashi"],
-  },
-  {
-    id: "complete-collection",
-    name: "The Complete Collection",
-    description: "Get the full SpiceJax experience with all five signature blends.",
-    products: ["All Products"],
-  },
-];
+const STORAGE_KEY = "spicejax-products";
 
-export const brandMessages = {
-  tagline: "Bold Global Seasonings. No Fillers. Just Flavor",
-  subheading: "SpiceJax seasonings are chef-crafted with real ingredients and zero fillers.",
-  location: "Miami, FL, USA",
-  email: "spicejaxseasonings@gmail.com",
-  hours: "Mon-Fri: 10:00 - 18:00",
-  usp: [
-    "No fillers, no artificial anything",
-    "Locally crafted, fast shipping",
-    "Bold global blends, loved by foodies",
-  ],
-};
+/**
+ * Get all products from localStorage (or defaults if none saved)
+ */
+export function getProducts(): SpiceProduct[] {
+  if (typeof window === "undefined") return DEFAULT_PRODUCTS;
+  
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      return Array.isArray(parsed) && parsed.length > 0 ? parsed : DEFAULT_PRODUCTS;
+    }
+  } catch (e) {
+    console.error("Failed to load products:", e);
+  }
+  return DEFAULT_PRODUCTS;
+}
 
-export const currentPromotion = {
-  code: "TD555777",
-  description: "Big Sales of Month - Use this discount code in Checkout page",
-  active: true,
-};
+/**
+ * Save products to localStorage
+ */
+export function saveProducts(products: SpiceProduct[]): void {
+  if (typeof window === "undefined") return;
+  
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(products));
+  } catch (e) {
+    console.error("Failed to save products:", e);
+  }
+}
 
+/**
+ * Add a new product
+ */
+export function addProduct(product: Omit<SpiceProduct, "id">): SpiceProduct {
+  const products = getProducts();
+  const newProduct: SpiceProduct = {
+    ...product,
+    id: product.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, ""),
+  };
+  products.push(newProduct);
+  saveProducts(products);
+  return newProduct;
+}
+
+/**
+ * Update an existing product
+ */
+export function updateProduct(id: string, updates: Partial<SpiceProduct>): SpiceProduct | null {
+  const products = getProducts();
+  const index = products.findIndex(p => p.id === id);
+  if (index === -1) return null;
+  
+  products[index] = { ...products[index], ...updates };
+  saveProducts(products);
+  return products[index];
+}
+
+/**
+ * Delete a product
+ */
+export function deleteProduct(id: string): boolean {
+  const products = getProducts();
+  const filtered = products.filter(p => p.id !== id);
+  if (filtered.length === products.length) return false;
+  
+  saveProducts(filtered);
+  return true;
+}
+
+/**
+ * Reset to default products
+ */
+export function resetProducts(): void {
+  saveProducts(DEFAULT_PRODUCTS);
+}
+
+/**
+ * Generate a unique ID from a name
+ */
+export function generateId(name: string): string {
+  return name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+}

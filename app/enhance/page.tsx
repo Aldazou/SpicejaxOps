@@ -1,70 +1,12 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import MainLayout from "@/components/MainLayout";
 import Image from "next/image";
 import { Expand, Download, Trash2, Sparkles, ImageIcon, Check, X, Flame } from "lucide-react";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
-/*
- * ═══════════════════════════════════════════════════════════════════════════════
- * SPICEJAX PRODUCT CATALOG
- * ═══════════════════════════════════════════════════════════════════════════════
- */
-
-const SPICEJAX_PRODUCTS = [
-  {
-    id: "shichimi-togarashi",
-    name: "Shichimi Togarashi Fusion",
-    shortName: "Shichimi Togarashi",
-    ingredients: ["Black Sesame", "Sesame", "Sea Salt", "Korean Chili", "Garlic", "Orange Peel", "Ginger"],
-    goodOn: ["Rice", "Noodles", "Chicken", "Seafood", "Vegetables"],
-    description: "A Japanese-inspired spicy and savory blend with chili, sesame, and citrus notes, perfect for global fusion dishes",
-    heat: 2,
-    color: "#dc2626", // Red
-  },
-  {
-    id: "birria-fiesta",
-    name: "Birria Fiesta Taco Blend",
-    shortName: "Birria Fiesta",
-    ingredients: ["Guajillo Chili Powder", "Brown Sugar", "Sea Salt", "Ancho Chili Powder", "Garlic", "Cumin", "Coriander", "Onion", "Cloves", "Black Pepper", "Cinnamon", "Oregano"],
-    goodOn: ["Beef", "Lamb", "Pork", "Chicken", "Vegetables"],
-    description: "A vibrant, smoky, and slightly sweet spice blend inspired by traditional birria tacos",
-    heat: 1,
-    color: "#eab308", // Yellow/Gold
-  },
-  {
-    id: "smokey-honey-habanero",
-    name: "Smokey Honey Habanero Rub",
-    shortName: "Smokey Honey Habanero",
-    ingredients: ["Pink Himalayan Salt", "Honey", "Habanero", "Garlic", "Cayenne", "Paprika", "Hickory Smoke"],
-    goodOn: ["Chicken", "Pork", "Seafood", "Vegetables", "Beef"],
-    description: "A fiery, sweet, and smoky rub with habanero heat and hickory smoke, balanced by honey",
-    heat: 3,
-    color: "#ea580c", // Orange
-  },
-  {
-    id: "nashville-heat",
-    name: "Nashville Heat Wave",
-    shortName: "Nashville Heat",
-    ingredients: ["Cayenne", "Brown Sugar", "Sea Salt", "Paprika", "Garlic", "Onion", "Black Pepper", "Ancho Chili"],
-    goodOn: ["Chicken", "Pork", "Seafood", "Vegetables", "Beef"],
-    description: "A bold, fiery spice blend inspired by Nashville hot chicken, with intense heat and rich flavor",
-    heat: 4,
-    color: "#171717", // Black
-  },
-  {
-    id: "honey-chipotle",
-    name: "Honey Chipotle BBQ Rub",
-    shortName: "Honey Chipotle",
-    ingredients: ["Kosher Salt", "Chipotle Powder", "Honey", "Garlic", "Paprika", "Black Pepper", "Cumin"],
-    goodOn: ["Chicken", "Pork", "Seafood", "Vegetables", "Beef"],
-    description: "A sweet, smoky, and spicy rub perfect for grilling, with a hint of honey and chipotle heat",
-    heat: 3,
-    color: "#7f1d1d", // Brown/Maroon
-  },
-];
+import { getProducts, type SpiceProduct } from "@/lib/products";
 
 /*
  * ═══════════════════════════════════════════════════════════════════════════════
@@ -473,11 +415,23 @@ export default function ImageEnhancerPage() {
   const [activeCategory, setActiveCategory] = useState<string>("hero");
   const [customScene, setCustomScene] = useState<string>("");
   const [formatId, setFormatId] = useState<string>("ig-square");
-  const [productId, setProductId] = useState<string>("birria-fiesta");
+  const [productId, setProductId] = useState<string>("");
+  
+  // Load products from localStorage
+  const [products, setProducts] = useState<SpiceProduct[]>([]);
+  
+  useEffect(() => {
+    const loadedProducts = getProducts();
+    setProducts(loadedProducts);
+    // Set default product to first one if not set
+    if (loadedProducts.length > 0 && !productId) {
+      setProductId(loadedProducts[0].id);
+    }
+  }, []);
 
   const activeProduct = useMemo(() => {
-    return SPICEJAX_PRODUCTS.find((p) => p.id === productId) || SPICEJAX_PRODUCTS[0];
-  }, [productId]);
+    return products.find((p) => p.id === productId) || products[0];
+  }, [productId, products]);
 
   const activeFormat = useMemo(() => {
     return FORMAT_PRESETS.find((f) => f.id === formatId) || FORMAT_PRESETS[0];
@@ -695,7 +649,7 @@ IMPORTANT: Incorporate these actual ingredients as props in the scene where appr
                 <p className="text-sm font-bold text-brand-title mb-4">Which SpiceJax product?</p>
                 
                 <div className="space-y-2">
-                  {SPICEJAX_PRODUCTS.map((product) => (
+                  {products.map((product) => (
                     <button
                       key={product.id}
                       onClick={() => setProductId(product.id)}
