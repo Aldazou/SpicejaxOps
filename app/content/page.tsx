@@ -42,20 +42,31 @@ function ContentStudioContent() {
     
     if (imageParam) {
       setUploadedImage(decodeURIComponent(imageParam));
-      setFromLibrary(fromParam === "library");
+      setFromLibrary(fromParam === "library" || fromParam === "enhance");
     }
     
     if (productParam && loadedProducts.length > 0) {
-      // Try to find matching product by name (partial match)
-      const matchedProduct = loadedProducts.find(p => 
-        p.name.toLowerCase().includes(productParam.toLowerCase()) ||
-        p.shortName.toLowerCase().includes(productParam.toLowerCase()) ||
-        p.id.includes(productParam.toLowerCase())
-      );
+      // Normalize the param for matching (remove spaces, lowercase)
+      const normalizedParam = productParam.toLowerCase().replace(/\s+/g, '');
+      
+      // Try to find matching product by various methods
+      const matchedProduct = loadedProducts.find(p => {
+        const normalizedName = p.name.toLowerCase().replace(/\s+/g, '');
+        const normalizedShort = p.shortName.toLowerCase().replace(/\s+/g, '');
+        const normalizedId = p.id.toLowerCase().replace(/-/g, '');
+        
+        return normalizedName.includes(normalizedParam) ||
+               normalizedShort.includes(normalizedParam) ||
+               normalizedParam.includes(normalizedShort) ||
+               normalizedId.includes(normalizedParam) ||
+               normalizedParam.includes(normalizedId);
+      });
       
       if (matchedProduct) {
         setSelectedProductId(matchedProduct.id);
         setIngredients(matchedProduct.ingredients);
+      } else {
+        console.log('⚠️ No product match for:', productParam);
       }
     }
   }, [searchParams]);
