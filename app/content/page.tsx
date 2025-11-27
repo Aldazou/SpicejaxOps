@@ -6,7 +6,7 @@ import MainLayout from "@/components/MainLayout";
 import Image from "next/image";
 import ScheduleModal from "@/components/ScheduleModal";
 import { getProducts, type SpiceProduct } from "@/lib/products";
-import { ImageIcon, Sparkles, X, Plus } from "lucide-react";
+import { ImageIcon, Sparkles, X } from "lucide-react";
 
 interface ContentIdea {
   id: string;
@@ -20,7 +20,6 @@ function ContentStudioContent() {
   const searchParams = useSearchParams();
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [ingredients, setIngredients] = useState<string[]>([]);
-  const [newIngredient, setNewIngredient] = useState("");
   const [generating, setGenerating] = useState(false);
   const [contentIdeas, setContentIdeas] = useState<ContentIdea[]>([]);
   const [products, setProducts] = useState<SpiceProduct[]>([]);
@@ -81,20 +80,10 @@ function ContentStudioContent() {
     }
   };
 
-  const addIngredient = () => {
-    if (newIngredient.trim()) {
-      setIngredients([...ingredients, newIngredient.trim()]);
-      setNewIngredient("");
-    }
-  };
-
-  const removeIngredient = (index: number) => {
-    setIngredients(ingredients.filter((_, i) => i !== index));
-  };
-
   const generateContent = async () => {
     console.log('🚀 Starting content generation...');
     console.log('Image:', uploadedImage ? 'Present' : 'Missing');
+    console.log('Product:', selectedProductId);
     console.log('Ingredients:', ingredients);
     
     setGenerating(true);
@@ -102,7 +91,6 @@ function ContentStudioContent() {
     try {
       // Get n8n settings
       const settings = JSON.parse(localStorage.getItem('spicejax_settings') || '{}');
-      console.log('n8n settings:', settings);
       
       const headers: HeadersInit = {
         'Content-Type': 'application/json',
@@ -111,10 +99,14 @@ function ContentStudioContent() {
       if (settings.n8nUrl) headers['X-N8N-URL'] = settings.n8nUrl;
       if (settings.apiKey) headers['X-N8N-API-KEY'] = settings.apiKey;
 
+      // Get product name
+      const selectedProduct = products.find(p => p.id === selectedProductId);
+      const productName = selectedProduct?.name || "SpiceJax Blend";
+
       const payload = {
         image: uploadedImage,
         ingredients: ingredients,
-        productName: "SpiceJax Blend"
+        productName: productName,
       };
       
       console.log('📤 Calling workflow with payload:', payload);
@@ -269,39 +261,66 @@ function ContentStudioContent() {
         </div>
 
         <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
-          {/* Left: Upload & Ingredients */}
+          {/* Left: Image & Product Info */}
           <div className="space-y-6">
-            {/* Image Upload */}
-            <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">
-                📸 Upload Image
-              </h2>
-
+            {/* Image Preview */}
+            <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
               <div className="relative">
                 {uploadedImage ? (
-                  <div className="relative w-full aspect-square rounded-lg overflow-hidden bg-gray-100">
+                  <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-gray-100">
                     <Image
                       src={uploadedImage}
-                      alt="Uploaded"
+                      alt="Product"
                       fill
                       className="object-cover"
                     />
-                    <button
-                      onClick={() => setUploadedImage(null)}
-                      className="absolute top-2 right-2 bg-white/90 text-[#4f7f00] p-2 rounded-full border border-[#d2e6b5] hover:bg-[#8bc53f] hover:text-white transition"
-                    >
-                      ✕
-                    </button>
+                    {!fromLibrary && (
+                      <button
+                        onClick={() => {
+                          setUploadedImage(null);
+                          setSelectedProductId("");
+                          setIngredients([]);
+                        }}
+                        className="absolute top-3 right-3 bg-white/90 text-gray-600 p-2 rounded-xl border border-gray-200 hover:bg-red-50 hover:text-red-500 hover:border-red-200 transition"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    )}
+                    
+                    {/* Product badge if selected */}
+                    {selectedProductId && (
+                      <div className="absolute bottom-3 left-3 right-3">
+                        <div className="bg-white/95 backdrop-blur rounded-xl p-3 border border-gray-200">
+                          <p className="font-bold text-gray-900 text-sm">
+                            {products.find(p => p.id === selectedProductId)?.name}
+                          </p>
+                          <div className="flex flex-wrap gap-1 mt-2">
+                            {ingredients.slice(0, 5).map((ing, i) => (
+                              <span key={i} className="px-2 py-0.5 bg-brand-sage text-brand-text text-[10px] font-medium rounded-full">
+                                {ing}
+                              </span>
+                            ))}
+                            {ingredients.length > 5 && (
+                              <span className="px-2 py-0.5 bg-gray-100 text-gray-500 text-[10px] font-medium rounded-full">
+                                +{ingredients.length - 5} more
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 ) : (
-                  <label className="flex flex-col items-center justify-center w-full aspect-square border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors">
+                  <label className="flex flex-col items-center justify-center w-full aspect-square border-2 border-dashed border-gray-300 rounded-xl cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors">
                     <div className="flex flex-col items-center justify-center py-10">
-                      <p className="text-6xl mb-4">📤</p>
+                      <div className="w-16 h-16 rounded-2xl bg-white flex items-center justify-center mb-4 border border-gray-200">
+                        <ImageIcon className="w-8 h-8 text-gray-300" />
+                      </div>
                       <p className="text-sm font-semibold text-gray-700">
-                        Click to upload image
+                        Drop your image here
                       </p>
                       <p className="text-xs text-gray-500 mt-1">
-                        PNG, JPG or WEBP
+                        or click to browse
                       </p>
                     </div>
                     <input
@@ -315,11 +334,11 @@ function ContentStudioContent() {
               </div>
             </div>
 
-            {/* Product Selector */}
-            {products.length > 0 && (
-              <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-                <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <span className="text-xl">🌶️</span> Select Product
+            {/* Product Selector - only show if NOT from library/enhance */}
+            {!fromLibrary && products.length > 0 && (
+              <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
+                <h2 className="text-sm font-bold text-gray-900 mb-3 flex items-center gap-2">
+                  <span>🌶️</span> Select Product
                 </h2>
                 
                 <select
@@ -337,63 +356,23 @@ function ContentStudioContent() {
               </div>
             )}
 
-            {/* Ingredients */}
-            <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-              <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <span className="text-xl">🧂</span> Ingredients
-                {selectedProductId && (
-                  <span className="text-xs font-normal text-gray-500 ml-auto">Auto-loaded from product</span>
-                )}
-              </h2>
-
-              <div className="flex gap-2 mb-4">
-                <input
-                  type="text"
-                  value={newIngredient}
-                  onChange={(e) => setNewIngredient(e.target.value)}
-                  onKeyPress={(e) => e.key === "Enter" && addIngredient()}
-                  placeholder="Add ingredient..."
-                  className="flex-1 px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#8bc53f]"
-                />
-                <button
-                  onClick={addIngredient}
-                  className="px-4 py-2 bg-[#8bc53f] text-white font-medium rounded-xl hover:bg-[#77a933] transition-colors"
-                >
-                  <Plus className="w-5 h-5" />
-                </button>
-              </div>
-
-              <div className="flex flex-wrap gap-2">
-                {ingredients.map((ingredient, index) => (
-                  <span
-                    key={index}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-brand-sage text-brand-text rounded-full text-sm border border-brand-gold/20"
-                  >
-                    {ingredient}
-                    <button
-                      onClick={() => removeIngredient(index)}
-                      className="text-brand-text/50 hover:text-brand-rust transition-colors"
-                    >
-                      <X className="w-3.5 h-3.5" />
-                    </button>
-                  </span>
-                ))}
-              </div>
-
-              {ingredients.length === 0 && (
-                <p className="text-center text-gray-400 text-sm py-4">
-                  Select a product or add ingredients manually
-                </p>
-              )}
-            </div>
-
             {/* Generate Button */}
             <button
               onClick={generateContent}
               disabled={!uploadedImage || generating}
-              className="w-full py-3 sm:py-4 bg-[#8bc53f] text-white font-bold text-base sm:text-lg rounded-xl hover:bg-[#77a933] disabled:bg-gray-200 disabled:text-gray-500 disabled:cursor-not-allowed transition-all shadow-lg"
+              className="w-full py-4 bg-gradient-to-r from-brand-lime to-spice-600 text-white font-bold text-lg rounded-2xl hover:shadow-lg hover:shadow-brand-lime/30 disabled:bg-gray-200 disabled:text-gray-500 disabled:cursor-not-allowed disabled:from-gray-200 disabled:to-gray-200 transition-all shadow-md flex items-center justify-center gap-2"
             >
-              {generating ? "✨ Generating..." : "🚀 Generate Content"}
+              {generating ? (
+                <>
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  Generating...
+                </>
+              ) : (
+                <>
+                  <Sparkles className="w-5 h-5" />
+                  Generate Captions
+                </>
+              )}
             </button>
           </div>
 
