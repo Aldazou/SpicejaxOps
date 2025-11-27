@@ -399,20 +399,20 @@ export default function SettingsPage() {
         </div>
       </div>
 
-      {/* Action buttons */}
-      <div className="flex justify-end gap-2 pt-2">
+      {/* Action buttons - sticky on mobile */}
+      <div className="flex justify-end gap-2 pt-4 mt-4 border-t border-dark-forest/10 sticky bottom-0 bg-brand-sage/50 -mx-4 px-4 pb-4 -mb-4 rounded-b-2xl">
         <button
           onClick={() => isEditing ? setEditingProduct(null) : setIsAddingNew(false)}
-          className="px-4 py-2 text-brand-text hover:bg-white rounded-xl transition-colors text-sm"
+          className="px-4 py-3 text-brand-text hover:bg-white rounded-xl transition-colors text-sm font-medium"
         >
           Cancel
         </button>
         <button
           onClick={isEditing ? handleSaveEditedProduct : handleSaveNewProduct}
-          className="px-4 py-2 bg-dark-forest text-white rounded-xl hover:bg-dark-forest/90 transition-colors text-sm flex items-center gap-2"
+          className="px-6 py-3 bg-dark-forest text-white rounded-xl hover:bg-dark-forest/90 transition-colors text-sm font-medium flex items-center gap-2 shadow-lg"
         >
           <Save className="w-4 h-4" />
-          {isEditing ? "Update Product" : "Add Product"}
+          {isEditing ? "Save Changes" : "Add Product"}
         </button>
       </div>
     </div>
