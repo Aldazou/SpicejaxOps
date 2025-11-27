@@ -14,6 +14,9 @@ export async function POST(request: NextRequest) {
     console.log("📸 LIBRARY UPLOAD REQUEST:");
     console.log("   Target:", LIBRARY_ENDPOINT);
     console.log("   Scene:", body.sceneId);
+    console.log("   Scene Label:", body.sceneLabel);
+    console.log("   Format:", body.formatLabel);
+    console.log("   FileName:", body.fileName);
     console.log("   Image Data Start:", imagePreview);
 
     const response = await fetch(LIBRARY_ENDPOINT, {

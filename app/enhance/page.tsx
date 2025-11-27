@@ -3,9 +3,68 @@
 import { useMemo, useState } from "react";
 import MainLayout from "@/components/MainLayout";
 import Image from "next/image";
-import { Expand, Download, Trash2, Sparkles, ImageIcon, Check, X } from "lucide-react";
+import { Expand, Download, Trash2, Sparkles, ImageIcon, Check, X, Flame } from "lucide-react";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
+
+/*
+ * ═══════════════════════════════════════════════════════════════════════════════
+ * SPICEJAX PRODUCT CATALOG
+ * ═══════════════════════════════════════════════════════════════════════════════
+ */
+
+const SPICEJAX_PRODUCTS = [
+  {
+    id: "shichimi-togarashi",
+    name: "Shichimi Togarashi Fusion",
+    shortName: "Shichimi Togarashi",
+    ingredients: ["Black Sesame", "Sesame", "Sea Salt", "Korean Chili", "Garlic", "Orange Peel", "Ginger"],
+    goodOn: ["Rice", "Noodles", "Chicken", "Seafood", "Vegetables"],
+    description: "A Japanese-inspired spicy and savory blend with chili, sesame, and citrus notes, perfect for global fusion dishes",
+    heat: 2,
+    color: "#dc2626", // Red
+  },
+  {
+    id: "birria-fiesta",
+    name: "Birria Fiesta Taco Blend",
+    shortName: "Birria Fiesta",
+    ingredients: ["Guajillo Chili Powder", "Brown Sugar", "Sea Salt", "Ancho Chili Powder", "Garlic", "Cumin", "Coriander", "Onion", "Cloves", "Black Pepper", "Cinnamon", "Oregano"],
+    goodOn: ["Beef", "Lamb", "Pork", "Chicken", "Vegetables"],
+    description: "A vibrant, smoky, and slightly sweet spice blend inspired by traditional birria tacos",
+    heat: 1,
+    color: "#eab308", // Yellow/Gold
+  },
+  {
+    id: "smokey-honey-habanero",
+    name: "Smokey Honey Habanero Rub",
+    shortName: "Smokey Honey Habanero",
+    ingredients: ["Pink Himalayan Salt", "Honey", "Habanero", "Garlic", "Cayenne", "Paprika", "Hickory Smoke"],
+    goodOn: ["Chicken", "Pork", "Seafood", "Vegetables", "Beef"],
+    description: "A fiery, sweet, and smoky rub with habanero heat and hickory smoke, balanced by honey",
+    heat: 3,
+    color: "#ea580c", // Orange
+  },
+  {
+    id: "nashville-heat",
+    name: "Nashville Heat Wave",
+    shortName: "Nashville Heat",
+    ingredients: ["Cayenne", "Brown Sugar", "Sea Salt", "Paprika", "Garlic", "Onion", "Black Pepper", "Ancho Chili"],
+    goodOn: ["Chicken", "Pork", "Seafood", "Vegetables", "Beef"],
+    description: "A bold, fiery spice blend inspired by Nashville hot chicken, with intense heat and rich flavor",
+    heat: 4,
+    color: "#171717", // Black
+  },
+  {
+    id: "honey-chipotle",
+    name: "Honey Chipotle BBQ Rub",
+    shortName: "Honey Chipotle",
+    ingredients: ["Kosher Salt", "Chipotle Powder", "Honey", "Garlic", "Paprika", "Black Pepper", "Cumin"],
+    goodOn: ["Chicken", "Pork", "Seafood", "Vegetables", "Beef"],
+    description: "A sweet, smoky, and spicy rub perfect for grilling, with a hint of honey and chipotle heat",
+    heat: 3,
+    color: "#7f1d1d", // Brown/Maroon
+  },
+];
 
 /*
  * ═══════════════════════════════════════════════════════════════════════════════
@@ -414,6 +473,11 @@ export default function ImageEnhancerPage() {
   const [activeCategory, setActiveCategory] = useState<string>("hero");
   const [customScene, setCustomScene] = useState<string>("");
   const [formatId, setFormatId] = useState<string>("ig-square");
+  const [productId, setProductId] = useState<string>("birria-fiesta");
+
+  const activeProduct = useMemo(() => {
+    return SPICEJAX_PRODUCTS.find((p) => p.id === productId) || SPICEJAX_PRODUCTS[0];
+  }, [productId]);
 
   const activeFormat = useMemo(() => {
     return FORMAT_PRESETS.find((f) => f.id === formatId) || FORMAT_PRESETS[0];
@@ -424,11 +488,22 @@ export default function ImageEnhancerPage() {
       ? customScene.trim()
       : SCENE_PRESETS.find((scene) => scene.id === sceneId)?.prompt ?? "";
     
+    // Build product context for the AI
+    const productContext = `
+PRODUCT INFORMATION:
+- Product Name: SpiceJax ${activeProduct.name}
+- Key Ingredients: ${activeProduct.ingredients.slice(0, 5).join(", ")}
+- Best Used On: ${activeProduct.goodOn.join(", ")}
+- Flavor Profile: ${activeProduct.description}
+- Heat Level: ${activeProduct.heat}/5
+
+IMPORTANT: Incorporate these actual ingredients as props in the scene where appropriate. For example, if the blend contains "Guajillo Chili", show dried guajillo chilies. If it contains "Honey", show a honey dipper or honeycomb. If it contains "Garlic", show fresh garlic cloves. Make the ingredients visually prominent and appetizing.`;
+
     // Append format instructions to the prompt
     const formatInstruction = `Output image dimensions: ${activeFormat.ratio} aspect ratio (${activeFormat.pixels}). Compose the scene to work perfectly in this format with appropriate headroom and subject placement.`;
     
-    return `${basePrompt} ${formatInstruction}`;
-  }, [sceneId, customScene, activeFormat]);
+    return `${basePrompt}\n\n${productContext}\n\n${formatInstruction}`;
+  }, [sceneId, customScene, activeFormat, activeProduct]);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -504,13 +579,14 @@ export default function ImageEnhancerPage() {
     if (!enhancedImage) return;
     setApproving(true);
     
-    // Get scene and format labels for the filename
+    // Get scene, format, and product labels for the filename
     const sceneLabel = SCENE_PRESETS.find((s) => s.id === sceneId)?.label || "Custom";
     const formatLabel = activeFormat.label;
+    const productLabel = activeProduct.shortName;
     const timestamp = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
     
-    // Create a descriptive filename: SpiceJax_DarkDramatic_InstagramSquare_2024-01-15
-    const fileName = `SpiceJax_${sceneLabel.replace(/[^a-zA-Z0-9]/g, "")}_${formatLabel.replace(/[^a-zA-Z0-9]/g, "")}_${timestamp}`;
+    // Create a descriptive filename: SpiceJax_BirriaFiesta_DarkDramatic_InstagramSquare_2024-01-15
+    const fileName = `SpiceJax_${productLabel.replace(/[^a-zA-Z0-9]/g, "")}_${sceneLabel.replace(/[^a-zA-Z0-9]/g, "")}_${formatLabel.replace(/[^a-zA-Z0-9]/g, "")}_${timestamp}`;
     
     try {
       await fetch("/api/library/upload", {
@@ -612,6 +688,66 @@ export default function ImageEnhancerPage() {
                     />
                   </label>
                 )}
+              </div>
+
+              {/* Product Selection */}
+              <div className="bg-white rounded-3xl border border-brand-gold/20 shadow-[0_2px_20px_-4px_rgba(0,0,0,0.06)] p-6">
+                <p className="text-sm font-bold text-brand-title mb-4">Which SpiceJax product?</p>
+                
+                <div className="space-y-2">
+                  {SPICEJAX_PRODUCTS.map((product) => (
+                    <button
+                      key={product.id}
+                      onClick={() => setProductId(product.id)}
+                      className={`w-full p-4 rounded-2xl text-left transition-all ${
+                        productId === product.id
+                          ? "bg-[#243530] text-white shadow-lg"
+                          : "bg-brand-sage text-brand-text hover:bg-spice-100 border border-transparent hover:border-brand-gold/20"
+                      }`}
+                    >
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="font-bold">{product.shortName}</span>
+                        <div className="flex items-center gap-1">
+                          {[...Array(5)].map((_, i) => (
+                            <Flame
+                              key={i}
+                              className={`w-3 h-3 ${
+                                i < product.heat
+                                  ? productId === product.id ? "text-orange-400" : "text-brand-rust"
+                                  : productId === product.id ? "text-white/20" : "text-brand-text/20"
+                              }`}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                      <p className={`text-xs ${productId === product.id ? "text-white/70" : "text-brand-text/50"}`}>
+                        {product.ingredients.slice(0, 4).join(", ")}...
+                      </p>
+                    </button>
+                  ))}
+                </div>
+
+                {/* Selected Product Details */}
+                <div className="mt-4 p-4 bg-brand-sage rounded-xl border border-brand-gold/10">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div 
+                      className="w-3 h-3 rounded-full" 
+                      style={{ backgroundColor: activeProduct.color }}
+                    />
+                    <p className="text-xs font-bold text-brand-title">{activeProduct.name}</p>
+                  </div>
+                  <p className="text-[11px] text-brand-text/60 mb-2">{activeProduct.description}</p>
+                  <div className="flex flex-wrap gap-1">
+                    {activeProduct.ingredients.map((ing) => (
+                      <span 
+                        key={ing} 
+                        className="px-2 py-0.5 bg-white rounded-full text-[10px] font-medium text-brand-text/70 border border-brand-gold/20"
+                      >
+                        {ing}
+                      </span>
+                    ))}
+                  </div>
+                </div>
               </div>
 
               {/* Scene Selection */}
