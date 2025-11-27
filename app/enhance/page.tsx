@@ -315,7 +315,6 @@ const FORMAT_PRESETS = [
   { id: "woo-gallery", label: "WooCommerce Gallery", platform: "ecommerce", ratio: "1:1", pixels: "800×800", desc: "Product gallery images" },
   { id: "woo-thumbnail", label: "WooCommerce Thumb", platform: "ecommerce", ratio: "1:1", pixels: "300×300", desc: "Cart & catalog thumbnails" },
   { id: "woo-zoom", label: "WooCommerce Zoom", platform: "ecommerce", ratio: "1:1", pixels: "1200×1200", desc: "Hover zoom (high-res)" },
-  { id: "shopify", label: "Shopify", platform: "ecommerce", ratio: "1:1", pixels: "2048×2048", desc: "Shopify product images" },
   { id: "amazon", label: "Amazon", platform: "ecommerce", ratio: "1:1", pixels: "2000×2000", desc: "Amazon main image (white bg)" },
   { id: "etsy", label: "Etsy", platform: "ecommerce", ratio: "4:3", pixels: "2000×1500", desc: "Etsy listing images" },
   
