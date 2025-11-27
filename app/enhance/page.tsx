@@ -503,6 +503,15 @@ export default function ImageEnhancerPage() {
   const handleApprove = async () => {
     if (!enhancedImage) return;
     setApproving(true);
+    
+    // Get scene and format labels for the filename
+    const sceneLabel = SCENE_PRESETS.find((s) => s.id === sceneId)?.label || "Custom";
+    const formatLabel = activeFormat.label;
+    const timestamp = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+    
+    // Create a descriptive filename: SpiceJax_DarkDramatic_InstagramSquare_2024-01-15
+    const fileName = `SpiceJax_${sceneLabel.replace(/[^a-zA-Z0-9]/g, "")}_${formatLabel.replace(/[^a-zA-Z0-9]/g, "")}_${timestamp}`;
+    
     try {
       await fetch("/api/library/upload", {
         method: "POST",
@@ -512,6 +521,12 @@ export default function ImageEnhancerPage() {
         body: JSON.stringify({
           enhancedImage,
           sceneId,
+          sceneLabel,
+          formatId,
+          formatLabel,
+          formatRatio: activeFormat.ratio,
+          formatPixels: activeFormat.pixels,
+          fileName,
           scenePrompt: activeScenePrompt,
         }),
       });

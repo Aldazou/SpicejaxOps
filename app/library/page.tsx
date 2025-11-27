@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import MainLayout from "@/components/MainLayout";
-import { Download, ExternalLink, ImageIcon, Loader2, RefreshCw, Sparkles } from "lucide-react";
+import { Download, ExternalLink, ImageIcon, Loader2, RefreshCw, Sparkles, Camera, Maximize } from "lucide-react";
 
 interface DriveFile {
   id: string;
@@ -10,6 +10,35 @@ interface DriveFile {
   webViewLink: string;
   thumbnailLink?: string;
   webContentLink?: string;
+}
+
+// Parse filename to extract scene and format info
+// Expected format: SpiceJax_SceneName_FormatName_YYYY-MM-DD.jpg
+function parseFileName(name: string): { scene: string; format: string; date: string } {
+  const cleanName = name.replace(/\.[^/.]+$/, ""); // Remove extension
+  const parts = cleanName.split("_");
+  
+  if (parts.length >= 4 && parts[0] === "SpiceJax") {
+    // New format: SpiceJax_SceneName_FormatName_Date
+    const scene = parts[1] || "Unknown";
+    const format = parts[2] || "Unknown";
+    const date = parts[3] || "";
+    return { scene, format, date };
+  } else if (parts.length >= 2) {
+    // Old format or partial: try to extract what we can
+    return { 
+      scene: parts[0] || "Unknown", 
+      format: parts[1] || "", 
+      date: parts[2] || "" 
+    };
+  }
+  
+  return { scene: cleanName, format: "", date: "" };
+}
+
+// Add spaces before capital letters for display
+function formatLabel(str: string): string {
+  return str.replace(/([A-Z])/g, " $1").trim();
 }
 
 export default function LibraryPage() {
@@ -93,80 +122,106 @@ export default function LibraryPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-            {files.map((file, index) => (
-              <div
-                key={file.id}
-                className="group relative bg-white rounded-3xl border border-brand-gold/20 overflow-hidden shadow-[0_2px_20px_-4px_rgba(0,0,0,0.06)] hover:shadow-[0_12px_40px_-8px_rgba(212,168,75,0.2)] hover:border-brand-gold/40 transition-all duration-500"
-                style={{ animationDelay: `${index * 50}ms` }}
-              >
-                {/* Image */}
-                <div className="aspect-square relative bg-brand-sage overflow-hidden">
-                  {file.id ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={`https://lh3.googleusercontent.com/d/${file.id}=w800`}
-                      alt={file.name}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                      referrerPolicy="no-referrer"
-                      onError={(e) => {
-                        const img = e.target as HTMLImageElement;
-                        if (!img.dataset.fallback) {
-                          img.dataset.fallback = "true";
-                          img.src = `https://drive.google.com/thumbnail?id=${file.id}&sz=w800`;
-                        }
-                      }}
-                    />
-                  ) : (
-                    <div className="flex items-center justify-center h-full text-brand-text/30">
-                      <ImageIcon className="w-12 h-12" />
-                    </div>
-                  )}
-                  
-                  {/* Gradient overlay on hover */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-brand-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  
-                  {/* Actions */}
-                  <div className="absolute bottom-4 left-4 right-4 flex justify-center gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
-                    <a
-                      href={file.webViewLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-2 px-4 py-2 bg-white/95 backdrop-blur rounded-xl hover:bg-white transition-colors shadow-lg text-sm font-semibold text-brand-text"
-                    >
-                      <ExternalLink className="w-4 h-4" />
-                      View
-                    </a>
-                    {file.webContentLink && (
+            {files.map((file, index) => {
+              const { scene, format, date } = parseFileName(file.name);
+              const sceneDisplay = formatLabel(scene);
+              const formatDisplay = formatLabel(format);
+              
+              return (
+                <div
+                  key={file.id}
+                  className="group relative bg-white rounded-3xl border border-brand-gold/20 overflow-hidden shadow-[0_2px_20px_-4px_rgba(0,0,0,0.06)] hover:shadow-[0_12px_40px_-8px_rgba(212,168,75,0.2)] hover:border-brand-gold/40 transition-all duration-500"
+                  style={{ animationDelay: `${index * 50}ms` }}
+                >
+                  {/* Image */}
+                  <div className="aspect-square relative bg-brand-sage overflow-hidden">
+                    {file.id ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={`https://lh3.googleusercontent.com/d/${file.id}=w800`}
+                        alt={file.name}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                        referrerPolicy="no-referrer"
+                        onError={(e) => {
+                          const img = e.target as HTMLImageElement;
+                          if (!img.dataset.fallback) {
+                            img.dataset.fallback = "true";
+                            img.src = `https://drive.google.com/thumbnail?id=${file.id}&sz=w800`;
+                          }
+                        }}
+                      />
+                    ) : (
+                      <div className="flex items-center justify-center h-full text-brand-text/30">
+                        <ImageIcon className="w-12 h-12" />
+                      </div>
+                    )}
+                    
+                    {/* Gradient overlay on hover */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-brand-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    
+                    {/* Actions */}
+                    <div className="absolute bottom-4 left-4 right-4 flex justify-center gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
                       <a
-                        href={file.webContentLink}
-                        className="flex items-center justify-center w-10 h-10 bg-brand-rust rounded-xl hover:bg-rust-600 transition-colors shadow-lg"
-                        title="Download"
+                        href={file.webViewLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 px-4 py-2 bg-white/95 backdrop-blur rounded-xl hover:bg-white transition-colors shadow-lg text-sm font-semibold text-brand-text"
                       >
-                        <Download className="w-4 h-4 text-white" />
+                        <ExternalLink className="w-4 h-4" />
+                        View
                       </a>
+                      {file.webContentLink && (
+                        <a
+                          href={file.webContentLink}
+                          className="flex items-center justify-center w-10 h-10 bg-brand-rust rounded-xl hover:bg-rust-600 transition-colors shadow-lg"
+                          title="Download"
+                        >
+                          <Download className="w-4 h-4 text-white" />
+                        </a>
+                      )}
+                    </div>
+                    
+                    {/* Scene Badge */}
+                    {sceneDisplay && sceneDisplay !== "Unknown" && (
+                      <div className="absolute top-3 left-3">
+                        <span className="px-2.5 py-1 bg-[#243530] text-white text-[10px] font-bold uppercase tracking-wider rounded-lg shadow-lg flex items-center gap-1">
+                          <Camera className="w-3 h-3" />
+                          {sceneDisplay}
+                        </span>
+                      </div>
+                    )}
+                    
+                    {/* Format Badge */}
+                    {formatDisplay && (
+                      <div className="absolute top-3 right-3">
+                        <span className="px-2.5 py-1 bg-white/90 backdrop-blur text-[10px] font-bold text-brand-text rounded-lg shadow-sm border border-brand-gold/20 flex items-center gap-1">
+                          <Maximize className="w-3 h-3" />
+                          {formatDisplay}
+                        </span>
+                      </div>
                     )}
                   </div>
                   
-                  {/* Badge */}
-                  <div className="absolute top-3 left-3">
-                    <span className="px-2.5 py-1 bg-white/90 backdrop-blur text-[10px] font-bold uppercase tracking-wider text-brand-text rounded-lg shadow-sm border border-brand-gold/20">
-                      PNG
-                    </span>
+                  {/* Info */}
+                  <div className="p-4">
+                    <p className="text-sm font-semibold text-brand-title">
+                      {sceneDisplay || "Untitled"}
+                    </p>
+                    <div className="flex items-center justify-between mt-1">
+                      <p className="text-xs text-brand-text/50 flex items-center gap-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-brand-lime"></span>
+                        {formatDisplay || "Custom"}
+                      </p>
+                      {date && (
+                        <p className="text-xs text-brand-text/40">
+                          {date}
+                        </p>
+                      )}
+                    </div>
                   </div>
                 </div>
-                
-                {/* Info */}
-                <div className="p-4">
-                  <p className="text-sm font-semibold text-brand-title truncate" title={file.name}>
-                    {file.name.replace(/\.[^/.]+$/, "")}
-                  </p>
-                  <p className="text-xs text-brand-text/50 mt-0.5 flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-brand-lime"></span>
-                    Synced from Drive
-                  </p>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>
