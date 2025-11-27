@@ -250,25 +250,24 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Image Lab CTA */}
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-brand-title via-brand-black to-brand-title p-8 sm:p-10">
-          {/* Background decoration */}
-          <div className="absolute top-0 right-0 w-96 h-96 bg-brand-rust/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
-          <div className="absolute bottom-0 left-0 w-64 h-64 bg-brand-lime/10 rounded-full blur-2xl translate-y-1/2 -translate-x-1/2"></div>
-          <div className="absolute top-1/2 left-1/2 w-32 h-32 bg-brand-gold/20 rounded-full blur-2xl -translate-x-1/2 -translate-y-1/2"></div>
+        {/* Image Lab CTA - Footer style */}
+        <div className="relative overflow-hidden rounded-3xl bg-[#243530] p-8 sm:p-10">
+          {/* Subtle glow effects */}
+          <div className="absolute top-0 right-1/4 w-64 h-64 bg-brand-lime/5 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-0 left-1/4 w-48 h-48 bg-brand-rust/5 rounded-full blur-2xl"></div>
           
           <div className="relative flex flex-col sm:flex-row items-center justify-between gap-6">
             <div className="text-center sm:text-left">
               <h3 className="text-2xl sm:text-3xl font-bold text-white mb-2">
                 Ready to create magic?
               </h3>
-              <p className="text-white/60 max-w-md">
+              <p className="text-[#8b9a94] max-w-md">
                 Transform your product shots with AI-powered scene generation. Pick a vibe, hit enhance.
               </p>
             </div>
             <Link
               href="/enhance"
-              className="flex-shrink-0 inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-brand-rust to-rust-600 text-white font-bold text-lg rounded-2xl shadow-[0_8px_30px_-4px_rgba(196,92,62,0.5)] hover:shadow-[0_12px_40px_-4px_rgba(196,92,62,0.6)] hover:scale-105 transition-all"
+              className="flex-shrink-0 inline-flex items-center gap-3 px-8 py-4 bg-brand-rust hover:bg-rust-600 text-white font-bold text-lg rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all"
             >
               <Sparkles className="w-5 h-5" />
               Open Image Lab
