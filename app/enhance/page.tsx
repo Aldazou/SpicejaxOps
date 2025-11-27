@@ -144,17 +144,17 @@ export default function ImageEnhancerPage() {
           {/* Header */}
           <div>
             <div className="flex items-center gap-2 mb-2">
-              <div className="h-8 w-8 rounded-xl bg-gradient-to-br from-purple-500 to-indigo-500 flex items-center justify-center shadow-lg shadow-purple-500/20">
+              <div className="h-8 w-8 rounded-xl bg-gradient-to-br from-brand-rust to-rust-600 flex items-center justify-center shadow-lg shadow-brand-rust/20">
                 <Sparkles className="w-4 h-4 text-white" />
               </div>
-              <p className="uppercase tracking-[0.3em] text-[10px] font-bold text-purple-500">
+              <p className="uppercase tracking-[0.3em] text-[10px] font-bold text-brand-rust">
                 AI Studio
               </p>
             </div>
-            <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight">
+            <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">
               Image Lab
             </h1>
-            <p className="text-gray-500 mt-1">
+            <p className="text-brand-text/70 mt-1">
               Transform product shots with AI-powered scene generation
             </p>
           </div>
@@ -162,19 +162,19 @@ export default function ImageEnhancerPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
             {/* Left: Upload */}
             <div className="space-y-6">
-              <div className="bg-white rounded-3xl border border-gray-100 shadow-[0_2px_20px_-4px_rgba(0,0,0,0.06)] p-6">
+              <div className="bg-white rounded-3xl border border-brand-gold/20 shadow-[0_2px_20px_-4px_rgba(0,0,0,0.06)] p-6">
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-gray-100 to-gray-50 flex items-center justify-center">
-                    <ImageIcon className="w-5 h-5 text-gray-400" />
+                  <div className="w-10 h-10 rounded-2xl bg-brand-sage flex items-center justify-center border border-brand-gold/20">
+                    <ImageIcon className="w-5 h-5 text-brand-text/50" />
                   </div>
                   <div>
-                    <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Step 01</p>
-                    <h2 className="font-bold text-gray-900">Upload Original</h2>
+                    <p className="text-xs font-bold text-brand-text/50 uppercase tracking-wider">Step 01</p>
+                    <h2 className="font-bold">Upload Original</h2>
                   </div>
                 </div>
 
                 {uploadedImage ? (
-                  <div className="relative aspect-square rounded-2xl overflow-hidden bg-gradient-to-br from-gray-100 to-gray-50 ring-1 ring-gray-200/50">
+                  <div className="relative aspect-square rounded-2xl overflow-hidden bg-brand-sage ring-1 ring-brand-gold/20">
                     <Image
                       src={uploadedImage}
                       alt="Original"
@@ -187,20 +187,20 @@ export default function ImageEnhancerPage() {
                         setEnhancedImage(null);
                         setApproved(false);
                       }}
-                      className="absolute top-3 right-3 w-10 h-10 bg-white/90 backdrop-blur rounded-xl flex items-center justify-center text-gray-500 hover:text-red-500 hover:bg-red-50 transition-colors shadow-lg"
+                      className="absolute top-3 right-3 w-10 h-10 bg-white/90 backdrop-blur rounded-xl flex items-center justify-center text-brand-text/50 hover:text-brand-rust hover:bg-rust-50 transition-colors shadow-lg border border-brand-gold/20"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
                 ) : (
-                  <label className="flex flex-col items-center justify-center aspect-square border-2 border-dashed border-gray-200 rounded-2xl cursor-pointer bg-gradient-to-br from-gray-50 to-white hover:border-[#8bc53f]/50 hover:bg-[#f8fdf3] transition-all group">
+                  <label className="flex flex-col items-center justify-center aspect-square border-2 border-dashed border-brand-gold/30 rounded-2xl cursor-pointer bg-brand-sage hover:border-brand-lime hover:bg-spice-50 transition-all group">
                     <div className="flex flex-col items-center justify-center py-10 space-y-4">
-                      <div className="w-16 h-16 rounded-2xl bg-gray-100 group-hover:bg-[#8bc53f]/10 flex items-center justify-center transition-colors">
-                        <ImageIcon className="w-8 h-8 text-gray-300 group-hover:text-[#8bc53f] transition-colors" />
+                      <div className="w-16 h-16 rounded-2xl bg-white group-hover:bg-brand-lime/10 flex items-center justify-center transition-colors border border-brand-gold/20">
+                        <ImageIcon className="w-8 h-8 text-brand-text/30 group-hover:text-brand-lime transition-colors" />
                       </div>
                       <div className="text-center">
-                        <p className="font-semibold text-gray-700">Drop your image here</p>
-                        <p className="text-sm text-gray-400 mt-1">or click to browse</p>
+                        <p className="font-semibold text-brand-title">Drop your image here</p>
+                        <p className="text-sm text-brand-text/50 mt-1">or click to browse</p>
                       </div>
                     </div>
                     <input
@@ -214,8 +214,8 @@ export default function ImageEnhancerPage() {
               </div>
 
               {/* Scene Selection */}
-              <div className="bg-white rounded-3xl border border-gray-100 shadow-[0_2px_20px_-4px_rgba(0,0,0,0.06)] p-6">
-                <p className="text-sm font-bold text-gray-900 mb-4">Choose a scene vibe</p>
+              <div className="bg-white rounded-3xl border border-brand-gold/20 shadow-[0_2px_20px_-4px_rgba(0,0,0,0.06)] p-6">
+                <p className="text-sm font-bold text-brand-title mb-4">Choose a scene vibe</p>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                   {SCENE_PRESETS.map((scene) => (
                     <button
@@ -223,8 +223,8 @@ export default function ImageEnhancerPage() {
                       onClick={() => setSceneId(scene.id)}
                       className={`px-3 py-2.5 rounded-xl text-sm font-medium text-left transition-all ${
                         sceneId === scene.id
-                          ? "bg-gray-900 text-white shadow-lg"
-                          : "bg-gray-50 text-gray-600 hover:bg-gray-100"
+                          ? "bg-brand-title text-white shadow-lg"
+                          : "bg-brand-sage text-brand-text hover:bg-spice-100 border border-transparent hover:border-brand-gold/20"
                       }`}
                     >
                       {scene.label}
@@ -236,7 +236,7 @@ export default function ImageEnhancerPage() {
                     value={customScene}
                     onChange={(e) => setCustomScene(e.target.value)}
                     placeholder="Describe the exact scene you want..."
-                    className="mt-4 w-full rounded-2xl border border-gray-200 focus:border-[#8bc53f] focus:ring-2 focus:ring-[#8bc53f]/20 text-sm p-4 transition-all"
+                    className="mt-4 w-full rounded-2xl border border-brand-gold/30 bg-brand-sage focus:border-brand-lime focus:ring-2 focus:ring-brand-lime/20 text-sm p-4 transition-all"
                     rows={3}
                   />
                 )}
@@ -246,7 +246,7 @@ export default function ImageEnhancerPage() {
               <button
                 onClick={enhanceImage}
                 disabled={!uploadedImage || enhancing}
-                className="w-full py-4 bg-gradient-to-r from-gray-900 to-gray-800 text-white font-bold text-lg rounded-2xl hover:from-gray-800 hover:to-gray-700 disabled:from-gray-200 disabled:to-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-3 shadow-xl shadow-gray-900/20 disabled:shadow-none"
+                className="w-full py-4 bg-gradient-to-r from-brand-title to-brand-black text-white font-bold text-lg rounded-2xl hover:from-brand-black hover:to-brand-title disabled:from-gray-200 disabled:to-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-3 shadow-xl shadow-brand-title/20 disabled:shadow-none"
               >
                 {enhancing ? (
                   <>
@@ -262,27 +262,27 @@ export default function ImageEnhancerPage() {
               </button>
 
               {error && (
-                <div className="p-4 bg-amber-50 text-amber-700 rounded-2xl border border-amber-100 text-sm">
+                <div className="p-4 bg-rust-50 text-brand-rust rounded-2xl border border-brand-rust/20 text-sm">
                   ⚠️ {error}
                 </div>
               )}
             </div>
 
             {/* Right: Result */}
-            <div className="bg-white rounded-3xl border border-gray-100 shadow-[0_2px_20px_-4px_rgba(0,0,0,0.06)] p-6 flex flex-col">
+            <div className="bg-white rounded-3xl border border-brand-gold/20 shadow-[0_2px_20px_-4px_rgba(0,0,0,0.06)] p-6 flex flex-col">
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#8bc53f] to-[#6ba82a] flex items-center justify-center shadow-lg shadow-[#8bc53f]/20">
+                <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-brand-lime to-spice-600 flex items-center justify-center shadow-lg shadow-brand-lime/20">
                   <Sparkles className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Step 02</p>
-                  <h2 className="font-bold text-gray-900">Enhanced Result</h2>
+                  <p className="text-xs font-bold text-brand-text/50 uppercase tracking-wider">Step 02</p>
+                  <h2 className="font-bold">Enhanced Result</h2>
                 </div>
               </div>
 
               {enhancedImage ? (
                 <div className="flex-1 flex flex-col gap-4">
-                  <div className="relative flex-1 min-h-[400px] rounded-2xl overflow-hidden bg-gradient-to-br from-gray-100 to-gray-50">
+                  <div className="relative flex-1 min-h-[400px] rounded-2xl overflow-hidden bg-brand-sage">
                     <Image
                       src={enhancedImage}
                       alt="Enhanced"
@@ -291,14 +291,14 @@ export default function ImageEnhancerPage() {
                     />
                     {/* Badges */}
                     <div className="absolute top-4 left-4 flex gap-2">
-                      <span className="px-3 py-1.5 bg-[#8bc53f] text-white text-xs font-bold rounded-lg shadow-lg flex items-center gap-1.5">
+                      <span className="px-3 py-1.5 bg-brand-lime text-white text-xs font-bold rounded-lg shadow-lg flex items-center gap-1.5">
                         <Sparkles className="w-3 h-3" />
                         ENHANCED
                       </span>
                     </div>
                     {approved && (
                       <div className="absolute top-4 right-4">
-                        <span className="px-3 py-1.5 bg-white text-[#8bc53f] text-xs font-bold rounded-lg shadow-lg flex items-center gap-1.5">
+                        <span className="px-3 py-1.5 bg-white text-brand-lime text-xs font-bold rounded-lg shadow-lg flex items-center gap-1.5 border border-brand-lime/20">
                           <Check className="w-3 h-3" />
                           SAVED
                         </span>
@@ -311,14 +311,14 @@ export default function ImageEnhancerPage() {
                     <div className="flex gap-2">
                       <button
                         onClick={() => setIsPreviewOpen(true)}
-                        className="w-11 h-11 flex items-center justify-center rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-all"
+                        className="w-11 h-11 flex items-center justify-center rounded-xl border border-brand-gold/30 text-brand-text hover:bg-brand-sage hover:border-brand-gold transition-all"
                         title="Preview"
                       >
                         <Expand className="w-5 h-5" />
                       </button>
                       <button
                         onClick={handleDownload}
-                        className="w-11 h-11 flex items-center justify-center rounded-xl bg-gray-900 text-white hover:bg-gray-800 transition-all shadow-lg"
+                        className="w-11 h-11 flex items-center justify-center rounded-xl bg-brand-title text-white hover:bg-brand-black transition-all shadow-lg"
                         title="Download"
                       >
                         <Download className="w-5 h-5" />
@@ -328,7 +328,7 @@ export default function ImageEnhancerPage() {
                           setEnhancedImage(null);
                           setApproved(false);
                         }}
-                        className="w-11 h-11 flex items-center justify-center rounded-xl border border-gray-200 text-gray-400 hover:text-red-500 hover:border-red-200 hover:bg-red-50 transition-all"
+                        className="w-11 h-11 flex items-center justify-center rounded-xl border border-brand-gold/30 text-brand-text/50 hover:text-brand-rust hover:border-brand-rust/30 hover:bg-rust-50 transition-all"
                         title="Discard"
                       >
                         <X className="w-5 h-5" />
@@ -339,8 +339,8 @@ export default function ImageEnhancerPage() {
                       disabled={approving || approved}
                       className={`flex-1 min-w-[160px] py-3 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 ${
                         approved
-                          ? "bg-[#f0f9e8] text-[#5a8c1a] border border-[#d4ebc4]"
-                          : "bg-gradient-to-r from-[#8bc53f] to-[#7ab82f] text-white shadow-lg shadow-[#8bc53f]/30 hover:shadow-xl hover:shadow-[#8bc53f]/40 disabled:opacity-50"
+                          ? "bg-spice-50 text-brand-title border border-brand-lime/30"
+                          : "bg-gradient-to-r from-brand-lime to-spice-600 text-white shadow-lg shadow-brand-lime/30 hover:shadow-xl hover:shadow-brand-lime/40 disabled:opacity-50"
                       }`}
                     >
                       {approved ? (
@@ -360,22 +360,22 @@ export default function ImageEnhancerPage() {
                   </div>
                 </div>
               ) : (
-                <div className="flex-1 flex flex-col items-center justify-center min-h-[400px] text-gray-400 bg-gradient-to-br from-gray-50 to-white rounded-2xl border-2 border-dashed border-gray-200">
+                <div className="flex-1 flex flex-col items-center justify-center min-h-[400px] text-brand-text/50 bg-brand-sage rounded-2xl border-2 border-dashed border-brand-gold/20">
                   {enhancing ? (
                     <div className="text-center">
                       <div className="relative mb-6">
-                        <div className="absolute inset-0 bg-[#8bc53f]/20 rounded-full blur-2xl animate-pulse"></div>
+                        <div className="absolute inset-0 bg-brand-rust/20 rounded-full blur-2xl animate-pulse"></div>
                         <div className="relative text-6xl animate-bounce">🪄</div>
                       </div>
-                      <p className="font-semibold text-gray-600">Creating magic...</p>
+                      <p className="font-semibold text-brand-title">Creating magic...</p>
                       <p className="text-sm mt-1">AI is building your scene</p>
                     </div>
                   ) : (
                     <div className="text-center">
-                      <div className="w-20 h-20 rounded-3xl bg-gray-100 flex items-center justify-center mx-auto mb-4">
-                        <ImageIcon className="w-10 h-10 text-gray-300" />
+                      <div className="w-20 h-20 rounded-3xl bg-white flex items-center justify-center mx-auto mb-4 border border-brand-gold/20">
+                        <ImageIcon className="w-10 h-10 text-brand-text/20" />
                       </div>
-                      <p className="font-semibold text-gray-600">No result yet</p>
+                      <p className="font-semibold text-brand-title">No result yet</p>
                       <p className="text-sm mt-1">Upload an image and hit enhance</p>
                     </div>
                   )}
@@ -388,17 +388,17 @@ export default function ImageEnhancerPage() {
 
       {/* Preview Modal */}
       {isPreviewOpen && enhancedImage && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm p-4">
-          <div className="relative w-full max-w-5xl max-h-[90vh] bg-white rounded-3xl shadow-2xl p-6 overflow-hidden">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-brand-black/90 backdrop-blur-sm p-4">
+          <div className="relative w-full max-w-5xl max-h-[90vh] bg-white rounded-3xl shadow-2xl p-6 overflow-hidden border border-brand-gold/20">
             <button
               onClick={() => setIsPreviewOpen(false)}
-              className="absolute top-4 right-4 w-10 h-10 flex items-center justify-center rounded-xl bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-gray-700 transition-colors z-10"
+              className="absolute top-4 right-4 w-10 h-10 flex items-center justify-center rounded-xl bg-brand-sage text-brand-text hover:bg-rust-50 hover:text-brand-rust transition-colors z-10 border border-brand-gold/20"
             >
               <X className="w-5 h-5" />
             </button>
             <Zoom zoomMargin={32}>
               <div
-                className="relative w-full rounded-2xl overflow-hidden bg-gray-100"
+                className="relative w-full rounded-2xl overflow-hidden bg-brand-sage"
                 style={{ aspectRatio: "3 / 4", maxHeight: "75vh", margin: "0 auto" }}
               >
                 <Image
@@ -410,7 +410,7 @@ export default function ImageEnhancerPage() {
                 />
               </div>
             </Zoom>
-            <p className="text-sm text-gray-400 text-center mt-4">
+            <p className="text-sm text-brand-text/50 text-center mt-4">
               Click to zoom • Scroll to inspect details
             </p>
           </div>

@@ -7,7 +7,7 @@ export default function MainLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-[#fafcf7]">
+    <div className="min-h-screen bg-brand-sage">
       <Header />
       <main className="px-4 sm:px-8 py-6 sm:py-8 max-w-[1600px] mx-auto">
         {children}
