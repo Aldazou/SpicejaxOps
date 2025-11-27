@@ -659,6 +659,8 @@ IMPORTANT: This is a product lineup/collection shot. Make sure each jar is clear
     const params = new URLSearchParams({
       image: enhancedImage,
       product: productName,
+      platform: activeFormat.platform,
+      format: activeFormat.label,
       from: "enhance",
     });
     

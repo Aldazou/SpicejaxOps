@@ -25,24 +25,36 @@ function ContentStudioContent() {
   const [products, setProducts] = useState<SpiceProduct[]>([]);
   const [selectedProductId, setSelectedProductId] = useState<string>("");
   const [fromLibrary, setFromLibrary] = useState(false);
+  const [platform, setPlatform] = useState<string>("instagram");
+  const [formatLabel, setFormatLabel] = useState<string>("");
   
   // Scheduling State
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
   const [selectedIdeaForSchedule, setSelectedIdeaForSchedule] = useState<ContentIdea | null>(null);
 
-  // Load products and check for URL params (from Library)
+  // Load products and check for URL params (from Library/Enhance)
   useEffect(() => {
     const loadedProducts = getProducts();
     setProducts(loadedProducts);
     
-    // Check if coming from Library with pre-loaded image
+    // Check if coming from Library/Enhance with pre-loaded image
     const imageParam = searchParams.get("image");
     const productParam = searchParams.get("product");
+    const platformParam = searchParams.get("platform");
+    const formatParam = searchParams.get("format");
     const fromParam = searchParams.get("from");
     
     if (imageParam) {
       setUploadedImage(decodeURIComponent(imageParam));
       setFromLibrary(fromParam === "library" || fromParam === "enhance");
+    }
+    
+    if (platformParam) {
+      setPlatform(platformParam);
+    }
+    
+    if (formatParam) {
+      setFormatLabel(decodeURIComponent(formatParam));
     }
     
     if (productParam && loadedProducts.length > 0) {
@@ -118,6 +130,8 @@ function ContentStudioContent() {
         image: uploadedImage,
         ingredients: ingredients,
         productName: productName,
+        platform: platform,
+        format: formatLabel,
       };
       
       console.log('📤 Calling workflow with payload:', payload);
@@ -258,7 +272,12 @@ function ContentStudioContent() {
             </div>
             {fromLibrary && (
               <span className="px-2 py-1 bg-brand-gold/10 text-brand-gold text-xs font-bold rounded-lg border border-brand-gold/20">
-                From Library
+                From {platform === "instagram" ? "Instagram" : platform === "facebook" ? "Facebook" : platform === "tiktok" ? "TikTok" : platform === "linkedin" ? "LinkedIn" : platform === "youtube" ? "YouTube" : platform === "pinterest" ? "Pinterest" : platform === "twitter" ? "X" : "Library"}
+              </span>
+            )}
+            {formatLabel && (
+              <span className="px-2 py-1 bg-brand-lime/10 text-brand-lime text-xs font-bold rounded-lg border border-brand-lime/20">
+                {formatLabel}
               </span>
             )}
           </div>
