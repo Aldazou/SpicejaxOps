@@ -415,7 +415,8 @@ export default function ImageEnhancerPage() {
   const [activeCategory, setActiveCategory] = useState<string>("hero");
   const [customScene, setCustomScene] = useState<string>("");
   const [formatId, setFormatId] = useState<string>("ig-square");
-  const [productId, setProductId] = useState<string>("");
+  const [selectedProductIds, setSelectedProductIds] = useState<string[]>([]);
+  const [selectionMode, setSelectionMode] = useState<"single" | "multiple" | "all">("single");
   
   // Load products from localStorage
   const [products, setProducts] = useState<SpiceProduct[]>([]);
@@ -424,15 +425,44 @@ export default function ImageEnhancerPage() {
     const loadedProducts = getProducts();
     setProducts(loadedProducts);
     // Set default product to first one if not set
-    if (loadedProducts.length > 0 && !productId) {
-      setProductId(loadedProducts[0].id);
+    if (loadedProducts.length > 0 && selectedProductIds.length === 0) {
+      setSelectedProductIds([loadedProducts[0].id]);
     }
   }, []);
 
+  // Handle product selection based on mode
+  const toggleProduct = (productId: string) => {
+    if (selectionMode === "single") {
+      setSelectedProductIds([productId]);
+    } else if (selectionMode === "multiple") {
+      setSelectedProductIds(prev => 
+        prev.includes(productId) 
+          ? prev.filter(id => id !== productId)
+          : [...prev, productId]
+      );
+    }
+  };
+
+  // Handle mode change
+  const handleModeChange = (mode: "single" | "multiple" | "all") => {
+    setSelectionMode(mode);
+    if (mode === "all") {
+      setSelectedProductIds(products.map(p => p.id));
+    } else if (mode === "single" && selectedProductIds.length > 1) {
+      setSelectedProductIds([selectedProductIds[0]]);
+    }
+  };
+
+  // Get selected products
+  const selectedProducts = useMemo(() => {
+    return products.filter(p => selectedProductIds.includes(p.id));
+  }, [selectedProductIds, products]);
+
+  // For backward compatibility - single active product (first selected)
   const activeProduct = useMemo(() => {
     if (products.length === 0) return null;
-    return products.find((p) => p.id === productId) || products[0];
-  }, [productId, products]);
+    return products.find((p) => p.id === selectedProductIds[0]) || products[0];
+  }, [selectedProductIds, products]);
 
   const activeFormat = useMemo(() => {
     return FORMAT_PRESETS.find((f) => f.id === formatId) || FORMAT_PRESETS[0];
@@ -443,22 +473,53 @@ export default function ImageEnhancerPage() {
       ? customScene.trim()
       : SCENE_PRESETS.find((scene) => scene.id === sceneId)?.prompt ?? "";
     
-    // Build product context for the AI (only if product is loaded)
-    const productContext = activeProduct ? `
+    // Build product context for the AI
+    let productContext = "";
+    
+    if (selectedProducts.length === 0) {
+      productContext = "";
+    } else if (selectedProducts.length === 1) {
+      // Single product
+      const product = selectedProducts[0];
+      productContext = `
 PRODUCT INFORMATION:
-- Product Name: SpiceJax ${activeProduct.name}
-- Key Ingredients: ${activeProduct.ingredients.slice(0, 5).join(", ")}
-- Best Used On: ${activeProduct.goodOn.join(", ")}
-- Flavor Profile: ${activeProduct.description}
-- Heat Level: ${activeProduct.heat}/5
+- Product Name: SpiceJax ${product.name}
+- Key Ingredients: ${product.ingredients.slice(0, 5).join(", ")}
+- Best Used On: ${product.goodOn.join(", ")}
+- Flavor Profile: ${product.description}
+- Heat Level: ${product.heat}/5
 
-IMPORTANT: Incorporate these actual ingredients as props in the scene where appropriate. For example, if the blend contains "Guajillo Chili", show dried guajillo chilies. If it contains "Honey", show a honey dipper or honeycomb. If it contains "Garlic", show fresh garlic cloves. Make the ingredients visually prominent and appetizing.` : "";
+IMPORTANT: Incorporate these actual ingredients as props in the scene where appropriate. For example, if the blend contains "Guajillo Chili", show dried guajillo chilies. If it contains "Honey", show a honey dipper or honeycomb. If it contains "Garlic", show fresh garlic cloves. Make the ingredients visually prominent and appetizing.`;
+    } else {
+      // Multiple products - group shot
+      const productList = selectedProducts.map((product, i) => 
+        `${i + 1}. SpiceJax ${product.name} (${product.ingredients.slice(0, 3).join(", ")})`
+      ).join("\n");
+      
+      // Collect all unique ingredients across selected products
+      const allIngredients = [...new Set(selectedProducts.flatMap(p => p.ingredients))];
+      
+      productContext = `
+MULTIPLE PRODUCTS - GROUP SHOT (${selectedProducts.length} jars):
+${productList}
+
+COMPOSITION GUIDANCE:
+- Arrange all ${selectedProducts.length} SpiceJax jars artfully in the scene
+- Create visual hierarchy - vary heights using props (books, cutting boards, small boxes)
+- Ensure all labels are visible and readable
+- The jars should feel like a cohesive collection/family
+
+SHARED INGREDIENTS TO FEATURE AS PROPS:
+${allIngredients.slice(0, 8).join(", ")}
+
+IMPORTANT: This is a product lineup/collection shot. Make sure each jar is clearly visible and the arrangement feels intentional and premium.`;
+    }
 
     // Append format instructions to the prompt
     const formatInstruction = `Output image dimensions: ${activeFormat.ratio} aspect ratio (${activeFormat.pixels}). Compose the scene to work perfectly in this format with appropriate headroom and subject placement.`;
     
     return `${basePrompt}\n\n${productContext}\n\n${formatInstruction}`;
-  }, [sceneId, customScene, activeFormat, activeProduct]);
+  }, [sceneId, customScene, activeFormat, selectedProducts]);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -537,7 +598,19 @@ IMPORTANT: Incorporate these actual ingredients as props in the scene where appr
     // Get scene, format, and product labels for the filename
     const sceneLabel = SCENE_PRESETS.find((s) => s.id === sceneId)?.label || "Custom";
     const formatLabel = activeFormat.label;
-    const productLabel = activeProduct?.shortName || "Product";
+    
+    // Handle single vs multiple products in filename
+    let productLabel: string;
+    if (selectedProducts.length === 0) {
+      productLabel = "Product";
+    } else if (selectedProducts.length === 1) {
+      productLabel = selectedProducts[0].shortName;
+    } else if (selectedProducts.length === products.length) {
+      productLabel = "AllProducts";
+    } else {
+      productLabel = `${selectedProducts.length}Products`;
+    }
+    
     const timestamp = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
     
     // Create a descriptive filename: SpiceJax_BirriaFiesta_DarkDramatic_InstagramSquare_2024-01-15
@@ -647,62 +720,144 @@ IMPORTANT: Incorporate these actual ingredients as props in the scene where appr
 
               {/* Product Selection */}
               <div className="bg-white rounded-3xl border border-brand-gold/20 shadow-[0_2px_20px_-4px_rgba(0,0,0,0.06)] p-6">
-                <p className="text-sm font-bold text-brand-title mb-4">Which SpiceJax product?</p>
+                <p className="text-sm font-bold text-brand-title mb-3">Which SpiceJax product(s)?</p>
                 
-                <div className="space-y-2">
-                  {products.map((product) => (
-                    <button
-                      key={product.id}
-                      onClick={() => setProductId(product.id)}
-                      className={`w-full p-4 rounded-2xl text-left transition-all ${
-                        productId === product.id
-                          ? "bg-[#243530] text-white shadow-lg"
-                          : "bg-brand-sage text-brand-text hover:bg-spice-100 border border-transparent hover:border-brand-gold/20"
-                      }`}
-                    >
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="font-bold">{product.shortName}</span>
-                        <div className="flex items-center gap-1">
-                          {[...Array(5)].map((_, i) => (
-                            <Flame
-                              key={i}
-                              className={`w-3 h-3 ${
-                                i < product.heat
-                                  ? productId === product.id ? "text-orange-400" : "text-brand-rust"
-                                  : productId === product.id ? "text-white/20" : "text-brand-text/20"
-                              }`}
-                            />
-                          ))}
-                        </div>
-                      </div>
-                      <p className={`text-xs ${productId === product.id ? "text-white/70" : "text-brand-text/50"}`}>
-                        {product.ingredients.slice(0, 4).join(", ")}...
-                      </p>
-                    </button>
-                  ))}
+                {/* Selection Mode Tabs */}
+                <div className="flex gap-2 mb-4">
+                  <button
+                    onClick={() => handleModeChange("single")}
+                    className={`flex-1 py-2 px-3 rounded-xl text-xs font-medium transition-all ${
+                      selectionMode === "single"
+                        ? "bg-[#243530] text-white"
+                        : "bg-brand-sage text-brand-text hover:bg-spice-100"
+                    }`}
+                  >
+                    Single
+                  </button>
+                  <button
+                    onClick={() => handleModeChange("multiple")}
+                    className={`flex-1 py-2 px-3 rounded-xl text-xs font-medium transition-all ${
+                      selectionMode === "multiple"
+                        ? "bg-[#243530] text-white"
+                        : "bg-brand-sage text-brand-text hover:bg-spice-100"
+                    }`}
+                  >
+                    Pick Multiple
+                  </button>
+                  <button
+                    onClick={() => handleModeChange("all")}
+                    className={`flex-1 py-2 px-3 rounded-xl text-xs font-medium transition-all ${
+                      selectionMode === "all"
+                        ? "bg-[#243530] text-white"
+                        : "bg-brand-sage text-brand-text hover:bg-spice-100"
+                    }`}
+                  >
+                    All ({products.length})
+                  </button>
                 </div>
 
-                {/* Selected Product Details */}
-                {activeProduct && (
-                  <div className="mt-4 p-4 bg-brand-sage rounded-xl border border-brand-gold/10">
-                    <div className="flex items-center gap-2 mb-2">
-                      <div 
-                        className="w-3 h-3 rounded-full" 
-                        style={{ backgroundColor: activeProduct.color }}
-                      />
-                      <p className="text-xs font-bold text-brand-title">{activeProduct.name}</p>
-                    </div>
-                    <p className="text-[11px] text-brand-text/60 mb-2">{activeProduct.description}</p>
-                    <div className="flex flex-wrap gap-1">
-                      {activeProduct.ingredients.map((ing) => (
-                        <span 
-                          key={ing} 
-                          className="px-2 py-0.5 bg-white rounded-full text-[10px] font-medium text-brand-text/70 border border-brand-gold/20"
+                {selectionMode !== "all" && (
+                  <div className="space-y-2">
+                    {products.map((product) => {
+                      const isSelected = selectedProductIds.includes(product.id);
+                      return (
+                        <button
+                          key={product.id}
+                          onClick={() => toggleProduct(product.id)}
+                          className={`w-full p-4 rounded-2xl text-left transition-all ${
+                            isSelected
+                              ? "bg-[#243530] text-white shadow-lg"
+                              : "bg-brand-sage text-brand-text hover:bg-spice-100 border border-transparent hover:border-brand-gold/20"
+                          }`}
                         >
-                          {ing}
-                        </span>
-                      ))}
-                    </div>
+                          <div className="flex items-center justify-between mb-2">
+                            <div className="flex items-center gap-2">
+                              {selectionMode === "multiple" && (
+                                <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${
+                                  isSelected ? "bg-white border-white" : "border-brand-text/30"
+                                }`}>
+                                  {isSelected && <Check className="w-3 h-3 text-[#243530]" />}
+                                </div>
+                              )}
+                              <span className="font-bold">{product.shortName}</span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              {[...Array(5)].map((_, i) => (
+                                <Flame
+                                  key={i}
+                                  className={`w-3 h-3 ${
+                                    i < product.heat
+                                      ? isSelected ? "text-orange-400" : "text-brand-rust"
+                                      : isSelected ? "text-white/20" : "text-brand-text/20"
+                                  }`}
+                                />
+                              ))}
+                            </div>
+                          </div>
+                          <p className={`text-xs ${isSelected ? "text-white/70" : "text-brand-text/50"}`}>
+                            {product.ingredients.slice(0, 4).join(", ")}...
+                          </p>
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+
+                {/* Selected Products Summary */}
+                {selectedProducts.length > 0 && (
+                  <div className="mt-4 p-4 bg-brand-sage rounded-xl border border-brand-gold/10">
+                    {selectedProducts.length === 1 ? (
+                      <>
+                        <div className="flex items-center gap-2 mb-2">
+                          <div 
+                            className="w-3 h-3 rounded-full" 
+                            style={{ backgroundColor: selectedProducts[0].color }}
+                          />
+                          <p className="text-xs font-bold text-brand-title">{selectedProducts[0].name}</p>
+                        </div>
+                        <p className="text-[11px] text-brand-text/60 mb-2">{selectedProducts[0].description}</p>
+                        <div className="flex flex-wrap gap-1">
+                          {selectedProducts[0].ingredients.map((ing) => (
+                            <span 
+                              key={ing} 
+                              className="px-2 py-0.5 bg-white rounded-full text-[10px] font-medium text-brand-text/70 border border-brand-gold/20"
+                            >
+                              {ing}
+                            </span>
+                          ))}
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="flex -space-x-1">
+                            {selectedProducts.slice(0, 5).map((p) => (
+                              <div 
+                                key={p.id}
+                                className="w-4 h-4 rounded-full border-2 border-white" 
+                                style={{ backgroundColor: p.color }}
+                              />
+                            ))}
+                          </div>
+                          <p className="text-xs font-bold text-brand-title">
+                            {selectedProducts.length} Products Selected
+                          </p>
+                        </div>
+                        <p className="text-[11px] text-brand-text/60 mb-2">
+                          Group shot with: {selectedProducts.map(p => p.shortName).join(", ")}
+                        </p>
+                        <div className="flex flex-wrap gap-1">
+                          {[...new Set(selectedProducts.flatMap(p => p.ingredients))].slice(0, 8).map((ing) => (
+                            <span 
+                              key={ing} 
+                              className="px-2 py-0.5 bg-white rounded-full text-[10px] font-medium text-brand-text/70 border border-brand-gold/20"
+                            >
+                              {ing}
+                            </span>
+                          ))}
+                        </div>
+                      </>
+                    )}
                   </div>
                 )}
               </div>
