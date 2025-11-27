@@ -52,15 +52,33 @@ export default function CalendarPage() {
     }
   };
 
+  const handleClearSchedule = () => {
+    if (confirm("Clear all scheduled posts? This cannot be undone.")) {
+      localStorage.removeItem('spicejax_schedule');
+      setScheduledPosts([]);
+      setSelectedDay(null);
+    }
+  };
+
   return (
     <MainLayout>
       <div className="space-y-6">
         {/* Header */}
-        <div className="rounded-2xl border border-gray-200 bg-white p-6">
-          <h1 className="text-3xl font-bold text-gray-900">Content Calendar</h1>
-          <p className="text-gray-500 mt-2">
-            View and manage your scheduled posts for the week
-          </p>
+        <div className="rounded-2xl border border-gray-200 bg-white p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">Content Calendar</h1>
+            <p className="text-gray-500 mt-2">
+              View and manage your scheduled posts for the week
+            </p>
+          </div>
+          {scheduledPosts.length > 0 && (
+            <button
+              onClick={handleClearSchedule}
+              className="px-4 py-2 text-sm font-medium text-red-600 bg-red-50 border border-red-200 rounded-xl hover:bg-red-100 transition-colors"
+            >
+              Clear All ({scheduledPosts.length})
+            </button>
+          )}
         </div>
 
         {/* Week Overview */}
