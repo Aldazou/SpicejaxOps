@@ -12,32 +12,44 @@ interface DriveFile {
   webContentLink?: string;
 }
 
-// Parse filename to extract scene and format info
-// Expected format: SpiceJax_SceneName_FormatName_YYYY-MM-DD.jpg
-function parseFileName(name: string): { scene: string; format: string; date: string } {
+// Parse filename to extract product, scene, format, and date
+// New format: SpiceJax_ProductName_SceneName_FormatName_YYYY-MM-DD.jpg
+// Old format: SpiceJax_SceneName_FormatName_YYYY-MM-DD.jpg
+function parseFileName(name: string): { product: string; scene: string; format: string; date: string } {
   const cleanName = name.replace(/\.[^/.]+$/, ""); // Remove extension
   const parts = cleanName.split("_");
   
-  if (parts.length >= 4 && parts[0] === "SpiceJax") {
-    // New format: SpiceJax_SceneName_FormatName_Date
-    const scene = parts[1] || "Unknown";
-    const format = parts[2] || "Unknown";
-    const date = parts[3] || "";
-    return { scene, format, date };
+  if (parts.length >= 5 && parts[0] === "SpiceJax") {
+    // New format with product: SpiceJax_Product_Scene_Format_Date
+    return {
+      product: parts[1] || "",
+      scene: parts[2] || "",
+      format: parts[3] || "",
+      date: parts[4] || "",
+    };
+  } else if (parts.length >= 4 && parts[0] === "SpiceJax") {
+    // Old format without product: SpiceJax_Scene_Format_Date
+    return {
+      product: "",
+      scene: parts[1] || "",
+      format: parts[2] || "",
+      date: parts[3] || "",
+    };
   } else if (parts.length >= 2) {
-    // Old format or partial: try to extract what we can
     return { 
+      product: "",
       scene: parts[0] || "Unknown", 
       format: parts[1] || "", 
       date: parts[2] || "" 
     };
   }
   
-  return { scene: cleanName, format: "", date: "" };
+  return { product: "", scene: cleanName, format: "", date: "" };
 }
 
 // Add spaces before capital letters for display
 function formatLabel(str: string): string {
+  if (!str) return "";
   return str.replace(/([A-Z])/g, " $1").trim();
 }
 
@@ -123,7 +135,8 @@ export default function LibraryPage() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
             {files.map((file, index) => {
-              const { scene, format, date } = parseFileName(file.name);
+              const { product, scene, format, date } = parseFileName(file.name);
+              const productDisplay = formatLabel(product);
               const sceneDisplay = formatLabel(scene);
               const formatDisplay = formatLabel(format);
               
@@ -181,21 +194,19 @@ export default function LibraryPage() {
                       )}
                     </div>
                     
-                    {/* Scene Badge */}
-                    {sceneDisplay && sceneDisplay !== "Unknown" && (
+                    {/* Scene Badge - top left */}
+                    {sceneDisplay && (
                       <div className="absolute top-3 left-3">
-                        <span className="px-2.5 py-1 bg-[#243530] text-white text-[10px] font-bold uppercase tracking-wider rounded-lg shadow-lg flex items-center gap-1">
-                          <Camera className="w-3 h-3" />
+                        <span className="px-2 py-1 bg-[#243530] text-white text-[9px] font-bold rounded-lg shadow-lg">
                           {sceneDisplay}
                         </span>
                       </div>
                     )}
                     
-                    {/* Format Badge */}
+                    {/* Format Badge - top right */}
                     {formatDisplay && (
                       <div className="absolute top-3 right-3">
-                        <span className="px-2.5 py-1 bg-white/90 backdrop-blur text-[10px] font-bold text-brand-text rounded-lg shadow-sm border border-brand-gold/20 flex items-center gap-1">
-                          <Maximize className="w-3 h-3" />
+                        <span className="px-2 py-1 bg-white/90 backdrop-blur text-[9px] font-bold text-brand-text rounded-lg shadow-sm">
                           {formatDisplay}
                         </span>
                       </div>
@@ -204,13 +215,12 @@ export default function LibraryPage() {
                   
                   {/* Info */}
                   <div className="p-4">
-                    <p className="text-sm font-semibold text-brand-title">
-                      {sceneDisplay || "Untitled"}
+                    <p className="text-sm font-bold text-brand-title">
+                      {productDisplay || sceneDisplay || "Untitled"}
                     </p>
                     <div className="flex items-center justify-between mt-1">
-                      <p className="text-xs text-brand-text/50 flex items-center gap-1">
-                        <span className="w-1.5 h-1.5 rounded-full bg-brand-lime"></span>
-                        {formatDisplay || "Custom"}
+                      <p className="text-xs text-brand-text/50">
+                        {sceneDisplay}{formatDisplay ? ` · ${formatDisplay}` : ""}
                       </p>
                       {date && (
                         <p className="text-xs text-brand-text/40">
