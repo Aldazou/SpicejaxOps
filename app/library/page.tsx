@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import MainLayout from "@/components/MainLayout";
-import { Download, ExternalLink, ImageIcon, Loader2, RefreshCw, Sparkles, Camera, Maximize } from "lucide-react";
+import { Download, ExternalLink, ImageIcon, Loader2, RefreshCw, Sparkles, PenTool, Calendar } from "lucide-react";
 
 interface DriveFile {
   id: string;
@@ -54,9 +55,23 @@ function formatLabel(str: string): string {
 }
 
 export default function LibraryPage() {
+  const router = useRouter();
   const [files, setFiles] = useState<DriveFile[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Navigate to Content Studio with image pre-loaded
+  const handleGenerateCaption = (file: DriveFile) => {
+    const { product } = parseFileName(file.name);
+    const imageUrl = `https://lh3.googleusercontent.com/d/${file.id}=w1200`;
+    // Encode params for URL
+    const params = new URLSearchParams({
+      image: imageUrl,
+      product: product || "",
+      from: "library",
+    });
+    router.push(`/content?${params.toString()}`);
+  };
 
   const fetchLibrary = async () => {
     setLoading(true);
@@ -174,14 +189,22 @@ export default function LibraryPage() {
                     
                     {/* Actions */}
                     <div className="absolute bottom-4 left-4 right-4 flex justify-center gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
+                      <button
+                        onClick={() => handleGenerateCaption(file)}
+                        className="flex items-center gap-2 px-4 py-2 bg-brand-lime text-white rounded-xl hover:bg-spice-600 transition-colors shadow-lg text-sm font-semibold"
+                        title="Generate caption"
+                      >
+                        <PenTool className="w-4 h-4" />
+                        Caption
+                      </button>
                       <a
                         href={file.webViewLink}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-2 px-4 py-2 bg-white/95 backdrop-blur rounded-xl hover:bg-white transition-colors shadow-lg text-sm font-semibold text-brand-text"
+                        className="flex items-center justify-center w-10 h-10 bg-white/95 backdrop-blur rounded-xl hover:bg-white transition-colors shadow-lg"
+                        title="View in Drive"
                       >
-                        <ExternalLink className="w-4 h-4" />
-                        View
+                        <ExternalLink className="w-4 h-4 text-brand-text" />
                       </a>
                       {file.webContentLink && (
                         <a

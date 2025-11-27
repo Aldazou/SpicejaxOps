@@ -1,9 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import MainLayout from "@/components/MainLayout";
 import Image from "next/image";
 import ScheduleModal from "@/components/ScheduleModal";
+import { getProducts, type SpiceProduct } from "@/lib/products";
+import { ImageIcon, Sparkles, X, Plus } from "lucide-react";
 
 interface ContentIdea {
   id: string;
@@ -13,16 +16,59 @@ interface ContentIdea {
   status: "pending" | "approved" | "discarded";
 }
 
-export default function ContentStudioPage() {
+function ContentStudioContent() {
+  const searchParams = useSearchParams();
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [ingredients, setIngredients] = useState<string[]>([]);
   const [newIngredient, setNewIngredient] = useState("");
   const [generating, setGenerating] = useState(false);
   const [contentIdeas, setContentIdeas] = useState<ContentIdea[]>([]);
+  const [products, setProducts] = useState<SpiceProduct[]>([]);
+  const [selectedProductId, setSelectedProductId] = useState<string>("");
+  const [fromLibrary, setFromLibrary] = useState(false);
   
   // Scheduling State
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
   const [selectedIdeaForSchedule, setSelectedIdeaForSchedule] = useState<ContentIdea | null>(null);
+
+  // Load products and check for URL params (from Library)
+  useEffect(() => {
+    const loadedProducts = getProducts();
+    setProducts(loadedProducts);
+    
+    // Check if coming from Library with pre-loaded image
+    const imageParam = searchParams.get("image");
+    const productParam = searchParams.get("product");
+    const fromParam = searchParams.get("from");
+    
+    if (imageParam) {
+      setUploadedImage(decodeURIComponent(imageParam));
+      setFromLibrary(fromParam === "library");
+    }
+    
+    if (productParam && loadedProducts.length > 0) {
+      // Try to find matching product by name (partial match)
+      const matchedProduct = loadedProducts.find(p => 
+        p.name.toLowerCase().includes(productParam.toLowerCase()) ||
+        p.shortName.toLowerCase().includes(productParam.toLowerCase()) ||
+        p.id.includes(productParam.toLowerCase())
+      );
+      
+      if (matchedProduct) {
+        setSelectedProductId(matchedProduct.id);
+        setIngredients(matchedProduct.ingredients);
+      }
+    }
+  }, [searchParams]);
+
+  // When product selection changes, update ingredients
+  const handleProductChange = (productId: string) => {
+    setSelectedProductId(productId);
+    const product = products.find(p => p.id === productId);
+    if (product) {
+      setIngredients(product.ingredients);
+    }
+  };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -203,9 +249,22 @@ export default function ContentStudioPage() {
       <div className="space-y-6">
         {/* Header */}
         <div className="rounded-2xl border border-gray-200 bg-white p-6">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="h-8 w-8 rounded-xl bg-gradient-to-br from-brand-lime to-spice-600 flex items-center justify-center shadow-lg shadow-brand-lime/20">
+              <Sparkles className="w-4 h-4 text-white" />
+            </div>
+            {fromLibrary && (
+              <span className="px-2 py-1 bg-brand-gold/10 text-brand-gold text-xs font-bold rounded-lg border border-brand-gold/20">
+                From Library
+              </span>
+            )}
+          </div>
           <h1 className="text-3xl font-bold text-gray-900">Content Studio</h1>
           <p className="text-gray-500 mt-2">
-            Upload images, add ingredients, and generate AI-powered content
+            {fromLibrary 
+              ? "Generate captions and hooks for your library image"
+              : "Upload images, add ingredients, and generate AI-powered content"
+            }
           </p>
         </div>
 
@@ -256,10 +315,35 @@ export default function ContentStudioPage() {
               </div>
             </div>
 
+            {/* Product Selector */}
+            {products.length > 0 && (
+              <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+                <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                  <span className="text-xl">🌶️</span> Select Product
+                </h2>
+                
+                <select
+                  value={selectedProductId}
+                  onChange={(e) => handleProductChange(e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#8bc53f] bg-white text-gray-900 font-medium"
+                >
+                  <option value="">Select a product...</option>
+                  {products.map((product) => (
+                    <option key={product.id} value={product.id}>
+                      {product.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+
             {/* Ingredients */}
             <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">
-                🌶️ Ingredient Breakdown
+              <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <span className="text-xl">🧂</span> Ingredients
+                {selectedProductId && (
+                  <span className="text-xs font-normal text-gray-500 ml-auto">Auto-loaded from product</span>
+                )}
               </h2>
 
               <div className="flex gap-2 mb-4">
@@ -269,36 +353,36 @@ export default function ContentStudioPage() {
                   onChange={(e) => setNewIngredient(e.target.value)}
                   onKeyPress={(e) => e.key === "Enter" && addIngredient()}
                   placeholder="Add ingredient..."
-                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#8bc53f]"
+                  className="flex-1 px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#8bc53f]"
                 />
                 <button
                   onClick={addIngredient}
-                  className="px-4 sm:px-6 py-2 bg-[#8bc53f] text-white font-medium rounded-lg hover:bg-[#77a933] transition-colors"
+                  className="px-4 py-2 bg-[#8bc53f] text-white font-medium rounded-xl hover:bg-[#77a933] transition-colors"
                 >
-                  Add
+                  <Plus className="w-5 h-5" />
                 </button>
               </div>
 
-              <div className="space-y-2">
+              <div className="flex flex-wrap gap-2">
                 {ingredients.map((ingredient, index) => (
-                  <div
+                  <span
                     key={index}
-                    className="flex items-center justify-between bg-gray-50 px-4 py-2 rounded-lg"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-brand-sage text-brand-text rounded-full text-sm border border-brand-gold/20"
                   >
-                    <span className="text-gray-700">{ingredient}</span>
+                    {ingredient}
                     <button
                       onClick={() => removeIngredient(index)}
-                      className="text-gray-400 hover:text-gray-600"
+                      className="text-brand-text/50 hover:text-brand-rust transition-colors"
                     >
-                      ✕
+                      <X className="w-3.5 h-3.5" />
                     </button>
-                  </div>
+                  </span>
                 ))}
               </div>
 
               {ingredients.length === 0 && (
                 <p className="text-center text-gray-400 text-sm py-4">
-                  No ingredients added yet
+                  Select a product or add ingredients manually
                 </p>
               )}
             </div>
@@ -384,3 +468,17 @@ export default function ContentStudioPage() {
   );
 }
 
+// Wrap with Suspense for useSearchParams
+export default function ContentStudioPage() {
+  return (
+    <Suspense fallback={
+      <MainLayout>
+        <div className="flex items-center justify-center py-24">
+          <div className="animate-spin w-8 h-8 border-4 border-brand-lime border-t-transparent rounded-full"></div>
+        </div>
+      </MainLayout>
+    }>
+      <ContentStudioContent />
+    </Suspense>
+  );
+}

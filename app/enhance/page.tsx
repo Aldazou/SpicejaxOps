@@ -3,7 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 import MainLayout from "@/components/MainLayout";
 import Image from "next/image";
-import { Expand, Download, Trash2, Sparkles, ImageIcon, Check, X, Flame } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Expand, Download, Trash2, Sparkles, ImageIcon, Check, X, Flame, PenTool } from "lucide-react";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 import { getProducts, type SpiceProduct } from "@/lib/products";
@@ -406,6 +407,7 @@ const FORMAT_PRESETS = [
 ];
 
 export default function ImageEnhancerPage() {
+  const router = useRouter();
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [enhancedImage, setEnhancedImage] = useState<string | null>(null);
   const [enhancing, setEnhancing] = useState(false);
@@ -642,6 +644,25 @@ IMPORTANT: This is a product lineup/collection shot. Make sure each jar is clear
     } finally {
       setApproving(false);
     }
+  };
+
+  // Navigate to Content Studio with the enhanced image
+  const handleGenerateCaption = () => {
+    if (!enhancedImage) return;
+    
+    const productName = selectedProducts.length === 1 
+      ? selectedProducts[0].shortName 
+      : selectedProducts.length > 1 
+        ? `${selectedProducts.length}Products` 
+        : "";
+    
+    const params = new URLSearchParams({
+      image: enhancedImage,
+      product: productName,
+      from: "enhance",
+    });
+    
+    router.push(`/content?${params.toString()}`);
   };
 
   return (
@@ -1162,29 +1183,30 @@ IMPORTANT: This is a product lineup/collection shot. Make sure each jar is clear
                         <X className="w-5 h-5" />
                       </button>
                     </div>
-                    <button
-                      onClick={handleApprove}
-                      disabled={approving || approved}
-                      className={`flex-1 min-w-[160px] py-3 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 ${
-                        approved
-                          ? "bg-spice-50 text-brand-title border border-brand-lime/30"
-                          : "bg-gradient-to-r from-brand-lime to-spice-600 text-white shadow-lg shadow-brand-lime/30 hover:shadow-xl hover:shadow-brand-lime/40 disabled:opacity-50"
-                      }`}
-                    >
-                      {approved ? (
-                        <>
-                          <Check className="w-4 h-4" />
-                          Saved to Library
-                        </>
-                      ) : approving ? (
-                        "Saving..."
-                      ) : (
-                        <>
-                          <Check className="w-4 h-4" />
-                          Approve & Save
-                        </>
-                      )}
-                    </button>
+                    {!approved ? (
+                      <button
+                        onClick={handleApprove}
+                        disabled={approving}
+                        className="flex-1 min-w-[160px] py-3 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 bg-gradient-to-r from-brand-lime to-spice-600 text-white shadow-lg shadow-brand-lime/30 hover:shadow-xl hover:shadow-brand-lime/40 disabled:opacity-50"
+                      >
+                        {approving ? (
+                          "Saving..."
+                        ) : (
+                          <>
+                            <Check className="w-4 h-4" />
+                            Approve & Save
+                          </>
+                        )}
+                      </button>
+                    ) : (
+                      <button
+                        onClick={handleGenerateCaption}
+                        className="flex-1 min-w-[160px] py-3 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 bg-gradient-to-r from-brand-gold to-gold-600 text-white shadow-lg shadow-brand-gold/30 hover:shadow-xl hover:shadow-brand-gold/40"
+                      >
+                        <PenTool className="w-4 h-4" />
+                        Generate Caption
+                      </button>
+                    )}
                   </div>
                 </div>
               ) : (
