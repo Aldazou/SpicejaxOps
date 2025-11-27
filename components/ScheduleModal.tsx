@@ -78,7 +78,7 @@ export default function ScheduleModal({
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Platform
             </label>
-            <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+            <div className="flex flex-wrap gap-2 justify-center">
               {[
                 { id: "Instagram", color: "#E4405F", icon: (
                   <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
