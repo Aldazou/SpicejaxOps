@@ -119,14 +119,14 @@ export default function ScheduleModal({
                 <button
                   key={p.id}
                   onClick={() => setPlatform(p.id)}
-                  className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-sm font-medium transition-all ${
+                  title={p.id}
+                  className={`flex items-center justify-center w-12 h-12 rounded-xl transition-all ${
                     platform === p.id
                       ? "bg-[#243530] text-white shadow-md"
                       : "bg-white border border-gray-200 text-gray-600 hover:bg-gray-50"
                   }`}
                 >
                   <span style={{ color: platform === p.id ? "white" : p.color }}>{p.icon}</span>
-                  <span className="hidden sm:inline">{p.id}</span>
                 </button>
               ))}
             </div>
