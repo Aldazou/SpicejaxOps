@@ -246,6 +246,10 @@ function ContentStudioContent() {
     console.log(`📅 Scheduling for ${date} at ${time} on ${platform}`);
     
     try {
+      // Get product name for the post
+      const selectedProduct = products.find(p => p.id === selectedProductId);
+      const productName = selectedProduct?.name || "SpiceJax";
+
       // 1. Save to LocalStorage (for immediate UI update in Calendar)
       const scheduledPost = {
         id: `post-${Date.now()}`,
@@ -254,7 +258,8 @@ function ContentStudioContent() {
         time: time,
         platform: platform,
         content: selectedIdeaForSchedule.content,
-        image: uploadedImage, // Pass the image if available
+        image: uploadedImage, // Pass the image
+        productName: productName,
         status: "scheduled"
       };
 
@@ -277,14 +282,19 @@ function ContentStudioContent() {
         }).catch(err => console.error("Failed to trigger n8n schedule workflow:", err));
       }
 
-      // 3. Update UI state
+      // 3. Update UI state - mark selected items as approved
       setContentIdeas(
         contentIdeas.map((idea) =>
-          idea.id === selectedIdeaForSchedule.id ? { ...idea, status: "approved" } : idea
+          selectedIds.includes(idea.id) || idea.id === selectedIdeaForSchedule.id 
+            ? { ...idea, status: "approved" } 
+            : idea
         )
       );
+      
+      // Clear selections
+      setSelectedIds([]);
 
-      alert("✅ Content scheduled successfully!");
+      alert("✅ Post scheduled with image + content!");
 
     } catch (error) {
       console.error("Scheduling error:", error);
