@@ -28,6 +28,9 @@ function ContentStudioContent() {
   const [platform, setPlatform] = useState<string>("instagram");
   const [formatLabel, setFormatLabel] = useState<string>("");
   
+  // Multi-select for bundling hook + caption
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  
   // Scheduling State
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
   const [selectedIdeaForSchedule, setSelectedIdeaForSchedule] = useState<ContentIdea | null>(null);
@@ -190,6 +193,35 @@ function ContentStudioContent() {
       setGenerating(false);
       console.log('✅ Generation complete');
     }
+  };
+
+  // Toggle selection for multi-select
+  const toggleSelect = (id: string) => {
+    setSelectedIds(prev => 
+      prev.includes(id) 
+        ? prev.filter(i => i !== id)
+        : [...prev, id]
+    );
+  };
+
+  // Create bundled post from selected items
+  const createBundledPost = () => {
+    if (selectedIds.length === 0) return;
+    
+    // Combine selected content
+    const selectedContent = contentIdeas
+      .filter(idea => selectedIds.includes(idea.id))
+      .map(idea => idea.content)
+      .join('\n\n');
+    
+    // Create a combined idea for scheduling
+    setSelectedIdeaForSchedule({
+      id: `bundle-${Date.now()}`,
+      type: "caption",
+      content: selectedContent,
+      status: "pending"
+    });
+    setIsScheduleModalOpen(true);
   };
 
   const updateStatus = (id: string, status: "approved" | "discarded") => {
@@ -414,9 +446,20 @@ function ContentStudioContent() {
 
           {/* Right: AI Content Ideas */}
           <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">
-              💡 AI-Generated Ideas
-            </h2>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-bold text-gray-900">
+                💡 AI-Generated Ideas
+              </h2>
+              {selectedIds.length > 0 && (
+                <button
+                  onClick={createBundledPost}
+                  className="px-4 py-2 bg-gradient-to-r from-brand-lime to-spice-600 text-white text-sm font-bold rounded-xl shadow-md hover:shadow-lg transition-all flex items-center gap-2"
+                >
+                  <Sparkles className="w-4 h-4" />
+                  Create Post ({selectedIds.length})
+                </button>
+              )}
+            </div>
 
             {contentIdeas.length === 0 ? (
               <div className="text-center py-20">
@@ -426,24 +469,45 @@ function ContentStudioContent() {
                 </p>
               </div>
             ) : (
-              <div className="space-y-4">
-                {contentIdeas.map((idea) => (
+              <div className="space-y-3">
+                <p className="text-xs text-gray-500 mb-2">Select a hook + caption to bundle as a post</p>
+                {contentIdeas.map((idea) => {
+                  const isSelected = selectedIds.includes(idea.id);
+                  return (
                   <div
                     key={idea.id}
-                    className={`border-2 rounded-xl p-4 ${
-                      idea.status === "approved"
+                    className={`border-2 rounded-xl p-4 transition-all cursor-pointer ${
+                      isSelected
+                        ? "border-brand-lime bg-brand-lime/5 shadow-md"
+                        : idea.status === "approved"
                         ? "border-[#4f7f00] bg-[#eef7e2]"
                         : idea.status === "discarded"
                         ? "border-gray-200 bg-gray-50 opacity-60"
-                        : "border-gray-200"
+                        : "border-gray-200 hover:border-gray-300"
                     }`}
+                    onClick={() => idea.status === "pending" && toggleSelect(idea.id)}
                   >
                     <div className="flex items-start justify-between mb-2">
-                      <span className="px-3 py-1 bg-spice-100 text-spice-700 text-xs font-bold rounded-full">
-                        {idea.type.toUpperCase()}
-                      </span>
+                      <div className="flex items-center gap-2">
+                        {idea.status === "pending" && (
+                          <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${
+                            isSelected 
+                              ? "bg-brand-lime border-brand-lime" 
+                              : "border-gray-300"
+                          }`}>
+                            {isSelected && (
+                              <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                              </svg>
+                            )}
+                          </div>
+                        )}
+                        <span className="px-3 py-1 bg-spice-100 text-spice-700 text-xs font-bold rounded-full">
+                          {idea.type.toUpperCase()}
+                        </span>
+                      </div>
                       {idea.status === "pending" && (
-                        <div className="flex gap-2">
+                        <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
                           <button
                             onClick={() => updateStatus(idea.id, "approved")}
                             className="px-3 py-1 bg-[#8bc53f] text-white text-sm font-medium rounded-lg hover:bg-[#77a933]"
@@ -473,7 +537,8 @@ function ContentStudioContent() {
 
                     <p className="text-gray-700">{idea.content}</p>
                   </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>
