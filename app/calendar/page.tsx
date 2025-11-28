@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import MainLayout from "@/components/MainLayout";
+import Image from "next/image";
 
 interface ScheduledPost {
   id: string;
@@ -128,33 +129,47 @@ export default function CalendarPage() {
                 getPostsForDay(selectedDay).map((post) => (
                   <div
                     key={post.id}
-                    className="border border-gray-200 rounded-xl p-6 hover:shadow-md transition-shadow"
+                    className="border border-gray-200 rounded-xl overflow-hidden hover:shadow-md transition-shadow"
                   >
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex items-center gap-3">
-                        <span className="text-3xl">{getPlatformIcon(post.platform)}</span>
-                        <div>
-                          <p className="font-bold text-gray-900">{post.platform}</p>
-                          <p className="text-sm text-gray-500">{post.time}</p>
-                        </div>
+                    {/* Image */}
+                    {post.image && (
+                      <div className="relative w-full aspect-video bg-gray-100">
+                        <Image
+                          src={post.image}
+                          alt="Post image"
+                          fill
+                          className="object-cover"
+                        />
                       </div>
-                      <span className="px-3 py-1 bg-[#eef7e2] text-[#4f7f00] text-xs font-bold rounded-full">
-                        {post.status.toUpperCase()}
-                      </span>
-                    </div>
+                    )}
+                    
+                    <div className="p-6">
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="flex items-center gap-3">
+                          <span className="text-3xl">{getPlatformIcon(post.platform)}</span>
+                          <div>
+                            <p className="font-bold text-gray-900">{post.platform}</p>
+                            <p className="text-sm text-gray-500">{post.time}</p>
+                          </div>
+                        </div>
+                        <span className="px-3 py-1 bg-[#eef7e2] text-[#4f7f00] text-xs font-bold rounded-full">
+                          {post.status.toUpperCase()}
+                        </span>
+                      </div>
 
-                    <p className="text-gray-700 mb-4">{post.content}</p>
+                      <p className="text-gray-700 mb-4 whitespace-pre-line">{post.content}</p>
 
-                    <div className="flex gap-2">
-                      <button className="px-4 py-2 bg-[#8bc53f] text-white font-medium rounded-lg hover:bg-[#77a933] transition-colors">
-                        Edit
-                      </button>
-                      <button className="px-4 py-2 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition-colors">
-                        Reschedule
-                      </button>
-                      <button className="px-4 py-2 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition-colors">
-                        Cancel
-                      </button>
+                      <div className="flex gap-2">
+                        <button className="px-4 py-2 bg-[#8bc53f] text-white font-medium rounded-lg hover:bg-[#77a933] transition-colors">
+                          Edit
+                        </button>
+                        <button className="px-4 py-2 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition-colors">
+                          Reschedule
+                        </button>
+                        <button className="px-4 py-2 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition-colors">
+                          Cancel
+                        </button>
+                      </div>
                     </div>
                   </div>
                 ))
