@@ -8,6 +8,21 @@ import ScheduleModal from "@/components/ScheduleModal";
 import { getProducts, type SpiceProduct } from "@/lib/products";
 import { ImageIcon, Sparkles, X } from "lucide-react";
 
+// Format platform name for display
+function getPlatformDisplayName(platform: string): string {
+  const names: Record<string, string> = {
+    instagram: "Instagram",
+    facebook: "Facebook",
+    tiktok: "TikTok",
+    linkedin: "LinkedIn",
+    youtube: "YouTube",
+    pinterest: "Pinterest",
+    twitter: "X",
+    ecommerce: "E-Commerce",
+  };
+  return names[platform.toLowerCase()] || platform || "Library";
+}
+
 interface ContentIdea {
   id: string;
   type: "image" | "caption" | "hook";
@@ -318,9 +333,9 @@ function ContentStudioContent() {
             <div className="h-8 w-8 rounded-xl bg-gradient-to-br from-brand-lime to-spice-600 flex items-center justify-center shadow-lg shadow-brand-lime/20">
               <Sparkles className="w-4 h-4 text-white" />
             </div>
-            {fromLibrary && (
+            {fromLibrary && platform && (
               <span className="px-2 py-1 bg-brand-gold/10 text-brand-gold text-xs font-bold rounded-lg border border-brand-gold/20">
-                From {platform === "instagram" ? "Instagram" : platform === "facebook" ? "Facebook" : platform === "tiktok" ? "TikTok" : platform === "linkedin" ? "LinkedIn" : platform === "youtube" ? "YouTube" : platform === "pinterest" ? "Pinterest" : platform === "twitter" ? "X" : "Library"}
+                From {getPlatformDisplayName(platform)}
               </span>
             )}
             {formatLabel && (

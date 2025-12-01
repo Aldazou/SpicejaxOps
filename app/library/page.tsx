@@ -54,6 +54,20 @@ function formatLabel(str: string): string {
   return str.replace(/([A-Z])/g, " $1").trim();
 }
 
+// Extract platform from format string (e.g., "InstagramSquare" -> "instagram")
+function extractPlatform(format: string): string {
+  const formatLower = format.toLowerCase();
+  if (formatLower.includes("instagram")) return "instagram";
+  if (formatLower.includes("facebook")) return "facebook";
+  if (formatLower.includes("tiktok")) return "tiktok";
+  if (formatLower.includes("pinterest")) return "pinterest";
+  if (formatLower.includes("linkedin")) return "linkedin";
+  if (formatLower.includes("youtube")) return "youtube";
+  if (formatLower.includes("twitter") || formatLower.includes("x-")) return "twitter";
+  if (formatLower.includes("woo") || formatLower.includes("amazon") || formatLower.includes("etsy")) return "ecommerce";
+  return "instagram"; // default fallback
+}
+
 export default function LibraryPage() {
   const router = useRouter();
   const [files, setFiles] = useState<DriveFile[]>([]);
@@ -62,12 +76,16 @@ export default function LibraryPage() {
 
   // Navigate to Content Studio with image pre-loaded
   const handleGenerateCaption = (file: DriveFile) => {
-    const { product } = parseFileName(file.name);
+    const { product, format } = parseFileName(file.name);
     const imageUrl = `https://lh3.googleusercontent.com/d/${file.id}=w1200`;
+    const platform = extractPlatform(format);
+    
     // Encode params for URL
     const params = new URLSearchParams({
       image: imageUrl,
       product: product || "",
+      platform: platform,
+      format: format,
       from: "library",
     });
     router.push(`/content?${params.toString()}`);
