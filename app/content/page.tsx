@@ -272,6 +272,7 @@ function ContentStudioContent() {
         date: date,
         time: time,
         platform: platform,
+        format: formatLabel, // Pass the format for correct aspect ratio
         content: selectedIdeaForSchedule.content,
         image: uploadedImage, // Pass the image
         productName: productName,

@@ -10,10 +10,53 @@ interface ScheduledPost {
   day: string;
   time: string;
   platform: string;
+  format?: string; // e.g., "InstagramSquare", "FacebookLandscape", "PinterestPin"
   content: string;
   image?: string;
   productName?: string;
   status: "scheduled" | "posted" | "draft";
+}
+
+// Get aspect ratio based on format
+function getAspectRatio(format?: string): string {
+  if (!format) return "aspect-square";
+  
+  const f = format.toLowerCase();
+  
+  // Instagram formats
+  if (f.includes("instagramsquare") || f.includes("ig-square")) return "aspect-square";
+  if (f.includes("instagramportrait") || f.includes("ig-portrait") || f.includes("4:5")) return "aspect-[4/5]";
+  if (f.includes("instagramstory") || f.includes("instagramreel") || f.includes("ig-story") || f.includes("ig-reel")) return "aspect-[9/16]";
+  if (f.includes("instagramlandscape") || f.includes("ig-landscape")) return "aspect-[1.91/1]";
+  
+  // Facebook formats
+  if (f.includes("facebooklandscape") || f.includes("fb-landscape")) return "aspect-[1.91/1]";
+  if (f.includes("facebooksquare") || f.includes("fb-square")) return "aspect-square";
+  if (f.includes("facebookstory") || f.includes("fb-story")) return "aspect-[9/16]";
+  
+  // TikTok - always vertical
+  if (f.includes("tiktok")) return "aspect-[9/16]";
+  
+  // Pinterest - tall pins
+  if (f.includes("pinterest")) return "aspect-[2/3]";
+  
+  // LinkedIn
+  if (f.includes("linkedin")) return "aspect-[1.91/1]";
+  
+  // YouTube - always 16:9
+  if (f.includes("youtube")) return "aspect-video";
+  
+  // Twitter/X
+  if (f.includes("twitter") || f.includes("x-")) return "aspect-[16/9]";
+  
+  // E-commerce (WooCommerce, Amazon, Etsy)
+  if (f.includes("woo") || f.includes("amazon") || f.includes("etsy")) return "aspect-square";
+  
+  // Print formats
+  if (f.includes("print")) return "aspect-[4/5]";
+  
+  // Default to square
+  return "aspect-square";
 }
 
 // Platform brand colors
@@ -89,114 +132,119 @@ const PlatformIcon = ({ platform, size = 24 }: { platform: string; size?: number
 };
 
 // Platform-specific post preview components
-const InstagramPreview = ({ post }: { post: ScheduledPost }) => (
-  <div className="bg-white rounded-lg overflow-hidden shadow-lg max-w-[375px] mx-auto border border-gray-200">
-    {/* Header */}
-    <div className="flex items-center justify-between p-3 border-b border-gray-100">
-      <div className="flex items-center gap-3">
-        <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-600 p-[2px]">
-          <div className="w-full h-full rounded-full bg-white flex items-center justify-center">
-            <span className="text-xs font-bold">SJ</span>
+const InstagramPreview = ({ post }: { post: ScheduledPost }) => {
+  const aspectClass = getAspectRatio(post.format);
+  const isStory = post.format?.toLowerCase().includes("story") || post.format?.toLowerCase().includes("reel");
+  
+  return (
+    <div className={`bg-white rounded-lg overflow-hidden shadow-lg mx-auto border border-gray-200 ${isStory ? "max-w-[280px]" : "max-w-[375px]"}`}>
+      {/* Header */}
+      <div className="flex items-center justify-between p-3 border-b border-gray-100">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-600 p-[2px]">
+            <div className="w-full h-full rounded-full bg-white flex items-center justify-center">
+              <span className="text-xs font-bold">SJ</span>
+            </div>
+          </div>
+          <div>
+            <p className="text-sm font-semibold text-gray-900">spicejax</p>
+            <p className="text-xs text-gray-500">Sponsored</p>
           </div>
         </div>
-        <div>
-          <p className="text-sm font-semibold text-gray-900">spicejax</p>
-          <p className="text-xs text-gray-500">Sponsored</p>
-        </div>
+        <MoreHorizontal className="w-5 h-5 text-gray-600" />
       </div>
-      <MoreHorizontal className="w-5 h-5 text-gray-600" />
+      
+      {/* Image - uses format-based aspect ratio */}
+      {post.image && (
+        <div className={`relative w-full ${aspectClass} bg-black`}>
+          <Image src={post.image} alt="Post" fill className="object-cover" />
+        </div>
+      )}
+      
+      {/* Actions */}
+      <div className="p-3">
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-4">
+            <Heart className="w-6 h-6 text-gray-900 cursor-pointer hover:text-gray-600" />
+            <MessageCircle className="w-6 h-6 text-gray-900 cursor-pointer hover:text-gray-600" />
+            <Send className="w-6 h-6 text-gray-900 cursor-pointer hover:text-gray-600" />
+          </div>
+          <Bookmark className="w-6 h-6 text-gray-900 cursor-pointer hover:text-gray-600" />
+        </div>
+        <p className="text-sm font-semibold text-gray-900 mb-1">1,247 likes</p>
+        <p className="text-sm text-gray-900">
+          <span className="font-semibold">spicejax</span>{" "}
+          <span className="whitespace-pre-line">{post.content.slice(0, 150)}{post.content.length > 150 ? "..." : ""}</span>
+        </p>
+        <p className="text-xs text-gray-400 mt-2 uppercase">Just now</p>
+      </div>
     </div>
-    
-    {/* Image - adapts to actual image, shows full image */}
-    {post.image && (
-      <div className="relative w-full bg-black">
-        <div className="relative w-full aspect-square">
-          <Image src={post.image} alt="Post" fill className="object-contain" />
-        </div>
-      </div>
-    )}
-    
-    {/* Actions */}
-    <div className="p-3">
-      <div className="flex items-center justify-between mb-2">
-        <div className="flex items-center gap-4">
-          <Heart className="w-6 h-6 text-gray-900 cursor-pointer hover:text-gray-600" />
-          <MessageCircle className="w-6 h-6 text-gray-900 cursor-pointer hover:text-gray-600" />
-          <Send className="w-6 h-6 text-gray-900 cursor-pointer hover:text-gray-600" />
-        </div>
-        <Bookmark className="w-6 h-6 text-gray-900 cursor-pointer hover:text-gray-600" />
-      </div>
-      <p className="text-sm font-semibold text-gray-900 mb-1">1,247 likes</p>
-      <p className="text-sm text-gray-900">
-        <span className="font-semibold">spicejax</span>{" "}
-        <span className="whitespace-pre-line">{post.content.slice(0, 150)}{post.content.length > 150 ? "..." : ""}</span>
-      </p>
-      <p className="text-xs text-gray-400 mt-2 uppercase">Just now</p>
-    </div>
-  </div>
-);
+  );
+};
 
-const FacebookPreview = ({ post }: { post: ScheduledPost }) => (
-  <div className="bg-white rounded-lg overflow-hidden shadow-lg max-w-[500px] mx-auto border border-gray-200">
-    {/* Header */}
-    <div className="flex items-center gap-3 p-4">
-      <div className="w-10 h-10 rounded-full bg-[#8bc53f] flex items-center justify-center">
-        <span className="text-white font-bold text-sm">SJ</span>
+const FacebookPreview = ({ post }: { post: ScheduledPost }) => {
+  const aspectClass = getAspectRatio(post.format);
+  
+  return (
+    <div className="bg-white rounded-lg overflow-hidden shadow-lg max-w-[500px] mx-auto border border-gray-200">
+      {/* Header */}
+      <div className="flex items-center gap-3 p-4">
+        <div className="w-10 h-10 rounded-full bg-[#8bc53f] flex items-center justify-center">
+          <span className="text-white font-bold text-sm">SJ</span>
+        </div>
+        <div className="flex-1">
+          <p className="font-semibold text-gray-900">SpiceJax</p>
+          <p className="text-xs text-gray-500">Just now · 🌎</p>
+        </div>
+        <MoreHorizontal className="w-5 h-5 text-gray-500" />
       </div>
-      <div className="flex-1">
-        <p className="font-semibold text-gray-900">SpiceJax</p>
-        <p className="text-xs text-gray-500">Just now · 🌎</p>
+      
+      {/* Content */}
+      <div className="px-4 pb-3">
+        <p className="text-gray-900 whitespace-pre-line text-[15px]">{post.content}</p>
       </div>
-      <MoreHorizontal className="w-5 h-5 text-gray-500" />
-    </div>
-    
-    {/* Content */}
-    <div className="px-4 pb-3">
-      <p className="text-gray-900 whitespace-pre-line text-[15px]">{post.content}</p>
-    </div>
-    
-    {/* Image - adapts to actual image */}
-    {post.image && (
-      <div className="relative w-full bg-gray-900">
-        <div className="relative w-full aspect-[4/3]">
-          <Image src={post.image} alt="Post" fill className="object-contain" />
+      
+      {/* Image - uses format-based aspect ratio */}
+      {post.image && (
+        <div className={`relative w-full ${aspectClass} bg-gray-100`}>
+          <Image src={post.image} alt="Post" fill className="object-cover" />
+        </div>
+      )}
+      
+      {/* Reactions */}
+      <div className="p-4 border-t border-gray-100">
+        <div className="flex items-center justify-between text-gray-500 text-sm mb-3">
+          <div className="flex items-center gap-1">
+            <span className="flex -space-x-1">
+              <span className="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center text-white text-[10px]">👍</span>
+              <span className="w-5 h-5 rounded-full bg-red-500 flex items-center justify-center text-white text-[10px]">❤️</span>
+            </span>
+            <span className="ml-1">423</span>
+          </div>
+          <span>47 comments · 12 shares</span>
+        </div>
+        <div className="flex items-center justify-around pt-2 border-t border-gray-100">
+          <button className="flex items-center gap-2 text-gray-600 hover:bg-gray-100 px-4 py-2 rounded-lg">
+            <ThumbsUp className="w-5 h-5" /> Like
+          </button>
+          <button className="flex items-center gap-2 text-gray-600 hover:bg-gray-100 px-4 py-2 rounded-lg">
+            <MessageCircle className="w-5 h-5" /> Comment
+          </button>
+          <button className="flex items-center gap-2 text-gray-600 hover:bg-gray-100 px-4 py-2 rounded-lg">
+            <Share2 className="w-5 h-5" /> Share
+          </button>
         </div>
       </div>
-    )}
-    
-    {/* Reactions */}
-    <div className="p-4 border-t border-gray-100">
-      <div className="flex items-center justify-between text-gray-500 text-sm mb-3">
-        <div className="flex items-center gap-1">
-          <span className="flex -space-x-1">
-            <span className="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center text-white text-[10px]">👍</span>
-            <span className="w-5 h-5 rounded-full bg-red-500 flex items-center justify-center text-white text-[10px]">❤️</span>
-          </span>
-          <span className="ml-1">423</span>
-        </div>
-        <span>47 comments · 12 shares</span>
-      </div>
-      <div className="flex items-center justify-around pt-2 border-t border-gray-100">
-        <button className="flex items-center gap-2 text-gray-600 hover:bg-gray-100 px-4 py-2 rounded-lg">
-          <ThumbsUp className="w-5 h-5" /> Like
-        </button>
-        <button className="flex items-center gap-2 text-gray-600 hover:bg-gray-100 px-4 py-2 rounded-lg">
-          <MessageCircle className="w-5 h-5" /> Comment
-        </button>
-        <button className="flex items-center gap-2 text-gray-600 hover:bg-gray-100 px-4 py-2 rounded-lg">
-          <Share2 className="w-5 h-5" /> Share
-        </button>
-      </div>
     </div>
-  </div>
-);
+  );
+};
 
 const TikTokPreview = ({ post }: { post: ScheduledPost }) => (
   <div className="bg-black rounded-2xl overflow-hidden shadow-2xl max-w-[325px] mx-auto relative">
     {/* Full screen video style - 9:16 */}
     {post.image && (
       <div className="relative w-full aspect-[9/16] bg-black">
-        <Image src={post.image} alt="Post" fill className="object-contain" />
+        <Image src={post.image} alt="Post" fill className="object-cover" />
         
         {/* Overlay gradient */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
@@ -248,72 +296,74 @@ const TikTokPreview = ({ post }: { post: ScheduledPost }) => (
   </div>
 );
 
-const LinkedInPreview = ({ post }: { post: ScheduledPost }) => (
-  <div className="bg-white rounded-lg overflow-hidden shadow-lg max-w-[550px] mx-auto border border-gray-200">
-    {/* Header */}
-    <div className="flex items-start gap-3 p-4">
-      <div className="w-12 h-12 rounded-full bg-[#8bc53f] flex items-center justify-center flex-shrink-0">
-        <span className="text-white font-bold">SJ</span>
+const LinkedInPreview = ({ post }: { post: ScheduledPost }) => {
+  const aspectClass = getAspectRatio(post.format);
+  
+  return (
+    <div className="bg-white rounded-lg overflow-hidden shadow-lg max-w-[550px] mx-auto border border-gray-200">
+      {/* Header */}
+      <div className="flex items-start gap-3 p-4">
+        <div className="w-12 h-12 rounded-full bg-[#8bc53f] flex items-center justify-center flex-shrink-0">
+          <span className="text-white font-bold">SJ</span>
+        </div>
+        <div className="flex-1">
+          <p className="font-semibold text-gray-900">SpiceJax</p>
+          <p className="text-xs text-gray-500">2,847 followers</p>
+          <p className="text-xs text-gray-400">Just now · 🌐</p>
+        </div>
+        <MoreHorizontal className="w-5 h-5 text-gray-500" />
       </div>
-      <div className="flex-1">
-        <p className="font-semibold text-gray-900">SpiceJax</p>
-        <p className="text-xs text-gray-500">2,847 followers</p>
-        <p className="text-xs text-gray-400">Just now · 🌐</p>
+      
+      {/* Content */}
+      <div className="px-4 pb-3">
+        <p className="text-gray-900 whitespace-pre-line text-sm leading-relaxed">{post.content}</p>
       </div>
-      <MoreHorizontal className="w-5 h-5 text-gray-500" />
-    </div>
-    
-    {/* Content */}
-    <div className="px-4 pb-3">
-      <p className="text-gray-900 whitespace-pre-line text-sm leading-relaxed">{post.content}</p>
-    </div>
-    
-    {/* Image - adapts to actual image */}
-    {post.image && (
-      <div className="relative w-full bg-[#f3f2ef]">
-        <div className="relative w-full aspect-[4/3]">
-          <Image src={post.image} alt="Post" fill className="object-contain" />
+      
+      {/* Image - uses format-based aspect ratio */}
+      {post.image && (
+        <div className={`relative w-full ${aspectClass} bg-[#f3f2ef]`}>
+          <Image src={post.image} alt="Post" fill className="object-cover" />
+        </div>
+      )}
+      
+      {/* Reactions */}
+      <div className="p-4 border-t border-gray-100">
+        <div className="flex items-center justify-between text-gray-500 text-xs mb-3">
+          <div className="flex items-center gap-1">
+            <span className="flex -space-x-1">
+              <span className="w-4 h-4 rounded-full bg-blue-600 flex items-center justify-center text-white text-[8px]">👍</span>
+              <span className="w-4 h-4 rounded-full bg-green-600 flex items-center justify-center text-white text-[8px]">👏</span>
+              <span className="w-4 h-4 rounded-full bg-red-500 flex items-center justify-center text-white text-[8px]">❤️</span>
+            </span>
+            <span className="ml-1">1,247</span>
+          </div>
+          <span>89 comments · 34 reposts</span>
+        </div>
+        <div className="flex items-center justify-around pt-2 border-t border-gray-100">
+          <button className="flex items-center gap-1 text-gray-600 hover:bg-gray-100 px-3 py-2 rounded text-sm">
+            <ThumbsUp className="w-4 h-4" /> Like
+          </button>
+          <button className="flex items-center gap-1 text-gray-600 hover:bg-gray-100 px-3 py-2 rounded text-sm">
+            <MessageCircle className="w-4 h-4" /> Comment
+          </button>
+          <button className="flex items-center gap-1 text-gray-600 hover:bg-gray-100 px-3 py-2 rounded text-sm">
+            <Repeat2 className="w-4 h-4" /> Repost
+          </button>
+          <button className="flex items-center gap-1 text-gray-600 hover:bg-gray-100 px-3 py-2 rounded text-sm">
+            <Send className="w-4 h-4" /> Send
+          </button>
         </div>
       </div>
-    )}
-    
-    {/* Reactions */}
-    <div className="p-4 border-t border-gray-100">
-      <div className="flex items-center justify-between text-gray-500 text-xs mb-3">
-        <div className="flex items-center gap-1">
-          <span className="flex -space-x-1">
-            <span className="w-4 h-4 rounded-full bg-blue-600 flex items-center justify-center text-white text-[8px]">👍</span>
-            <span className="w-4 h-4 rounded-full bg-green-600 flex items-center justify-center text-white text-[8px]">👏</span>
-            <span className="w-4 h-4 rounded-full bg-red-500 flex items-center justify-center text-white text-[8px]">❤️</span>
-          </span>
-          <span className="ml-1">1,247</span>
-        </div>
-        <span>89 comments · 34 reposts</span>
-      </div>
-      <div className="flex items-center justify-around pt-2 border-t border-gray-100">
-        <button className="flex items-center gap-1 text-gray-600 hover:bg-gray-100 px-3 py-2 rounded text-sm">
-          <ThumbsUp className="w-4 h-4" /> Like
-        </button>
-        <button className="flex items-center gap-1 text-gray-600 hover:bg-gray-100 px-3 py-2 rounded text-sm">
-          <MessageCircle className="w-4 h-4" /> Comment
-        </button>
-        <button className="flex items-center gap-1 text-gray-600 hover:bg-gray-100 px-3 py-2 rounded text-sm">
-          <Repeat2 className="w-4 h-4" /> Repost
-        </button>
-        <button className="flex items-center gap-1 text-gray-600 hover:bg-gray-100 px-3 py-2 rounded text-sm">
-          <Send className="w-4 h-4" /> Send
-        </button>
-      </div>
     </div>
-  </div>
-);
+  );
+};
 
 const PinterestPreview = ({ post }: { post: ScheduledPost }) => (
   <div className="bg-white rounded-3xl overflow-hidden shadow-xl max-w-[300px] mx-auto">
-    {/* Pin Image - shows full image */}
+    {/* Pin Image - 2:3 Pinterest ratio */}
     {post.image && (
       <div className="relative w-full aspect-[2/3] bg-gray-50 group">
-        <Image src={post.image} alt="Pin" fill className="object-contain" />
+        <Image src={post.image} alt="Pin" fill className="object-cover" />
         
         {/* Hover overlay */}
         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-between p-3">
@@ -353,10 +403,10 @@ const PinterestPreview = ({ post }: { post: ScheduledPost }) => (
 
 const YouTubePreview = ({ post }: { post: ScheduledPost }) => (
   <div className="bg-[#0f0f0f] rounded-xl overflow-hidden shadow-2xl max-w-[400px] mx-auto">
-    {/* Video Thumbnail - shows full image */}
+    {/* Video Thumbnail - 16:9 YouTube ratio */}
     {post.image && (
       <div className="relative w-full aspect-video bg-black group">
-        <Image src={post.image} alt="Video" fill className="object-contain" />
+        <Image src={post.image} alt="Video" fill className="object-cover" />
         
         {/* Play button overlay */}
         <div className="absolute inset-0 flex items-center justify-center">
