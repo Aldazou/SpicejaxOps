@@ -107,10 +107,12 @@ const InstagramPreview = ({ post }: { post: ScheduledPost }) => (
       <MoreHorizontal className="w-5 h-5 text-gray-600" />
     </div>
     
-    {/* Image - Square 1:1 */}
+    {/* Image - adapts to actual image, shows full image */}
     {post.image && (
-      <div className="relative w-full aspect-square bg-gray-100">
-        <Image src={post.image} alt="Post" fill className="object-cover" />
+      <div className="relative w-full bg-black">
+        <div className="relative w-full aspect-square">
+          <Image src={post.image} alt="Post" fill className="object-contain" />
+        </div>
       </div>
     )}
     
@@ -153,10 +155,12 @@ const FacebookPreview = ({ post }: { post: ScheduledPost }) => (
       <p className="text-gray-900 whitespace-pre-line text-[15px]">{post.content}</p>
     </div>
     
-    {/* Image - Landscape 1.91:1 */}
+    {/* Image - adapts to actual image */}
     {post.image && (
-      <div className="relative w-full aspect-[1.91/1] bg-gray-100">
-        <Image src={post.image} alt="Post" fill className="object-cover" />
+      <div className="relative w-full bg-gray-900">
+        <div className="relative w-full aspect-[4/3]">
+          <Image src={post.image} alt="Post" fill className="object-contain" />
+        </div>
       </div>
     )}
     
@@ -191,8 +195,8 @@ const TikTokPreview = ({ post }: { post: ScheduledPost }) => (
   <div className="bg-black rounded-2xl overflow-hidden shadow-2xl max-w-[325px] mx-auto relative">
     {/* Full screen video style - 9:16 */}
     {post.image && (
-      <div className="relative w-full aspect-[9/16] bg-gray-900">
-        <Image src={post.image} alt="Post" fill className="object-cover" />
+      <div className="relative w-full aspect-[9/16] bg-black">
+        <Image src={post.image} alt="Post" fill className="object-contain" />
         
         {/* Overlay gradient */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
@@ -264,10 +268,12 @@ const LinkedInPreview = ({ post }: { post: ScheduledPost }) => (
       <p className="text-gray-900 whitespace-pre-line text-sm leading-relaxed">{post.content}</p>
     </div>
     
-    {/* Image - Landscape */}
+    {/* Image - adapts to actual image */}
     {post.image && (
-      <div className="relative w-full aspect-[1.91/1] bg-gray-100">
-        <Image src={post.image} alt="Post" fill className="object-cover" />
+      <div className="relative w-full bg-[#f3f2ef]">
+        <div className="relative w-full aspect-[4/3]">
+          <Image src={post.image} alt="Post" fill className="object-contain" />
+        </div>
       </div>
     )}
     
@@ -304,10 +310,10 @@ const LinkedInPreview = ({ post }: { post: ScheduledPost }) => (
 
 const PinterestPreview = ({ post }: { post: ScheduledPost }) => (
   <div className="bg-white rounded-3xl overflow-hidden shadow-xl max-w-[300px] mx-auto">
-    {/* Pin Image - 2:3 ratio */}
+    {/* Pin Image - shows full image */}
     {post.image && (
-      <div className="relative w-full aspect-[2/3] bg-gray-100 group">
-        <Image src={post.image} alt="Pin" fill className="object-cover" />
+      <div className="relative w-full aspect-[2/3] bg-gray-50 group">
+        <Image src={post.image} alt="Pin" fill className="object-contain" />
         
         {/* Hover overlay */}
         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-between p-3">
@@ -347,10 +353,10 @@ const PinterestPreview = ({ post }: { post: ScheduledPost }) => (
 
 const YouTubePreview = ({ post }: { post: ScheduledPost }) => (
   <div className="bg-[#0f0f0f] rounded-xl overflow-hidden shadow-2xl max-w-[400px] mx-auto">
-    {/* Video Thumbnail - 16:9 */}
+    {/* Video Thumbnail - shows full image */}
     {post.image && (
-      <div className="relative w-full aspect-video bg-gray-900 group">
-        <Image src={post.image} alt="Video" fill className="object-cover" />
+      <div className="relative w-full aspect-video bg-black group">
+        <Image src={post.image} alt="Video" fill className="object-contain" />
         
         {/* Play button overlay */}
         <div className="absolute inset-0 flex items-center justify-center">
