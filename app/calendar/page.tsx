@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import MainLayout from "@/components/MainLayout";
 import Image from "next/image";
-import { Heart, MessageCircle, Send, Bookmark, MoreHorizontal, ThumbsUp, Share2, Repeat2, Eye, Pin } from "lucide-react";
+import { Heart, MessageCircle, Send, Bookmark, MoreHorizontal, ThumbsUp, Share2, Repeat2, Eye, Pin, Loader2, Rocket } from "lucide-react";
 
 interface ScheduledPost {
   id: string;
@@ -461,9 +461,13 @@ const PlatformPreview = ({ post }: { post: ScheduledPost }) => {
   }
 };
 
+// Platforms that are configured for posting
+const CONFIGURED_PLATFORMS = ["facebook"]; // Add more as you connect them
+
 export default function CalendarPage() {
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
   const [scheduledPosts, setScheduledPosts] = useState<ScheduledPost[]>([]);
+  const [postingId, setPostingId] = useState<string | null>(null); // Track which post is being published
 
   // Load schedule from LocalStorage on mount
   useEffect(() => {
@@ -484,6 +488,62 @@ export default function CalendarPage() {
       localStorage.removeItem('spicejax_schedule');
       setScheduledPosts([]);
       setSelectedDay(null);
+    }
+  };
+
+  // Check if platform is ready for posting
+  const isPlatformConfigured = (platform: string) => {
+    return CONFIGURED_PLATFORMS.includes(platform.toLowerCase());
+  };
+
+  // Post to social media
+  const handlePostNow = async (post: ScheduledPost) => {
+    if (!post.image || !post.content) {
+      alert("Post is missing image or content!");
+      return;
+    }
+
+    if (!isPlatformConfigured(post.platform)) {
+      alert(`${post.platform} posting coming soon! Only Facebook is connected right now.`);
+      return;
+    }
+
+    if (!confirm(`Post this to ${post.platform} now?`)) {
+      return;
+    }
+
+    setPostingId(post.id);
+
+    try {
+      const response = await fetch("/api/social/post", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          platform: post.platform,
+          image: post.image,
+          caption: post.content,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Update post status to "posted"
+        const updatedPosts = scheduledPosts.map((p) =>
+          p.id === post.id ? { ...p, status: "posted" as const } : p
+        );
+        setScheduledPosts(updatedPosts);
+        localStorage.setItem("spicejax_schedule", JSON.stringify(updatedPosts));
+        
+        alert(`✅ Posted to ${post.platform}!`);
+      } else {
+        alert(`❌ Failed: ${data.error}`);
+      }
+    } catch (error) {
+      console.error("Post error:", error);
+      alert("Failed to post. Check console for details.");
+    } finally {
+      setPostingId(null);
     }
   };
 
@@ -582,8 +642,37 @@ export default function CalendarPage() {
                     </div>
 
                     {/* Actions */}
-                    <div className="flex gap-2 justify-center">
-                      <button className="px-5 py-2.5 bg-[#8bc53f] text-white font-medium rounded-xl hover:bg-[#77a933] transition-colors shadow-sm">
+                    <div className="flex flex-wrap gap-2 justify-center">
+                      {/* Post Now - Primary Action */}
+                      {post.status !== "posted" && (
+                        <button
+                          onClick={() => handlePostNow(post)}
+                          disabled={postingId === post.id}
+                          className={`px-5 py-2.5 font-medium rounded-xl shadow-sm flex items-center gap-2 transition-colors ${
+                            isPlatformConfigured(post.platform)
+                              ? "bg-[#1877f2] text-white hover:bg-[#1565d8]"
+                              : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                          }`}
+                        >
+                          {postingId === post.id ? (
+                            <>
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                              Posting...
+                            </>
+                          ) : (
+                            <>
+                              <Rocket className="w-4 h-4" />
+                              Post to {post.platform}
+                            </>
+                          )}
+                        </button>
+                      )}
+                      {post.status === "posted" && (
+                        <span className="px-5 py-2.5 bg-green-100 text-green-700 font-medium rounded-xl flex items-center gap-2">
+                          ✓ Posted
+                        </span>
+                      )}
+                      <button className="px-5 py-2.5 bg-white text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors shadow-sm border border-gray-200">
                         Edit
                       </button>
                       <button className="px-5 py-2.5 bg-white text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors shadow-sm border border-gray-200">
