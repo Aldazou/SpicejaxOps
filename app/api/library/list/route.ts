@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
+export const dynamic = "force-dynamic";
+
 function buildWebhookUrl(baseUrl: string, envValue: string | undefined, defaultPath: string) {
   const normalizedBase = baseUrl.replace(/\/$/, "");
   if (envValue) {

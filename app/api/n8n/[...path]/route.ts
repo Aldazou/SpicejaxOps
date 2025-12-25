@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+export const dynamic = 'force-dynamic';
+
 const N8N_BASE_URL = process.env.N8N_BASE_URL || 'http://localhost:5678';
 const WEBHOOK_OVERRIDES: Record<string, string | undefined> = {
   'content-generate': process.env.N8N_CONTENT_GENERATE_WEBHOOK,

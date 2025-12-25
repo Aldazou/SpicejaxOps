@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
+export const dynamic = "force-dynamic";
+
 // n8n webhook URLs for each platform (add to .env.local)
 const PLATFORM_WEBHOOKS: Record<string, string | undefined> = {
   facebook: process.env.N8N_FACEBOOK_POST_WEBHOOK,
@@ -96,6 +98,5 @@ export async function POST(request: NextRequest) {
     );
   }
 }
-
 
 
