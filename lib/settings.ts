@@ -13,7 +13,7 @@ export interface N8NSettings {
 const SETTINGS_KEY = 'spicejax_settings';
 
 const DEFAULT_SETTINGS: N8NSettings = {
-  n8nUrl: 'http://localhost:5678',
+  n8nUrl: '',
   apiKey: '',
 };
 
@@ -25,7 +25,10 @@ export function getSettings(): N8NSettings {
   try {
     const stored = localStorage.getItem(SETTINGS_KEY);
     if (stored) {
-      return JSON.parse(stored);
+      return {
+        ...DEFAULT_SETTINGS,
+        ...(JSON.parse(stored) as N8NSettings),
+      };
     }
   } catch (error) {
     console.error('Error loading settings:', error);
@@ -60,4 +63,3 @@ export function clearSettings(): void {
     console.error('Error clearing settings:', error);
   }
 }
-

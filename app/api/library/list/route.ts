@@ -1,20 +1,39 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-const DEFAULT_N8N_URL = process.env.N8N_BASE_URL || "http://localhost:5678";
-// You will need to add N8N_LIBRARY_LIST_WEBHOOK to your .env.local
-const LIST_ENDPOINT =
-  process.env.N8N_LIBRARY_LIST_WEBHOOK && process.env.N8N_LIBRARY_LIST_WEBHOOK.startsWith("http")
-    ? process.env.N8N_LIBRARY_LIST_WEBHOOK
-    : `${DEFAULT_N8N_URL}${process.env.N8N_LIBRARY_LIST_WEBHOOK || "/webhook/library-list"}`;
+function buildWebhookUrl(baseUrl: string, envValue: string | undefined, defaultPath: string) {
+  const normalizedBase = baseUrl.replace(/\/$/, "");
+  if (envValue) {
+    if (envValue.startsWith("http")) {
+      return envValue;
+    }
+    const path = envValue.startsWith("/") ? envValue : `/${envValue}`;
+    return `${normalizedBase}${path}`;
+  }
+  return `${normalizedBase}${defaultPath}`;
+}
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    console.log("Fetching library from:", LIST_ENDPOINT);
-    const response = await fetch(LIST_ENDPOINT, {
+    const baseUrl =
+      request.headers.get("X-N8N-URL") || process.env.N8N_BASE_URL || "http://localhost:5678";
+    const apiKey = request.headers.get("X-N8N-API-KEY");
+    const listWebhookOverride = request.headers.get("X-N8N-LIBRARY-LIST-WEBHOOK") || undefined;
+    const listEndpoint = buildWebhookUrl(
+      baseUrl,
+      listWebhookOverride || process.env.N8N_LIBRARY_LIST_WEBHOOK,
+      "/webhook/library-list",
+    );
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+    };
+    if (apiKey) {
+      headers["X-N8N-API-KEY"] = apiKey;
+    }
+
+    console.log("Fetching library from:", listEndpoint);
+    const response = await fetch(listEndpoint, {
       method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers,
       // Next.js caching can get in the way of fresh lists, so we disable it
       cache: "no-store",
     });

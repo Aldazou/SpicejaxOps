@@ -11,10 +11,26 @@ const PLATFORM_WEBHOOKS: Record<string, string | undefined> = {
   twitter: process.env.N8N_TWITTER_POST_WEBHOOK,
 };
 
+function buildWebhookUrl(baseUrl: string, envValue: string | undefined, defaultPath: string) {
+  const normalizedBase = baseUrl.replace(/\/$/, "");
+  if (envValue) {
+    if (envValue.startsWith("http")) {
+      return envValue;
+    }
+    const path = envValue.startsWith("/") ? envValue : `/${envValue}`;
+    return `${normalizedBase}${path}`;
+  }
+  return `${normalizedBase}${defaultPath}`;
+}
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const { platform, image, caption } = body;
+    const baseUrl =
+      request.headers.get("X-N8N-URL") || process.env.N8N_BASE_URL || "http://localhost:5678";
+    const apiKey = request.headers.get("X-N8N-API-KEY");
+    const webhookOverride = request.headers.get("X-N8N-SOCIAL-WEBHOOK") || undefined;
 
     console.log("📤 SOCIAL POST REQUEST:");
     console.log("   Platform:", platform);
@@ -23,7 +39,12 @@ export async function POST(request: NextRequest) {
 
     // Normalize platform name
     const platformKey = platform?.toLowerCase().replace(/\s/g, "");
-    const webhookUrl = PLATFORM_WEBHOOKS[platformKey];
+    const defaultPath = `/webhook/social-post/${platformKey}`;
+    const webhookUrl = buildWebhookUrl(
+      baseUrl,
+      webhookOverride || PLATFORM_WEBHOOKS[platformKey],
+      defaultPath,
+    );
 
     if (!webhookUrl) {
       console.log("❌ No webhook configured for platform:", platformKey);
@@ -42,7 +63,10 @@ export async function POST(request: NextRequest) {
     // Call the n8n webhook
     const response = await fetch(webhookUrl, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        ...(apiKey ? { "X-N8N-API-KEY": apiKey } : {}),
+      },
       body: JSON.stringify({ image, caption }),
     });
 
@@ -72,4 +96,6 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+
+
 

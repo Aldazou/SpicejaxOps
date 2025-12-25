@@ -9,7 +9,7 @@ export default function ChatAssistant() {
     <>
       {/* Chat Window (placeholder for future implementation) */}
       {isOpen && (
-        <div className="fixed bottom-24 right-6 w-80 h-96 bg-white rounded-2xl shadow-2xl border border-gray-200 flex flex-col z-50 animate-in slide-in-from-bottom duration-300">
+        <div className="fixed bottom-20 sm:bottom-24 right-4 sm:right-6 left-4 sm:left-auto w-[calc(100%-2rem)] sm:w-80 h-[70vh] sm:h-96 bg-white rounded-2xl shadow-2xl border border-gray-200 flex flex-col z-50 animate-in slide-in-from-bottom duration-300">
           {/* Header */}
           <div className="bg-spice-500 px-4 py-3 rounded-t-2xl flex items-center justify-between">
             <div className="flex items-center space-x-2">
@@ -114,7 +114,7 @@ export default function ChatAssistant() {
       {/* Floating Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 w-14 h-14 bg-spice-500 hover:bg-spice-600 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center z-50 group"
+        className="fixed bottom-5 sm:bottom-6 right-5 sm:right-6 w-12 h-12 sm:w-14 sm:h-14 bg-spice-500 hover:bg-spice-600 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center z-50 group"
         aria-label="Chat Assistant"
       >
         {isOpen ? (
@@ -148,11 +148,10 @@ export default function ChatAssistant() {
         )}
         
         {/* Notification Badge */}
-        <span className="absolute -top-1 -right-1 w-5 h-5 bg-[#8bc53f] rounded-full flex items-center justify-center text-xs font-bold border-2 border-white text-white">
+        <span className="absolute -top-1 -right-1 w-4 h-4 sm:w-5 sm:h-5 bg-[#8bc53f] rounded-full flex items-center justify-center text-[10px] sm:text-xs font-bold border-2 border-white text-white">
           3
         </span>
       </button>
     </>
   );
 }
-

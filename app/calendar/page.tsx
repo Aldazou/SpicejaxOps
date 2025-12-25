@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import MainLayout from "@/components/MainLayout";
 import Image from "next/image";
+import { getSettings } from "@/lib/settings";
 import { Heart, MessageCircle, Send, Bookmark, MoreHorizontal, ThumbsUp, Share2, Repeat2, Eye, Pin, Loader2, Rocket } from "lucide-react";
 
 interface ScheduledPost {
@@ -515,9 +516,16 @@ export default function CalendarPage() {
     setPostingId(post.id);
 
     try {
+      const settings = getSettings();
+      const headers: HeadersInit = {
+        "Content-Type": "application/json",
+      };
+      if (settings.n8nUrl) headers["X-N8N-URL"] = settings.n8nUrl;
+      if (settings.apiKey) headers["X-N8N-API-KEY"] = settings.apiKey;
+
       const response = await fetch("/api/social/post", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers,
         body: JSON.stringify({
           platform: post.platform,
           image: post.image,
@@ -724,4 +732,3 @@ export default function CalendarPage() {
     </MainLayout>
   );
 }
-

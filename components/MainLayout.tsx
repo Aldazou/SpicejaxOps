@@ -9,7 +9,7 @@ export default function MainLayout({
   return (
     <div className="min-h-screen bg-brand-sage">
       <Header />
-      <main className="px-4 sm:px-8 py-6 sm:py-8 max-w-[1600px] mx-auto">
+      <main className="px-4 sm:px-8 pt-5 pb-24 sm:py-8 max-w-[1600px] mx-auto">
         {children}
       </main>
       <ChatAssistant />

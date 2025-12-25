@@ -50,7 +50,7 @@ export default function Header() {
     <header className="sticky top-0 z-40 bg-white/90 backdrop-blur-2xl border-b border-brand-gold/20">
       <div className="px-4 sm:px-8 py-3 sm:py-4">
         {/* Top row */}
-        <div className="flex items-center justify-between gap-4 mb-4">
+        <div className="flex items-center justify-between gap-4 mb-3 sm:mb-4">
           {/* Logo */}
           <Link href="/dashboard" className="flex items-center gap-3 group">
             <Image
@@ -99,7 +99,7 @@ export default function Header() {
               <Link
                 key={item.name}
                 href={item.href}
-                className={`inline-flex items-center gap-1.5 sm:gap-2 rounded-xl sm:rounded-2xl px-3 py-2 sm:px-4 sm:py-2.5 text-xs sm:text-sm font-semibold transition-all duration-300 snap-start whitespace-nowrap ${
+                className={`inline-flex items-center gap-1.5 sm:gap-2 rounded-xl sm:rounded-2xl px-3.5 py-2.5 sm:px-4 sm:py-2.5 text-xs sm:text-sm font-semibold transition-all duration-300 snap-start whitespace-nowrap ${
                   isActive
                     ? "bg-[#243530] text-white shadow-lg"
                     : "text-brand-text hover:text-brand-title hover:bg-brand-sage border border-transparent hover:border-brand-gold/20"

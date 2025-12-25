@@ -1,6 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 const N8N_BASE_URL = process.env.N8N_BASE_URL || 'http://localhost:5678';
+const WEBHOOK_OVERRIDES: Record<string, string | undefined> = {
+  'content-generate': process.env.N8N_CONTENT_GENERATE_WEBHOOK,
+  'image-enhance': process.env.N8N_IMAGE_ENHANCE_WEBHOOK,
+};
+
+function buildWebhookUrl(baseUrl: string, envValue: string | undefined, defaultPath: string) {
+  const normalizedBase = baseUrl.replace(/\/$/, '');
+  if (envValue) {
+    if (envValue.startsWith('http')) {
+      return envValue;
+    }
+    const path = envValue.startsWith('/') ? envValue : `/${envValue}`;
+    return `${normalizedBase}${path}`;
+  }
+  return `${normalizedBase}${defaultPath}`;
+}
+
+function resolveWebhookUrl(baseUrl: string, webhookPath: string) {
+  const override = WEBHOOK_OVERRIDES[webhookPath];
+  return buildWebhookUrl(baseUrl, override, `/webhook/${webhookPath}`);
+}
 
 /**
  * Generic n8n proxy endpoint
@@ -26,7 +47,7 @@ export async function GET(
   const n8nUrl = request.headers.get('X-N8N-URL') || N8N_BASE_URL;
   const apiKey = request.headers.get('X-N8N-API-KEY');
   
-  const url = `${n8nUrl}/webhook/${webhookPath}`;
+  const url = resolveWebhookUrl(n8nUrl, webhookPath);
 
   try {
     const headers: HeadersInit = {
@@ -74,7 +95,7 @@ export async function POST(
   const n8nUrl = request.headers.get('X-N8N-URL') || N8N_BASE_URL;
   const apiKey = request.headers.get('X-N8N-API-KEY');
   
-  const url = `${n8nUrl}/webhook/${webhookPath}`;
+  const url = resolveWebhookUrl(n8nUrl, webhookPath);
 
   try {
     const body = await request.json();
@@ -127,7 +148,7 @@ export async function PUT(
   const n8nUrl = request.headers.get('X-N8N-URL') || N8N_BASE_URL;
   const apiKey = request.headers.get('X-N8N-API-KEY');
   
-  const url = `${n8nUrl}/webhook/${webhookPath}`;
+  const url = resolveWebhookUrl(n8nUrl, webhookPath);
 
   try {
     const body = await request.json();
@@ -178,7 +199,7 @@ export async function DELETE(
   const n8nUrl = request.headers.get('X-N8N-URL') || N8N_BASE_URL;
   const apiKey = request.headers.get('X-N8N-API-KEY');
   
-  const url = `${n8nUrl}/webhook/${webhookPath}`;
+  const url = resolveWebhookUrl(n8nUrl, webhookPath);
 
   try {
     const headers: HeadersInit = {
@@ -215,4 +236,3 @@ export async function DELETE(
     );
   }
 }
-

@@ -66,7 +66,7 @@ export default function SettingsPage() {
     if (confirm('Are you sure you want to reset to default settings?')) {
       clearSettings();
       setSettings({
-        n8nUrl: 'http://localhost:5678',
+        n8nUrl: '',
         apiKey: '',
       });
     }

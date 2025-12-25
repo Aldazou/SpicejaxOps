@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import MainLayout from "@/components/MainLayout";
+import { getSettings } from "@/lib/settings";
 import { Download, ExternalLink, ImageIcon, Loader2, RefreshCw, Sparkles, PenTool, Calendar } from "lucide-react";
 
 interface DriveFile {
@@ -95,7 +96,11 @@ export default function LibraryPage() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/library/list");
+      const settings = getSettings();
+      const headers: HeadersInit = {};
+      if (settings.n8nUrl) headers["X-N8N-URL"] = settings.n8nUrl;
+      if (settings.apiKey) headers["X-N8N-API-KEY"] = settings.apiKey;
+      const res = await fetch("/api/library/list", { headers });
       const data = await res.json();
       if (data.files) {
         setFiles(data.files);

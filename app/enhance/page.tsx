@@ -8,6 +8,7 @@ import { Expand, Download, Trash2, Sparkles, ImageIcon, Check, X, Flame, PenTool
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 import { getProducts, type SpiceProduct } from "@/lib/products";
+import { getSettings } from "@/lib/settings";
 
 /*
  * ═══════════════════════════════════════════════════════════════════════════════
@@ -621,11 +622,16 @@ IMPORTANT: This is a product lineup/collection shot. Make sure each jar is clear
     const fileName = `SpiceJax_${productLabel.replace(/[^a-zA-Z0-9]/g, "")}_${sceneLabel.replace(/[^a-zA-Z0-9]/g, "")}_${formatLabel.replace(/[^a-zA-Z0-9]/g, "")}_${timestamp}`;
     
     try {
+      const settings = getSettings();
+      const headers: HeadersInit = {
+        "Content-Type": "application/json",
+      };
+      if (settings.n8nUrl) headers["X-N8N-URL"] = settings.n8nUrl;
+      if (settings.apiKey) headers["X-N8N-API-KEY"] = settings.apiKey;
+
       await fetch("/api/library/upload", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers,
         body: JSON.stringify({
           enhancedImage,
           sceneId,
