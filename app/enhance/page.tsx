@@ -526,17 +526,48 @@ IMPORTANT: This is a product lineup/collection shot. Make sure each jar is clear
     return `${basePrompt}\n\n${productContext}\n\n${formatInstruction}`;
   }, [sceneId, customScene, activeFormat, selectedProducts]);
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
+  const readFileAsDataUrl = (file: File) =>
+    new Promise<string>((resolve, reject) => {
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setUploadedImage(reader.result as string);
-        setEnhancedImage(null);
-        setError(null);
-        setApproved(false);
-      };
+      reader.onloadend = () => resolve(reader.result as string);
+      reader.onerror = () => reject(reader.error);
       reader.readAsDataURL(file);
+    });
+
+  const normalizeImageDataUrl = async (file: File) => {
+    const dataUrl = await readFileAsDataUrl(file);
+    const isStandardType = file.type === "image/jpeg" || file.type === "image/png";
+    if (isStandardType) return dataUrl;
+
+    const image = new Image();
+    image.src = dataUrl;
+    await new Promise<void>((resolve, reject) => {
+      image.onload = () => resolve();
+      image.onerror = () => reject(new Error("Image decode failed"));
+    });
+
+    const canvas = document.createElement("canvas");
+    canvas.width = image.naturalWidth || image.width;
+    canvas.height = image.naturalHeight || image.height;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return dataUrl;
+    ctx.drawImage(image, 0, 0);
+    return canvas.toDataURL("image/jpeg", 0.92);
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const dataUrl = await normalizeImageDataUrl(file);
+      setUploadedImage(dataUrl);
+      setEnhancedImage(null);
+      setError(null);
+      setApproved(false);
+    } catch (err) {
+      console.error("Image upload error:", err);
+      setError("Unable to read this image. Try a different file.");
     }
   };
 
