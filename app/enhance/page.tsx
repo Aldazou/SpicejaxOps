@@ -537,7 +537,9 @@ IMPORTANT: This is a product lineup/collection shot. Make sure each jar is clear
   const normalizeImageDataUrl = async (file: File) => {
     const dataUrl = await readFileAsDataUrl(file);
     const isStandardType = file.type === "image/jpeg" || file.type === "image/png";
-    if (isStandardType) return dataUrl;
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+
+    if (isStandardType && !isIOS) return dataUrl;
 
     const image = new Image();
     image.src = dataUrl;
@@ -546,13 +548,17 @@ IMPORTANT: This is a product lineup/collection shot. Make sure each jar is clear
       image.onerror = () => reject(new Error("Image decode failed"));
     });
 
+    const width = image.naturalWidth || image.width;
+    const height = image.naturalHeight || image.height;
+    const maxDim = 2048;
+    const scale = Math.min(1, maxDim / Math.max(width, height));
     const canvas = document.createElement("canvas");
-    canvas.width = image.naturalWidth || image.width;
-    canvas.height = image.naturalHeight || image.height;
+    canvas.width = Math.round(width * scale);
+    canvas.height = Math.round(height * scale);
     const ctx = canvas.getContext("2d");
     if (!ctx) return dataUrl;
-    ctx.drawImage(image, 0, 0);
-    return canvas.toDataURL("image/jpeg", 0.92);
+    ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+    return canvas.toDataURL("image/jpeg", 0.9);
   };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
