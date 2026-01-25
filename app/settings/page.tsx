@@ -301,7 +301,7 @@ export default function SettingsPage() {
           </button>
         </div>
         <div className="flex flex-wrap gap-2">
-          {product.ingredients.map((ing, i) => (
+          {(product.ingredients || []).map((ing, i) => (
             <span key={i} className="inline-flex items-center gap-1 px-2 py-1 bg-white rounded-lg text-xs border border-dark-forest/10">
               {ing}
               <button onClick={() => handleRemoveIngredient(i)} className="text-brand-rust hover:text-red-600">
@@ -334,7 +334,7 @@ export default function SettingsPage() {
           </button>
         </div>
         <div className="flex flex-wrap gap-2">
-          {product.goodOn.map((item, i) => (
+          {(product.goodOn || []).map((item, i) => (
             <span key={i} className="inline-flex items-center gap-1 px-2 py-1 bg-white rounded-lg text-xs border border-dark-forest/10">
               {item}
               <button onClick={() => handleRemoveGoodOn(i)} className="text-brand-rust hover:text-red-600">
@@ -510,8 +510,8 @@ export default function SettingsPage() {
                           </div>
                         </div>
                         <p className="text-sm text-brand-text truncate">
-                          {product.ingredients.slice(0, 4).join(", ")}
-                          {product.ingredients.length > 4 && ` +${product.ingredients.length - 4} more`}
+                          {(product.ingredients || []).slice(0, 4).join(", ")}
+                          {(product.ingredients || []).length > 4 && ` +${(product.ingredients || []).length - 4} more`}
                         </p>
                       </div>
 

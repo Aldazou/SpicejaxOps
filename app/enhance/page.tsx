@@ -344,6 +344,532 @@ const SCENE_PRESETS = [
   },
 
   // ═══════════════════════════════════════════════════════════════
+  // E-COMMERCE — Marketplace-ready, compliance-focused
+  // These are your bread-and-butter product images for online sales.
+  // ═══════════════════════════════════════════════════════════════
+  { 
+    id: "amazon-white", 
+    label: "Amazon Pure White", 
+    category: "ecommerce",
+    prompt: "The spice jar on pure white (#FFFFFF) seamless background, perfectly centered in frame. Product fills exactly 85% of the image area per Amazon requirements. Even, shadowless lighting from a light tent or multiple softboxes eliminating all shadows. Label facing camera at subtle 15-degree angle to show dimension without losing readability. Color-accurate with no color cast. Tack-sharp from front label to back edge at f/11. No props, no shadows, no reflections, no distractions. This is pure product, nothing else. Style: Amazon main image compliant, professional e-commerce. Must pass Amazon's white background checker." 
+  },
+  { 
+    id: "ecom-angle", 
+    label: "3/4 Product View", 
+    category: "ecommerce",
+    prompt: "The spice jar photographed at classic 3/4 angle—showing both front label and side simultaneously. Pure white background, soft gradient shadow falling naturally below. Professional product lighting: main light from upper-right, fill from left, slight rim light separating product from background. Every detail of the label crisp and readable. The jar's glass catches subtle highlights showing quality. Shot at f/8 for complete sharpness. Style: WooCommerce product gallery, professional catalog photography. Secondary e-commerce image showing product dimension." 
+  },
+  { 
+    id: "ecom-scale", 
+    label: "Size Reference", 
+    category: "ecommerce",
+    prompt: "The spice jar positioned next to common kitchen objects for size reference—a fresh lemon, a large egg, or a standard soup spoon. Clean white marble or light wood surface. Soft, even lighting. The comparison objects are universally recognized, making the jar's size immediately clear. Minimal styling, maximum clarity. Label clearly visible. Customers need to know what they're getting. Style: honest product photography, size comparison shot. Builds trust through transparency." 
+  },
+  { 
+    id: "ecom-macro", 
+    label: "Spice Texture", 
+    category: "ecommerce",
+    prompt: "Extreme macro close-up of the actual spice blend texture—you can see individual flakes of sea salt, specks of dried herbs, granules of garlic, flecks of chili. The jar sits soft in the background, slightly out of focus. A small pile of the blend on a dark slate surface, dramatically lit from the side to reveal every particle's texture and color variation. Sharp focus at f/16, focus-stacked if needed. Mood: quality ingredients, nothing to hide, artisan detail. Style: ingredient hero shot, quality proof, macro food photography." 
+  },
+  { 
+    id: "ecom-label", 
+    label: "Label Detail", 
+    category: "ecommerce",
+    prompt: "The spice jar label in perfect focus—every word readable, every design element crisp. Shot straight-on to avoid distortion. Neutral lighting preserving true colors. The ingredients list, nutrition facts, and brand logo all clearly visible. Clean background that doesn't compete. This is the shot that answers customer questions about what's inside. Shot at f/8, color-calibrated display. Style: informational product photography, building trust through transparency." 
+  },
+  { 
+    id: "ecom-lifestyle", 
+    label: "Kitchen Context", 
+    category: "ecommerce",
+    prompt: "The spice jar in a clean, aspirational but realistic kitchen setting. White quartz countertop, a few quality props (copper measuring spoons, fresh herbs in a glass, wooden cutting board edge). Natural window light from the side. The jar is clearly the subject but shown in context of where it will live. Not overly styled—believable, achievable. Label visible, product dominant. Mood: this belongs in your kitchen. Style: Etsy listing hero, lifestyle e-commerce, attainable aspiration." 
+  },
+
+  // ═══════════════════════════════════════════════════════════════
+  // SIGNATURE — Product-specific scenes for each SpiceJax blend
+  // These scenes are tailored to each product's cultural roots and best uses.
+  // ═══════════════════════════════════════════════════════════════
+  { 
+    id: "birria-drip", 
+    label: "Birria Drip", 
+    category: "signature",
+    prompt: "The Birria Fiesta jar beside the money shot: a quesabirria being dipped into a bowl of rich, brick-red consomé. Cheese stretching dramatically, broth splashing slightly on impact. The tortilla shows perfect golden-brown crispy edges. Traditional Mexican clay bowl (barro) for the consomé, glossy with rendered fat floating on top. Fresh lime wedges, roughly chopped cilantro, diced white onion in small bowls. Steam rises from the broth. The jar sits with lid off, a small spoon inside showing recent use. Warm tungsten lighting suggesting a taquería at night. Mood: authentic street food, craveable, the real deal. Style: Mexican food blog hero, Tijuana taco stand documentary." 
+  },
+  { 
+    id: "birria-tacos", 
+    label: "Taco Spread", 
+    category: "signature",
+    prompt: "The Birria Fiesta jar as centerpiece of an authentic birria taco spread. Three tacos arranged on a worn metal tray—corn tortillas dipped in consomé and griddled crispy, filled with tender shredded beef, topped with cilantro and onion. A bowl of consomé for dipping with visible chile oil floating on top. Radish slices, lime wedges, pickled jalapeños. The jar prominently placed, lid removed, showing this is the secret. Colorful Talavera tile surface. Warm, saturated colors—reds, oranges, greens. Mood: Friday night tacos, family gathering, authentic Mexican. Style: Serious Eats taco feature, Rick Bayless cookbook." 
+  },
+  { 
+    id: "nashville-hot", 
+    label: "Nashville Hot", 
+    category: "signature",
+    prompt: "The Nashville Heat jar beside a towering Nashville hot chicken sandwich—aggressively crispy, cayenne-red fried chicken breast on plain white bread (traditional style) with thick-cut pickle chips. The chicken glistens with spicy oil, you can feel the heat. A drizzle of honey falling from above, catching the light like liquid gold. Red-and-white checkered paper in a wire basket. Neon sign glow in the background—hot pink and electric blue suggesting a late-night Nashville spot. The jar sits open, clearly just used for the deadly coating. Mood: cult-level heat, Southern indulgence, no regrets. Style: Hattie B's aesthetic, Nashville food scene, late-night cravings." 
+  },
+  { 
+    id: "nashville-tenders", 
+    label: "Hot Tenders", 
+    category: "signature",
+    prompt: "The Nashville Heat jar beside a basket of Nashville hot chicken tenders—five pieces of crispy, fiery chicken arranged on parchment. The coating is deep crimson, oil beading on the surface. A side of creamy ranch for cooling. Crinkle-cut pickles, white bread slices to soak up the drippings. The jar positioned as the secret weapon. Casual diner setting—formica table, red vinyl booth edge visible. Harsh, honest lighting like a real chicken joint. Mood: serious heat challenge, worth the pain, legendary. Style: Hot Ones episode, Nashville dive bar, heat seekers welcome." 
+  },
+  { 
+    id: "shichimi-ramen", 
+    label: "Ramen Bowl", 
+    category: "signature",
+    prompt: "The Shichimi Togarashi jar beside a steaming bowl of tonkotsu ramen—rich, creamy pork broth with perfect toppings: soft-boiled egg sliced to show the jammy orange center, two slices of torched chashu pork, crisp nori sheets standing upright, thin-sliced green onions, a swirl of black garlic oil. Chopsticks lifting a tangle of wavy noodles, steam rising. The jar is being shaken over the bowl—red and orange particles falling through steam. Japanese ceramic bowl, dark wood counter, minimal styling. Mood: umami depth, Japanese precision, warming soul food. Style: Tokyo ramen shop at midnight, Ivan Ramen aesthetic, Monocle Japan feature." 
+  },
+  { 
+    id: "shichimi-rice", 
+    label: "Japanese Rice Bowl", 
+    category: "signature",
+    prompt: "The Shichimi Togarashi jar beside a perfect Japanese rice bowl—steaming short-grain rice topped with a raw egg yolk, toasted sesame, nori strips, and a generous shake of shichimi. Chopsticks rest on a ceramic hashioki. Small dishes of pickled vegetables and miso soup accompany. The jar is open, recently used, particles visible on the rice surface. Traditional Japanese table setting—wood, ceramic, clean lines. Soft, natural light from a shoji screen. Mood: simple perfection, Japanese home cooking, tamago gohan. Style: Haruki Murakami novel food scene, minimal Japanese aesthetic." 
+  },
+  { 
+    id: "habanero-wings", 
+    label: "Honey Hab Wings", 
+    category: "signature",
+    prompt: "The Smokey Honey Habanero jar beside a pile of glazed chicken wings—glistening with sticky honey-habanero glaze, char marks from the grill, sesame seeds scattered on top. The glaze drips and pools on the plate. A small bowl of blue cheese dressing with celery sticks. The wings are piled high on a rustic wooden board. Orange and mango slices as garnish hint at tropical heat. Warm, golden lighting suggesting Caribbean vibes. The jar sits open, glaze visibly made with it. Mood: sweet heat, addictive, finger-licking. Style: Caribbean beach bar, tropical heat, island vibes meet American wings." 
+  },
+  { 
+    id: "habanero-tropical", 
+    label: "Tropical Heat", 
+    category: "signature",
+    prompt: "The Smokey Honey Habanero jar in a tropical setting—beside grilled pineapple slices with char marks, mango chunks, fresh habanero peppers (orange and red), lime halves, and coconut flakes. A jerk chicken thigh, perfectly blackened, shows the rub in action. Palm leaf or banana leaf as a natural plate. Bright, saturated colors—the jar pops against tropical yellows and oranges. Outdoor feeling, maybe beach or patio. The jar's smokiness meets island sweetness. Mood: vacation flavors, Caribbean escape, sweet fire. Style: Jamaican food photography, tropical resort menu." 
+  },
+  { 
+    id: "chipotle-ribs", 
+    label: "BBQ Ribs", 
+    category: "signature",
+    prompt: "The Honey Chipotle jar beside a rack of perfectly smoked baby back ribs—mahogany bark, meat pulling away from the bone, glaze glistening. The ribs sit on a worn wooden cutting board with a cleaver beside them. Classic BBQ sides in small bowls: creamy coleslaw, baked beans, corn on the cob with butter. A squeeze bottle of extra glaze. The jar is the dry rub secret, positioned proudly. Outdoor smoker visible soft in background, smoke wisping. Red checkered napkin. Mood: backyard pitmaster, low and slow, BBQ competition worthy. Style: Texas Monthly BBQ issue, American smokehouse." 
+  },
+  { 
+    id: "chipotle-burger", 
+    label: "Smash Burger", 
+    category: "signature",
+    prompt: "The Honey Chipotle jar beside a double smash burger—two thin, crispy-edged patties with melted American cheese, caramelized onions, pickles, chipotle aioli dripping down. The bun is soft, slightly squished. Crinkle-cut fries scattered around. The jar sits open—the rub was mixed into the beef. A cold beer bottle with condensation nearby. Classic diner surface—stainless steel or formica. Harsh, honest lighting. The burger is messy, real, irresistible. Mood: cheat day, no regrets, American classic elevated. Style: George Motz burger documentary, Shake Shack energy." 
+  },
+
+  // ═══════════════════════════════════════════════════════════════
+  // BUNDLE — Multi-product, collection, and gift shots
+  // Showcase the full SpiceJax family together.
+  // ═══════════════════════════════════════════════════════════════
+  { 
+    id: "full-collection", 
+    label: "The Full Lineup", 
+    category: "bundle",
+    prompt: "All five SpiceJax jars arranged in a dramatic lineup—Birria Fiesta, Nashville Heat, Shichimi Togarashi, Smokey Honey Habanero, and Honey Chipotle BBQ. Arranged by heat level from mild to hot, left to right. Each jar at a slightly different angle for visual interest. Dark, moody background (black slate or dark wood). Dramatic side lighting creating highlights on glass and deep shadows. Small piles of each blend's signature ingredients in front of their respective jars. Mood: the complete arsenal, serious flavor collection. Style: craft beer flight aesthetic, premium product lineup, collector's display." 
+  },
+  { 
+    id: "heat-scale", 
+    label: "Heat Scale", 
+    category: "bundle",
+    prompt: "All five SpiceJax jars arranged in ascending heat order with visual heat indicators—flames or chili peppers increasing in intensity from left to right. Birria Fiesta (1🔥) to Nashville Heat (4🔥). Clean white background with subtle gradient. Each jar perfectly lit, labels readable. Small flame icons or fresh chili peppers arranged below each jar indicating heat level. The progression tells a story—find your comfort zone. Mood: helpful guide, heat challenge, something for everyone. Style: infographic meets product photography, educational but premium." 
+  },
+  { 
+    id: "gift-box", 
+    label: "Gift Set", 
+    category: "bundle",
+    prompt: "All five SpiceJax jars nestled in a premium gift box—kraft paper exterior, tissue paper nest, each jar visible and perfectly arranged. A handwritten thank-you card peeks out. Satin ribbon untied, lid beside the box. One jar being lifted out by eager hands. Morning light on a clean white marble surface. The presentation is premium but warm—gift-worthy without being stuffy. Maybe a small recipe card visible. Mood: perfect gift, unboxing joy, foodie Christmas morning. Style: subscription box reveal, premium gifting, holiday catalog hero." 
+  },
+  { 
+    id: "starter-kit", 
+    label: "Starter Kit", 
+    category: "bundle",
+    prompt: "Three SpiceJax jars (curated selection) arranged as a 'starter kit' with cooking tools—a quality wooden spoon, a small cast iron skillet, and a linen towel. Clean, aspirational kitchen surface. The jars represent variety: one mild, one medium, one hot. A recipe card shows suggested first dishes to try. Mood: great first purchase, gateway to flavor, gift for the aspiring cook. Style: cooking class starter pack, Williams-Sonoma gift guide, beginner-friendly but premium." 
+  },
+
+  // ═══════════════════════════════════════════════════════════════
+  // VIDEO — Optimized for thumbnails, reels, TikTok hooks
+  // These compositions are designed for 0.5-second scroll-stopping.
+  // ═══════════════════════════════════════════════════════════════
+  { 
+    id: "thumb-split", 
+    label: "Before/After Split", 
+    category: "video",
+    prompt: "Dramatic split-screen composition: LEFT side shows sad, pale, unseasoned chicken breast—flat lighting, washed out, unappetizing. RIGHT side shows the same chicken after SpiceJax—golden brown, glistening, caramelized, steam rising, absolutely craveable. The spice jar sits exactly at the dividing line, clearly the transformative element. High contrast, bold colors. The difference is undeniable and dramatic. Text space at top for 'BEFORE | AFTER' overlay. Mood: transformation proof, undeniable results. Style: infomercial elevated, social proof content, scroll-stopping comparison." 
+  },
+  { 
+    id: "thumb-drip", 
+    label: "Money Shot Drip", 
+    category: "video",
+    prompt: "The ultimate food porn moment: cheese pulling in a long stretch, or sauce dripping in slow motion, or yolk breaking and flowing like liquid gold—with the SpiceJax jar clearly visible in frame. Frozen at the perfect moment of maximum appetite appeal. Dark background for contrast. The jar is sharp and prominent, the drip/pull is the hero action. Bold, high-saturation colors. Mood: craveable, ASMR visual, save this recipe. Style: TikTok food account hero shot, Tasty video thumbnail, 2M views energy." 
+  },
+  { 
+    id: "thumb-fire", 
+    label: "Flames & Heat", 
+    category: "video",
+    prompt: "The SpiceJax jar (Nashville Heat or Smokey Honey Habanero) with real flames visible—either from a grill flare-up behind it or a dramatic flame burst. The jar appears to be emerging from or surrounded by fire. Dramatic, high-contrast lighting. Deep blacks, bright oranges and reds. Sparks or embers floating. Text space for '🔥 EXTREME HEAT WARNING 🔥' overlay. Mood: dangerous heat, challenge accepted, viral potential. Style: Hot Ones challenge, extreme food content, heat warning clickbait (the good kind)." 
+  },
+  { 
+    id: "thumb-reaction", 
+    label: "Reaction Ready", 
+    category: "video",
+    prompt: "The SpiceJax jar beside a finished dish, composed with deliberate empty space on one side—room for a face/reaction overlay or text. The dish is steaming, craveable, perfect. High contrast, saturated colors that pop on mobile. The jar is prominent but not centered, following the rule of thirds for overlay space. Clean background that won't compete with text or faces. Mood: duet-ready, reaction video setup. Style: TikTok native composition, made for stitches and duets." 
+  },
+  { 
+    id: "thumb-reveal", 
+    label: "Lid Lift Reveal", 
+    category: "video",
+    prompt: "A hand lifting the lid off a pot or pan, steam dramatically billowing out to reveal a perfectly cooked dish inside—the big reveal moment. The SpiceJax jar sits beside the pot, clearly used. Dramatic backlighting on the steam. The dish inside is the payoff: perfectly braised meat, bubbling stew, or caramelized vegetables. Frozen at peak reveal moment. Mood: the big reveal, cooking payoff, worth the wait. Style: cooking video climax frame, thumbnail bait, 'wait for it' energy." 
+  },
+
+  // ═══════════════════════════════════════════════════════════════
+  // UGC — User-generated content aesthetic, authentic and relatable
+  // These look like real customers shot them (but better).
+  // ═══════════════════════════════════════════════════════════════
+  { 
+    id: "ugc-kitchen", 
+    label: "Real Kitchen", 
+    category: "ugc",
+    prompt: "The SpiceJax jar in a real, lived-in kitchen—not a styled set, but an actual home. Some dishes in the sink (not gross, just real), a plant on the windowsill, maybe a kids' drawing on the fridge. The jar sits on the counter being used in actual cooking. Natural window light, slightly imperfect exposure like a phone camera. The cook's hands are in frame, doing something real. Mood: this could be your kitchen, authentic use, relatable. Style: UGC aesthetic, Instagram stories native, real person energy." 
+  },
+  { 
+    id: "ugc-unbox", 
+    label: "Just Arrived", 
+    category: "ugc",
+    prompt: "First-person POV: hands opening a SpiceJax package just delivered. The shipping box is open, packing material visible, the jar being lifted out for the first time. Kitchen counter or table as surface. Natural light. The excitement of receiving an order. Maybe a phone visible suggesting they're about to take a photo. Mood: unboxing excitement, just got mine, can't wait to try. Style: customer photo aesthetic, real delivery moment, shareable excitement." 
+  },
+  { 
+    id: "ugc-plate", 
+    label: "My Dinner", 
+    category: "ugc",
+    prompt: "Overhead phone-camera angle of a home-cooked meal with the SpiceJax jar visible at the edge of frame—the classic 'made dinner tonight' social post. The food is good but not overly styled—real portion on a real plate. Maybe a fork already cutting in. Natural home lighting, slight warmth. The jar is there almost casually, like 'oh yeah, used this.' Mood: weeknight dinner, made this myself, home cooking win. Style: Instagram food post, Stories share, relatable home chef." 
+  },
+  { 
+    id: "ugc-action", 
+    label: "Cooking Moment", 
+    category: "ugc",
+    prompt: "Mid-cooking action shot taken by a friend or partner—the cook is seasoning food with the SpiceJax jar, caught in a candid moment. Slight motion blur acceptable. Steam rising from the pan. The kitchen is real, the moment is authentic. Natural light mixed with stove light. The cook might be laughing or focused. Mood: caught in the act, real cooking, behind the scenes. Style: boyfriend/girlfriend took this, candid cooking, authentic moment." 
+  },
+
+  // ═══════════════════════════════════════════════════════════════
+  // RECIPE — Tutorial and blog-ready compositions
+  // These are made for Pinterest saves and recipe card headers.
+  // ═══════════════════════════════════════════════════════════════
+  { 
+    id: "recipe-ingredients", 
+    label: "Ingredients Flat Lay", 
+    category: "recipe",
+    prompt: "Overhead flat lay of all ingredients needed for a recipe—the SpiceJax jar prominently placed among raw ingredients. Mise en place style: each ingredient in its own small bowl or measured out. Clean white marble surface. Even, bright lighting with soft shadows. Space at top for recipe title. The jar is clearly the star seasoning among supporting players. Mood: organized, achievable, save this recipe. Style: Pinterest recipe pin, food blog hero, cooking class prep." 
+  },
+  { 
+    id: "recipe-steps", 
+    label: "Step by Step", 
+    category: "recipe",
+    prompt: "A triptych or grid showing cooking progression—raw ingredients, mid-cook action with the SpiceJax jar being used, and final plated dish. Three distinct moments in one frame. Clean backgrounds, consistent lighting across all three. The jar appears in the middle panel as the key step. Numbers or arrows could be overlaid. Mood: easy to follow, you can do this, tutorial ready. Style: recipe blog process shots, cooking tutorial frames, step-by-step guide." 
+  },
+  { 
+    id: "recipe-final", 
+    label: "Recipe Hero", 
+    category: "recipe",
+    prompt: "The finished dish as the hero with the SpiceJax jar beside it—classic recipe blog composition. Vertical 4:5 ratio. The dish is beautifully plated, steam rising, garnished perfectly. The jar sits slightly behind, clearly the flavor source. Generous white space above for recipe title text. One or two raw ingredients scattered as props. Bright, airy lighting. Mood: I need to make this, save for later, dinner inspiration. Style: Half Baked Harvest aesthetic, Pinterest-optimized, food blog money shot." 
+  },
+
+  // ═══════════════════════════════════════════════════════════════
+  // INFOGRAPHIC — Pinterest-optimized, save-worthy visual guides
+  // These are designed for maximum saves and shares on social.
+  // ═══════════════════════════════════════════════════════════════
+  { 
+    id: "info-nutrition", 
+    label: "Nutrition Breakdown", 
+    category: "infographic",
+    prompt: "Clean infographic-style composition: the SpiceJax jar centered with its key ingredients arranged in a radial pattern around it—each ingredient photographed beautifully with clear space for text labels. Small piles of individual spices (chili flakes, garlic granules, herbs) with their names. Clean white or soft cream background. Minimalist, editorial styling. Each element precisely placed with geometric intention. Space for 'WHAT'S INSIDE' header and nutritional callouts. Mood: transparent, educational, clean eating friendly. Style: Whole30/Paleo recipe blog, ingredient spotlight, wellness brand aesthetic." 
+  },
+  { 
+    id: "info-5ways", 
+    label: "5 Ways to Use", 
+    category: "infographic",
+    prompt: "Split into 5 distinct panels/sections showing 5 different dishes all made with the same SpiceJax jar. The jar sits prominently in the center or top. Each dish is small but appetizing—tacos, grilled chicken, roasted vegetables, eggs, pasta. Clean dividing lines between sections. Numbers 1-5 clearly visible. Consistent lighting across all panels. Space for dish names/captions. Mood: versatile, inspiring, save this for later. Style: Buzzfeed Tasty '5 ways' format, carousel-ready, Pinterest long pin." 
+  },
+  { 
+    id: "info-quickrecipe", 
+    label: "Quick Recipe Card", 
+    category: "infographic",
+    prompt: "Vertical Pinterest-optimized composition (2:3 ratio): finished dish photograph in the top 60%, the SpiceJax jar visible in the shot. Below: clean white space designed for recipe text overlay—ingredient list area on left, simple numbered steps on right. Bold header space for recipe title. Small icons suggesting prep time (clock), servings (plate), difficulty (chef hat). Mood: save this, make tonight, easy weeknight dinner. Style: Pinterest recipe pin, food blog standard, designed for text overlay." 
+  },
+  { 
+    id: "info-comparison", 
+    label: "Spice Swap Guide", 
+    category: "infographic",
+    prompt: "Educational comparison layout: the SpiceJax jar in the center with arrows pointing to dishes it can season. 'INSTEAD OF' on left showing generic store spices (blurred/generic), 'USE THIS' on right showing SpiceJax with the delicious result. Before/after energy but for ingredients. Clean, bright styling. The SpiceJax result looks dramatically better. Space for comparison callouts. Mood: upgrade your cooking, why settle, flavor hack. Style: product comparison infographic, educational food content." 
+  },
+  { 
+    id: "info-flavor-wheel", 
+    label: "Flavor Profile Wheel", 
+    category: "infographic",
+    prompt: "The SpiceJax jar at the center of a circular 'flavor wheel' arrangement—individual ingredients arranged in a perfect circle around it, creating a mandala-like pattern. Each ingredient represents a flavor note: heat (chilies), sweet (honey), savory (garlic), earthy (cumin), etc. Color-coded sections suggesting flavor categories. Overhead shot, perfectly symmetrical. Clean background. Space for flavor descriptors. Mood: complex flavors simplified, flavor education, artisan craft. Style: wine tasting wheel meets food photography, educational but beautiful." 
+  },
+  { 
+    id: "info-pairing", 
+    label: "Perfect Pairings", 
+    category: "infographic",
+    prompt: "Grid layout showing the SpiceJax jar paired with its ideal ingredients and dishes. The jar in the top-center, with 6-9 smaller images below showing: proteins it complements (chicken, beef, shrimp), vegetables it elevates (roasted cauliflower, grilled corn), cuisines it fits (Mexican, American BBQ, Asian fusion). Each pairing photographed consistently. Clean dividing lines. Space for pairing names. Mood: endless possibilities, flavor inspiration, meal planning helper. Style: food pairing guide, sommelier-style recommendations for spices." 
+  },
+  { 
+    id: "info-weekmeal", 
+    label: "Week of Meals", 
+    category: "infographic",
+    prompt: "7-panel grid showing Monday through Sunday meals—all made with the same SpiceJax jar. The jar featured prominently at the top or center. Each day shows a different dish: Taco Tuesday, Wing Wednesday, etc. Days of the week labeled clearly. Consistent photography style across all panels. The message: one jar, infinite possibilities. Mood: meal prep inspiration, weekly planning, versatile pantry staple. Style: meal prep influencer content, weekly menu planning, save for meal ideas." 
+  },
+  { 
+    id: "info-howto", 
+    label: "How-To Guide", 
+    category: "infographic",
+    prompt: "Step-by-step visual tutorial: 4-6 numbered panels showing the process of making a signature dish with SpiceJax. Panel 1: raw protein. Panel 2: seasoning generously with the jar (action shot, spice falling). Panel 3: cooking method (grill/pan/oven). Panel 4: finished dish, beauty shot. Clear numbers, consistent angles, progressive story. The jar appears in the seasoning step prominently. Mood: I can do this, clear instructions, cooking confidence. Style: visual recipe tutorial, step-by-step cooking guide." 
+  },
+  { 
+    id: "info-tips", 
+    label: "Pro Tips Card", 
+    category: "infographic",
+    prompt: "Clean editorial layout: the SpiceJax jar with 3-5 'pro tip' sections around it. Each tip area has space for an icon and text: 'Season generously', 'Let it rest', 'Don't skip the sear', etc. Small food photography details support each tip—a perfectly seared steak, resting meat, generous seasoning action. Professional chef energy but accessible. Mood: level up your cooking, insider knowledge, chef secrets. Style: cooking tips infographic, Bon Appétit educational content." 
+  },
+  { 
+    id: "info-mistakes", 
+    label: "Common Mistakes", 
+    category: "infographic",
+    prompt: "Split comparison: LEFT side shows cooking mistakes (underseasoned, overcrowded pan, wrong temp) with subtle red X marks. RIGHT side shows the correct way using SpiceJax with green checkmarks. The SpiceJax jar sits at the dividing line as the solution. Dramatic difference between sad results and perfect results. Educational but not preachy. Mood: learn from mistakes, cooking school, fix your food. Style: common mistakes guide, educational food content, problem/solution format." 
+  },
+  { 
+    id: "info-seasonal", 
+    label: "Seasonal Menu", 
+    category: "infographic",
+    prompt: "4-quadrant layout representing the seasons—Spring, Summer, Fall, Winter—each with a dish perfectly suited for that season, all made with SpiceJax. Spring: light grilled proteins with fresh herbs. Summer: BBQ and grilled corn. Fall: hearty stews and roasted vegetables. Winter: comfort food and braised meats. The jar at the center where all four seasons meet. Seasonal colors and props in each quadrant. Mood: year-round inspiration, seasonal cooking, always relevant. Style: seasonal recipe guide, year-round content calendar." 
+  },
+  { 
+    id: "info-heatguide", 
+    label: "Heat Level Guide", 
+    category: "infographic",
+    prompt: "Visual heat scale infographic: all SpiceJax products arranged from mildest to hottest (left to right or bottom to top). Flame icons increasing in intensity. Color gradient from yellow/orange to deep red. Each jar labeled with heat level (1-5 flames) and best use case. Maybe a thermometer or heat meter graphic element. Who it's for: 'Mild Lovers' to 'Heat Seekers'. Mood: find your heat level, something for everyone, spice education. Style: product comparison guide, heat scale infographic." 
+  },
+  { 
+    id: "info-anatomy", 
+    label: "Anatomy of Dish", 
+    category: "infographic",
+    prompt: "Deconstructed view of a signature dish—like a 'anatomy of the perfect taco' or 'anatomy of the ultimate burger'. Each component labeled with lines pointing to it: the protein, the SpiceJax seasoning (prominently featured), the toppings, the base. Clean white background, components slightly separated but arranged to show the final dish structure. Educational and appetizing. Mood: understand great food, building blocks, culinary education. Style: deconstructed food photography, 'anatomy of' infographic trend." 
+  },
+  { 
+    id: "info-mealprep", 
+    label: "Meal Prep Guide", 
+    category: "infographic",
+    prompt: "Meal prep container flat lay: 4-5 glass containers filled with prepped meals, all seasoned with SpiceJax. The jar sits among them, clearly the unifying element. Each container shows a different protein/veggie combo. Labels or icons showing: prep day, portions, storage time. Organized, colorful, achievable. A weekly prep session result. Mood: organized life, healthy eating made easy, Sunday prep goals. Style: meal prep influencer content, healthy lifestyle, batch cooking guide." 
+  },
+  { 
+    id: "info-macros", 
+    label: "Macro-Friendly", 
+    category: "infographic",
+    prompt: "Fitness/health-focused composition: the SpiceJax jar beside a perfectly portioned plate—grilled protein, roasted vegetables, complex carb. Clean, minimal styling. Space for macro callouts: calories, protein, carbs, fat per serving. Measuring tools (food scale, measuring cups) subtly visible. Clean white or light grey background. Fitness meets foodie energy. Mood: flavor without guilt, diet-friendly, macro-conscious cooking. Style: fitness meal prep, macro counting community, healthy recipe content." 
+  },
+  { 
+    id: "info-recipe-circular", 
+    label: "Circular Recipe Card", 
+    category: "infographic",
+    prompt: "CREATE A COMPLETE RECIPE INFOGRAPHIC. Pinterest vertical format (2:3). MUST INCLUDE ALL THESE ELEMENTS: TITLE: Large decorative recipe name at top (e.g., 'Honey Glazed Salmon' or 'Spiced Chicken Tacos'). CENTER: Beautiful hero photo of the finished plated dish with steam, on white plate. LEFT SIDE - COOKING STEPS in white circular badges flowing downward: Step 1 (Season protein icon), Step 2 (Sear/Cook icon), Step 3 (Make sauce icon), Step 4 (Glaze/Finish icon), Step 5 (Plate & Serve icon). Each step has small cooking icon and brief 2-3 word label. RIGHT SIDE - INGREDIENTS in white circles with measurements: Main protein (e.g., '4 fillets'), SpiceJax jar with GOLDEN RING highlight and '2 tbsp' label, honey/sauce '1/4 cup', citrus '2 tbsp', butter '2 tbsp', fresh herbs 'garnish'. BOTTOM BAR: Three rounded badges showing '280 kcal/serving', '20 min cook', '4 servings'. BACKGROUND: Warm cream/gold gradient with faint food sketches. Gold curved lines connecting elements. This must look like a COMPLETE, USABLE RECIPE CARD." 
+  },
+  { 
+    id: "info-recipe-gold", 
+    label: "Golden Recipe Infographic", 
+    category: "infographic",
+    prompt: "CREATE A LUXURIOUS COMPLETE RECIPE INFOGRAPHIC with gold theme. Vertical Pinterest format. REQUIRED ELEMENTS: TITLE: Elegant script font recipe name with gold flourishes (generate an appetizing recipe name). HERO CENTER: Large circular photo of stunning plated dish, restaurant-quality presentation. LEFT FLOW - 5 NUMBERED STEPS in gold-bordered circles: 1. Prep/Season, 2. Sear/Cook, 3. Build sauce, 4. Combine/Glaze, 5. Plate & garnish. Each with elegant icon. RIGHT COLUMN - INGREDIENT CIRCLES with gold borders, each showing: ingredient photo + measurement text. Include: main protein with weight, SpiceJax jar (PROMINENT with golden glow) + '2-3 tbsp', liquid ingredient + amount, aromatics + amount, butter/oil + amount, garnish herbs. BOTTOM: Elegant bar with 'calories per serving | prep + cook time | number of servings'. Background: Aged parchment with gold gradient. Style: Williams-Sonoma cookbook quality. GENERATE A REAL RECIPE." 
+  },
+  { 
+    id: "info-recipe-modern", 
+    label: "Modern Recipe Layout", 
+    category: "infographic",
+    prompt: "CREATE A MODERN MINIMALIST RECIPE INFOGRAPHIC. Vertical Pinterest format. MUST HAVE: TITLE: Bold clean sans-serif recipe name at top. CENTER: Beautifully styled hero dish photo with natural light. LEFT TIMELINE - Vertical numbered steps 1→2→3→4→5, each with minimalist line icon and action word (Season, Sear, Simmer, Glaze, Serve). RIGHT LIST - Ingredient circles in a column: each ingredient as small circular photo with measurement below (e.g., '6oz salmon', '2 tbsp SpiceJax [FEATURED]', '1/4 cup honey', '2 tbsp lime', '2 tbsp butter', 'parsley garnish'). BOTTOM STATS: Clean horizontal bar with kcal • minutes • servings numbers. Colors: White background, gray accents, one warm accent color. Drop shadows for depth. This should be a COMPLETE PRINTABLE RECIPE. Style: Half Baked Harvest, modern food blog." 
+  },
+  { 
+    id: "info-recipe-rustic", 
+    label: "Rustic Recipe Card", 
+    category: "infographic",
+    prompt: "CREATE A RUSTIC FARMHOUSE RECIPE INFOGRAPHIC. Vertical Pinterest format. INCLUDE ALL: TITLE: Hand-lettered style recipe name with ribbon banner. CENTER: Comfort food dish on rustic wood/ceramic, styled with herbs and napkin. LEFT STEPS - Vintage label-style badges numbered 1-5 flowing around dish: Prep, Season with SpiceJax, Cook low & slow, Rest, Serve family-style. RIGHT INGREDIENTS - Watercolor-style circles showing: meat/protein + weight, SpiceJax jar (WOODEN BACKGROUND highlight) + tablespoons, supporting ingredients with farmhouse measurements (cups, tablespoons). BOTTOM: Three kraft-paper style boxes with 'Feeds: 6', 'Time: 45 min', 'Comfort level: Maximum'. Background: Kraft paper texture, twine accents, herb sprigs. GENERATE ACTUAL RECIPE CONTENT. Style: Country Living, farmhouse cookbook." 
+  },
+  { 
+    id: "info-recipe-dark", 
+    label: "Dark & Moody Recipe", 
+    category: "infographic",
+    prompt: "CREATE A DRAMATIC DARK-THEMED RECIPE INFOGRAPHIC. Vertical Pinterest format. Dark charcoal background. REQUIRED: TITLE: Bold white/copper elegant recipe name at top. CENTER: Dramatically lit hero dish—deep shadows, gleaming highlights on sauce/glaze, visible steam. LEFT STEPS - Copper/gold circular badges on dark background, numbered 1-5: each step with icon (flame, pan, timer, brush, plate). Connected by thin gold lines. RIGHT INGREDIENTS - Dark circles with copper borders: each ingredient dramatically lit inside circle with copper text measurement. SpiceJax jar with WARM SPOTLIGHT and prominent placement. BOTTOM: Copper text stats bar—'350 kcal | 25 min | Serves 4'. GENERATE a sophisticated recipe name and complete ingredient list. Style: Fine dining menu, Bon Appétit Test Kitchen." 
+  },
+  { 
+    id: "info-recipe-mexican", 
+    label: "Mexican Recipe Style", 
+    category: "infographic",
+    prompt: "CREATE A VIBRANT MEXICAN RECIPE INFOGRAPHIC. Title: 'Birria Tacos with Birria Fiesta Blend' or similar Mexican dish name with Aztec-inspired decorative border. CENTER: Mouthwatering birria tacos/quesabirria with melted cheese, cilantro, onions, consomé bowl visible. LEFT STEPS - Terracotta circular badges with Mexican patterns, 6 steps: 1. Season & Sear beef, 2. Slow cook with broth, 3. Shred meat, 4. Dip tortilla in consomé, 5. Fill with beef & cheese, 6. Serve with consomé & toppings. RIGHT INGREDIENTS in colorful circles: '3 lbs beef chuck', 'SpiceJax BIRRIA FIESTA jar (GOLDEN SUNBURST) 4 tbsp', 'onion', 'canned tomatoes', 'beef broth 2 cups', 'corn tortillas 12-16', 'oaxaca cheese 2 cups', 'cilantro', 'lime wedges'. BOTTOM: '350 kcal | 30 min prep + 4hr cook | 6 servings'. Background: Aged paper with Talavera tile patterns. THIS IS A COMPLETE BIRRIA RECIPE." 
+  },
+  { 
+    id: "info-recipe-asian", 
+    label: "Asian Recipe Style", 
+    category: "infographic",
+    prompt: "CREATE A JAPANESE-INSPIRED RECIPE INFOGRAPHIC. Title: 'Spicy Miso Ramen with Shichimi' or 'Togarashi Rice Bowl' in clean typography with brush stroke accent. CENTER: Beautiful ramen bowl with soft egg (jammy yolk visible), chashu, nori, green onions, noodles lifted by chopsticks, steam rising. OR composed rice bowl. LEFT STEPS - Minimalist circles with Japanese aesthetic: 1. Prepare broth, 2. Cook noodles, 3. Prep toppings, 4. Assemble bowl, 5. Finish with Shichimi. RIGHT INGREDIENTS in clean white circles: 'ramen noodles 4 portions', 'pork broth 6 cups', 'SpiceJax SHICHIMI TOGARASHI (wave pattern accent) 2 tsp per bowl', 'soft boiled eggs 4', 'chashu pork 8 slices', 'nori sheets', 'green onions', 'sesame seeds'. BOTTOM: '420 kcal | 30 min | 4 bowls'. Background: Clean cream, subtle wave patterns. COMPLETE RAMEN/RICE BOWL RECIPE." 
+  },
+  { 
+    id: "info-recipe-bbq", 
+    label: "BBQ Recipe Style", 
+    category: "infographic",
+    prompt: "CREATE A BBQ PITMASTER RECIPE INFOGRAPHIC. Title: 'Competition-Style Ribs with Honey Chipotle Rub' in bold rustic typography with smoke/flame accents. CENTER: Dramatic rack of ribs—perfect bark, visible smoke ring, glistening glaze, on pink butcher paper. LEFT STEPS - Cast-iron style badges with flame icons: 1. Remove membrane & pat dry, 2. Apply SpiceJax rub generously, 3. Smoke at 250°F 3-4 hours, 4. Wrap in foil with butter, 5. Unwrap & glaze, 6. Rest 10 min & slice. RIGHT INGREDIENTS in weathered wood circles: 'baby back ribs 2 racks', 'SpiceJax HONEY CHIPOTLE (RED GLOW highlight) 1/4 cup', 'brown sugar 2 tbsp', 'apple cider vinegar 1/4 cup', 'butter 4 tbsp', 'honey for glaze'. BOTTOM: '380 kcal | 5+ hours low & slow | 6 servings'. Background: Dark wood grain, smoke wisps. COMPLETE RIB RECIPE." 
+  },
+  { 
+    id: "info-recipe-breakfast", 
+    label: "Breakfast Recipe Card", 
+    category: "infographic",
+    prompt: "CREATE A CHEERFUL BREAKFAST RECIPE INFOGRAPHIC. Title: 'Perfect Seasoned Scrambled Eggs' or 'Spiced Breakfast Tacos' in playful sunny typography. CENTER: Beautiful breakfast plate—fluffy golden eggs, crispy bacon, buttered toast OR loaded breakfast tacos with eggs, cheese, salsa. Morning light, steam rising. LEFT STEPS - Soft pastel circular badges: 1. Whisk eggs with cream, 2. Season with SpiceJax, 3. Cook low & slow stirring, 4. Remove while slightly wet, 5. Plate with sides. RIGHT INGREDIENTS in warm circles: 'large eggs 6', 'heavy cream 2 tbsp', 'SpiceJax seasoning (WARM GLOW) 1 tsp', 'butter 2 tbsp', 'fresh chives', 'crispy bacon 6 strips', 'toast or tortillas'. BOTTOM: '320 kcal | 15 min | 2 servings'. Background: Soft cream, subtle gingham. COMPLETE BREAKFAST RECIPE." 
+  },
+  { 
+    id: "info-recipe-healthy", 
+    label: "Healthy Recipe Card", 
+    category: "infographic",
+    prompt: "CREATE A HEALTHY CLEAN-EATING RECIPE INFOGRAPHIC. Title: 'Grilled Chicken Power Bowl' or 'Spiced Salmon with Roasted Vegetables' with fresh leaf accents. CENTER: Vibrant healthy dish—colorful grain bowl with lean protein, roasted vegetables, fresh greens, bright colors. Natural bright lighting. LEFT STEPS - Fresh green circular badges: 1. Season protein with SpiceJax, 2. Grill or bake protein, 3. Roast vegetables, 4. Prepare grain base, 5. Assemble bowl with greens. RIGHT INGREDIENTS in white circles with green borders: 'chicken breast 4 (6oz each)', 'SpiceJax seasoning (NATURAL highlight) 2 tbsp', 'quinoa 1 cup dry', 'mixed vegetables 4 cups', 'olive oil 2 tbsp', 'lemon juice', 'fresh herbs'. BOTTOM with health stats: '340 kcal | 35g protein | 30 min | 4 servings'. Background: Clean white, green gradient. COMPLETE HEALTHY RECIPE." 
+  },
+
+  // ═══════════════════════════════════════════════════════════════
+  // DESIGN — Agency-quality, Canva/Adobe-style professional graphics
+  // These look like they came from a design studio, not a camera.
+  // ═══════════════════════════════════════════════════════════════
+  { 
+    id: "design-hero-banner", 
+    label: "Hero Banner", 
+    category: "design",
+    prompt: "Professional advertising banner design: the SpiceJax jar as a 3D render-quality hero product shot floating against a bold gradient background—deep crimson fading to warm gold. Dramatic studio lighting with sharp reflections on the glass jar. Geometric accent shapes (circles, lines, abstract spice particles) as graphic elements. Clean negative space on left side for headline text. Bold, confident composition. Subtle grain texture for print-quality feel. Mood: premium brand, ad campaign ready, Super Bowl commercial energy. Style: Nike/Apple product advertising, creative agency hero banner, Behance featured work." 
+  },
+  { 
+    id: "design-social-template", 
+    label: "Social Template", 
+    category: "design",
+    prompt: "Instagram post template design: the SpiceJax jar photographed beautifully, integrated into a clean graphic layout with bold geometric frames—thick borders, rounded corners, or asymmetric crop boxes. Color blocks in brand colors (deep red, warm gold, black) creating visual hierarchy. Designated text areas with placeholder shapes for headline and body copy. Modern sans-serif typography energy. The product photo is one element in a designed composition. Mood: scroll-stopping, brand-consistent, template-ready. Style: Canva Pro template, social media design kit, brand guidelines compliant." 
+  },
+  { 
+    id: "design-magazine-ad", 
+    label: "Magazine Ad", 
+    category: "design",
+    prompt: "Full-page magazine advertisement layout: the SpiceJax jar shot with dramatic studio lighting on the right two-thirds of the frame, product reflection on glossy black surface. Left side is clean brand color (deep red or black) with space for white headline typography. Small logo lockup area in corner. Tagline space below product. Premium paper texture overlay subtle throughout. Cinematic color grading—rich blacks, warm highlights. Mood: Condé Nast advertising, premium print ad, tear-sheet worthy. Style: Vogue/GQ full-page ad, luxury brand advertising, print-first design." 
+  },
+  { 
+    id: "design-packaging-mock", 
+    label: "Packaging Mockup", 
+    category: "design",
+    prompt: "Professional packaging mockup scene: the SpiceJax jar displayed as if in a product photography studio—clean white or grey sweep background, perfect even lighting from softboxes. The jar is positioned at the classic 3/4 angle showing label and dimension. Subtle shadow grounds the product. Background has faint grid lines suggesting design software artboard. Ultra-clean, no props, pure product focus. Looks like a packaging designer's presentation render. Mood: client presentation ready, packaging portfolio, design review. Style: Behance packaging project, design agency mockup, Adobe Dimension render quality." 
+  },
+  { 
+    id: "design-brand-spread", 
+    label: "Brand Guidelines", 
+    category: "design",
+    prompt: "Brand identity spread layout: the SpiceJax jar centered with brand elements arranged around it—color swatches showing exact hex codes, typography samples, logo variations, pattern tiles, icon set. Clean grid layout with ample white space. Design system energy—everything has purpose and alignment. Subtle guides and measurements visible. Professional presentation of brand assets. Mood: design system documentation, brand book page, style guide. Style: Pentagram identity project, brand guidelines PDF, corporate design manual." 
+  },
+  { 
+    id: "design-billboard", 
+    label: "Billboard Ready", 
+    category: "design",
+    prompt: "Outdoor billboard advertising design: the SpiceJax jar HUGE and dramatic against a simple, high-contrast background. Minimal elements—just the product, maybe one food item showing usage, and space for a punchy 3-5 word headline. Colors optimized for distance viewing: bold reds, clean whites, high contrast. The jar is hero-sized, dominating the frame. No small details—everything reads at highway speed. Mood: Times Square energy, highway visibility, impossible to ignore. Style: outdoor advertising, OOH campaign, Lamar billboard design." 
+  },
+  { 
+    id: "design-web-hero", 
+    label: "Website Hero", 
+    category: "design",
+    prompt: "E-commerce website hero section design: the SpiceJax jar floating or placed dynamically on the right side, with the left side reserved for headline, subhead, and CTA button placement areas. Gradient background that would work with white text. Subtle particle effects or spice dust floating in the air. Modern, clean web aesthetic—lots of breathing room. The product is integrated into a web-native layout. Mood: Shopify store hero, direct-to-consumer brand, add-to-cart energy. Style: Webflow award site, e-commerce best practices, conversion-optimized layout." 
+  },
+  { 
+    id: "design-carousel-set", 
+    label: "Carousel Series", 
+    category: "design",
+    prompt: "Instagram carousel design system: the SpiceJax jar as the consistent element across what looks like a 5-slide carousel—each 'slide' showing a different angle or context but maintaining consistent graphic framing, color palette, and typography zones. Numbered indicators (1/5, 2/5, etc.) styled into the design. Swipe-right energy. Each frame works alone but better together. Cohesive visual system. Mood: swipe-worthy content, brand consistency, carousel goals. Style: Instagram carousel template, social content kit, series design." 
+  },
+  { 
+    id: "design-story-template", 
+    label: "Stories Template", 
+    category: "design",
+    prompt: "Instagram/TikTok Stories template design (9:16 vertical): the SpiceJax jar photographed and placed within a graphic frame—bold colored borders, sticker-style accents, hand-drawn arrow doodles pointing to the product. Space at top for headline, space at bottom for 'swipe up' or 'link in bio' CTA. Playful but polished. The photo is an element in the design, not the whole thing. Mood: tap-through worthy, Stories native, template ready. Style: Instagram Stories design kit, influencer template pack." 
+  },
+  { 
+    id: "design-email-header", 
+    label: "Email Header", 
+    category: "design",
+    prompt: "Email marketing header design: the SpiceJax jar featured in a horizontal banner format (600px wide energy). Clean graphic layout with the product on one side, space for headline and 'Shop Now' button on the other. Brand colors as background or accent blocks. Optimized for email clients—nothing too complex, but elevated and designed. Works above the fold. Mood: click-through worthy, inbox standout, email marketing best practices. Style: Klaviyo email template, DTC brand email, e-commerce newsletter header." 
+  },
+  { 
+    id: "design-sale-graphic", 
+    label: "Sale Announcement", 
+    category: "design",
+    prompt: "Promotional sale graphic: the SpiceJax jar with bold graphic elements screaming SALE energy—starburst shapes, percentage off badges, urgency markers. Colors are loud: red, yellow, black, white. The product is clear but surrounded by 'deal' visual language. Space for '25% OFF' or 'LIMITED TIME' text overlays. High energy, retail promotion vibes. Mood: Black Friday energy, flash sale, act now. Style: retail sale graphic, promotional design, limited time offer." 
+  },
+  { 
+    id: "design-quote-card", 
+    label: "Testimonial Card", 
+    category: "design",
+    prompt: "Customer testimonial design: the SpiceJax jar small in corner or as background element, with large quotation marks framing a testimonial text area. Clean, editorial layout. Space for 5-star rating graphic, customer name, and 'Verified Purchase' badge. Soft, trustworthy colors—creams, warm greys, accent red. The jar is present but the words are the hero. Mood: social proof, trust building, review spotlight. Style: testimonial card design, review graphic, social proof template." 
+  },
+  { 
+    id: "design-comparison", 
+    label: "Product Comparison", 
+    category: "design",
+    prompt: "Side-by-side product comparison graphic: SpiceJax jar on the right (the winner) vs. a generic 'other brand' representation on the left (greyed out, less appealing). Checkmarks and X marks for feature comparison. Clean two-column layout. SpiceJax side is vibrant, colorful, premium. Other side is dull, generic. Clear visual hierarchy favoring SpiceJax. Mood: why we're better, comparison shopping, competitive advantage. Style: product comparison infographic, competitive analysis visual, marketing comparison chart." 
+  },
+  { 
+    id: "design-feature-grid", 
+    label: "Feature Highlights", 
+    category: "design",
+    prompt: "Product feature grid design: the SpiceJax jar centered with 4-6 feature callouts arranged around it—icons with short text labels: 'All Natural', 'Small Batch', 'Bold Flavor', 'No MSG', etc. Clean connecting lines or subtle visual links between features and the jar. Organized grid energy. Each feature has a custom icon in brand style. Mood: why choose us, product benefits, feature showcase. Style: product feature graphic, benefit highlights, e-commerce detail design." 
+  },
+  { 
+    id: "design-launch", 
+    label: "Product Launch", 
+    category: "design",
+    prompt: "New product launch announcement design: the SpiceJax jar revealed dramatically—emerging from stylized smoke or light rays, or shown with a 'NEW' badge/ribbon. Gradient background building excitement. 'Introducing' or 'Now Available' text zone. Premium reveal energy—like unveiling something special. Dramatic lighting on the product. Particle effects suggesting newness and excitement. Mood: launch day energy, new release, announcement worthy. Style: Apple product launch aesthetic, reveal graphic, new product announcement." 
+  },
+  { 
+    id: "design-collage", 
+    label: "Brand Collage", 
+    category: "design",
+    prompt: "Creative brand collage: the SpiceJax jar integrated into an artistic arrangement—mixed with cut-out food photography, hand-drawn illustrations, texture swatches, typography snippets, color blocks. Layered, dimensional, editorial. Different elements at different scales creating visual interest. Vintage magazine collage meets modern design. The jar is one beautiful element among many. Mood: creative expression, brand personality, editorial art. Style: mood board aesthetic, collage art, creative direction presentation." 
+  },
+  { 
+    id: "design-minimal", 
+    label: "Swiss Minimal", 
+    category: "design",
+    prompt: "Ultra-minimal Swiss design aesthetic: the SpiceJax jar photographed cleanly, placed on a strict grid layout. Bold Helvetica-style typography zones. Extreme negative space—80% empty, 20% content. Black, white, and one brand color only. Mathematical precision in placement. No decoration, only essential elements. The grid is visible, intentional. Mood: design purity, less is more, museum quality. Style: Swiss International Style, Massimo Vignelli inspired, modernist graphic design." 
+  },
+  { 
+    id: "design-retro", 
+    label: "Retro Diner", 
+    category: "design",
+    prompt: "Vintage Americana design aesthetic: the SpiceJax jar styled in a retro 1950s diner advertisement look—halftone dot textures, vintage color palette (cream, red, turquoise), hand-lettering style typography zones, starburst accents, ribbon banners. The jar photographed but treated with retro filters. Nostalgic but fresh. Feels like a vintage poster brought to life. Mood: Americana nostalgia, vintage charm, throwback vibes. Style: mid-century advertisement, diner poster, retro brand revival." 
+  },
+  { 
+    id: "design-neon", 
+    label: "Neon Glow", 
+    category: "design",
+    prompt: "Bold neon aesthetic: the SpiceJax jar photographed against pure black, dramatically lit with colored gels creating neon pink, electric blue, and hot orange rim lighting. Actual neon sign elements or glow effects framing the product. Cyberpunk meets food. High contrast, saturated colors bleeding and glowing. The jar gleams with synthetic light. Mood: night market energy, bold and loud, unforgettable. Style: neon photography, synthwave aesthetic, cyberpunk food." 
+  },
+  { 
+    id: "design-3d-render", 
+    label: "3D Product Render", 
+    category: "design",
+    prompt: "Hyper-realistic 3D render aesthetic: the SpiceJax jar looking like a perfect CGI render—impossibly smooth lighting, perfect reflections, floating in abstract 3D space with geometric shapes (spheres, cubes, toruses) in brand colors orbiting around it. Soft studio HDRI lighting. Subtle depth of field. The jar appears to levitate in a digital void. Clean, technical perfection only achievable in 3D software. Mood: digital art, CGI perfection, future-forward. Style: Blender/Cinema 4D product render, 3D advertising, digital product visualization." 
+  },
+  { 
+    id: "design-gradient-mesh", 
+    label: "Gradient Flow", 
+    category: "design",
+    prompt: "Flowing gradient mesh design: the SpiceJax jar floating against a beautiful, organic gradient mesh background—smooth color transitions between deep reds, warm oranges, soft golds, and rich browns. The gradients flow like liquid silk. The jar is sharp and grounded while the background is dreamy and fluid. Modern, premium, hypnotic. Mood: design-forward, mesmerizing, high-end tech brand energy. Style: iOS wallpaper aesthetic, Stripe/Linear brand design, gradient mesh art." 
+  },
+  { 
+    id: "design-cutout", 
+    label: "Paper Cutout", 
+    category: "design",
+    prompt: "Paper craft aesthetic: the SpiceJax jar photographed and stylized to look like a paper cutout collage—layered paper textures, subtle shadows between 'paper' layers, hand-cut edge effects. Surrounding elements (ingredients, flames, text shapes) also appear as paper cutouts at different depths. Tactile, handmade feel despite digital execution. Warm, craft energy. Mood: handmade premium, craft aesthetic, tactile design. Style: paper craft illustration, cut paper art, layered paper design." 
+  },
+  { 
+    id: "design-duotone", 
+    label: "Bold Duotone", 
+    category: "design",
+    prompt: "Striking duotone design: the SpiceJax jar photographed and converted to dramatic two-color treatment—deep red and bright gold, or black and vibrant orange. High contrast, graphic, poster-worthy. The jar becomes almost iconic, reduced to essential forms and bold color. Modern, punchy, impossible to ignore. Clean typography zones in contrasting colors. Mood: bold statement, graphic impact, poster art. Style: Spotify Wrapped aesthetic, duotone graphic design, two-color printing." 
+  },
+  { 
+    id: "design-isometric", 
+    label: "Isometric Scene", 
+    category: "design",
+    prompt: "Isometric illustration style: the SpiceJax jar rendered as if in an isometric 3D scene—at a perfect 30-degree angle, surrounded by isometric kitchen elements (tiny stove, cutting board, utensils) all at the same angle. Flat colors, clean edges, no realistic shadows—illustrative style. A miniature world built around the product. Playful but precise. Mood: playful sophistication, illustration meets product, isometric world. Style: isometric illustration, game art aesthetic, flat design 3D." 
+  },
+
+  // ═══════════════════════════════════════════════════════════════
   // CUSTOM — Full creative control
   // ═══════════════════════════════════════════════════════════════
   { 
@@ -422,6 +948,8 @@ export default function ImageEnhancerPage() {
   const [formatId, setFormatId] = useState<string>("ig-square");
   const [selectedProductIds, setSelectedProductIds] = useState<string[]>([]);
   const [selectionMode, setSelectionMode] = useState<"single" | "multiple" | "all">("single");
+  const [isFreeformMode, setIsFreeformMode] = useState(false);
+  const [freeformPrompt, setFreeformPrompt] = useState<string>("");
   
   // Load products from localStorage
   const [products, setProducts] = useState<SpiceProduct[]>([]);
@@ -474,6 +1002,12 @@ export default function ImageEnhancerPage() {
   }, [formatId]);
 
   const activeScenePrompt = useMemo(() => {
+    // FREEFORM MODE: Just use the raw prompt, no product context
+    if (isFreeformMode) {
+      const formatInstruction = `Output image dimensions: ${activeFormat.ratio} aspect ratio (${activeFormat.pixels}).`;
+      return freeformPrompt.trim() ? `${freeformPrompt.trim()}\n\n${formatInstruction}` : "";
+    }
+    
     const basePrompt = sceneId === "custom" 
       ? customScene.trim()
       : SCENE_PRESETS.find((scene) => scene.id === sceneId)?.prompt ?? "";
@@ -486,23 +1020,26 @@ export default function ImageEnhancerPage() {
     } else if (selectedProducts.length === 1) {
       // Single product
       const product = selectedProducts[0];
+      const ingredients = product.ingredients || [];
+      const goodOn = product.goodOn || [];
       productContext = `
 PRODUCT INFORMATION:
 - Product Name: SpiceJax ${product.name}
-- Key Ingredients: ${product.ingredients.slice(0, 5).join(", ")}
-- Best Used On: ${product.goodOn.join(", ")}
-- Flavor Profile: ${product.description}
-- Heat Level: ${product.heat}/5
+- Key Ingredients: ${ingredients.slice(0, 5).join(", ")}
+- Best Used On: ${goodOn.join(", ")}
+- Flavor Profile: ${product.description || ""}
+- Heat Level: ${product.heat || 0}/5
 
 IMPORTANT: Incorporate these actual ingredients as props in the scene where appropriate. For example, if the blend contains "Guajillo Chili", show dried guajillo chilies. If it contains "Honey", show a honey dipper or honeycomb. If it contains "Garlic", show fresh garlic cloves. Make the ingredients visually prominent and appetizing.`;
     } else {
       // Multiple products - group shot
-      const productList = selectedProducts.map((product, i) => 
-        `${i + 1}. SpiceJax ${product.name} (${product.ingredients.slice(0, 3).join(", ")})`
-      ).join("\n");
+      const productList = selectedProducts.map((product, i) => {
+        const ingredients = product.ingredients || [];
+        return `${i + 1}. SpiceJax ${product.name} (${ingredients.slice(0, 3).join(", ")})`;
+      }).join("\n");
       
       // Collect all unique ingredients across selected products
-      const allIngredients = [...new Set(selectedProducts.flatMap(p => p.ingredients))];
+      const allIngredients = [...new Set(selectedProducts.flatMap(p => p.ingredients || []))];
       
       productContext = `
 MULTIPLE PRODUCTS - GROUP SHOT (${selectedProducts.length} jars):
@@ -524,7 +1061,7 @@ IMPORTANT: This is a product lineup/collection shot. Make sure each jar is clear
     const formatInstruction = `Output image dimensions: ${activeFormat.ratio} aspect ratio (${activeFormat.pixels}). Compose the scene to work perfectly in this format with appropriate headroom and subject placement.`;
     
     return `${basePrompt}\n\n${productContext}\n\n${formatInstruction}`;
-  }, [sceneId, customScene, activeFormat, selectedProducts]);
+  }, [sceneId, customScene, activeFormat, selectedProducts, isFreeformMode, freeformPrompt]);
 
   const readFileAsDataUrl = (file: File) =>
     new Promise<string>((resolve, reject) => {
@@ -715,21 +1252,49 @@ IMPORTANT: This is a product lineup/collection shot. Make sure each jar is clear
       <MainLayout>
         <div className="space-y-8">
           {/* Header */}
-          <div>
-            <div className="flex items-center gap-2 mb-2">
-              <div className="h-8 w-8 rounded-xl bg-gradient-to-br from-brand-rust to-rust-600 flex items-center justify-center shadow-lg shadow-brand-rust/20">
-                <Sparkles className="w-4 h-4 text-white" />
+          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <div className="h-8 w-8 rounded-xl bg-gradient-to-br from-brand-rust to-rust-600 flex items-center justify-center shadow-lg shadow-brand-rust/20">
+                  <Sparkles className="w-4 h-4 text-white" />
+                </div>
+                <p className="uppercase tracking-[0.3em] text-[10px] font-bold text-brand-rust">
+                  AI Studio
+                </p>
               </div>
-              <p className="uppercase tracking-[0.3em] text-[10px] font-bold text-brand-rust">
-                AI Studio
+              <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">
+                Image Lab
+              </h1>
+              <p className="text-brand-text/70 mt-1">
+                {isFreeformMode 
+                  ? "Upload any image and write your own prompt" 
+                  : "Transform product shots with AI-powered scene generation"}
               </p>
             </div>
-            <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">
-              Image Lab
-            </h1>
-            <p className="text-brand-text/70 mt-1">
-              Transform product shots with AI-powered scene generation
-            </p>
+            
+            {/* Mode Toggle */}
+            <div className="flex items-center gap-2 bg-brand-sage rounded-2xl p-1.5 border border-brand-gold/20">
+              <button
+                onClick={() => setIsFreeformMode(false)}
+                className={`px-4 py-2.5 rounded-xl text-sm font-bold transition-all flex items-center gap-2 ${
+                  !isFreeformMode
+                    ? "bg-[#243530] text-white shadow-lg"
+                    : "text-brand-text/60 hover:text-brand-title"
+                }`}
+              >
+                🌶️ SpiceJax Mode
+              </button>
+              <button
+                onClick={() => setIsFreeformMode(true)}
+                className={`px-4 py-2.5 rounded-xl text-sm font-bold transition-all flex items-center gap-2 ${
+                  isFreeformMode
+                    ? "bg-gradient-to-r from-brand-gold to-brand-rust text-white shadow-lg shadow-brand-gold/30"
+                    : "text-brand-text/60 hover:text-brand-title"
+                }`}
+              >
+                ✨ Freeform
+              </button>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
@@ -786,7 +1351,53 @@ IMPORTANT: This is a product lineup/collection shot. Make sure each jar is clear
                 )}
               </div>
 
-              {/* Product Selection */}
+              {/* Freeform Mode - Custom Prompt */}
+              {isFreeformMode && (
+                <div className="bg-gradient-to-br from-gold-50 to-rust-50 rounded-3xl border border-brand-gold/40 shadow-[0_2px_20px_-4px_rgba(212,168,75,0.15)] p-6">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-brand-gold to-brand-rust flex items-center justify-center shadow-lg shadow-brand-gold/30">
+                      <span className="text-xl">✨</span>
+                    </div>
+                    <div>
+                      <h2 className="font-bold text-brand-title">Freeform Mode</h2>
+                      <p className="text-xs text-brand-text/60">Write any prompt - no limits!</p>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-3">
+                    <p className="text-sm font-medium text-brand-title">Describe what you want to create:</p>
+                    <textarea
+                      value={freeformPrompt}
+                      onChange={(e) => setFreeformPrompt(e.target.value)}
+                      placeholder="Example prompts:&#10;• A cozy coffee shop scene with a latte art heart, warm morning light&#10;• Minimalist flat lay of cooking ingredients on marble&#10;• Neon-lit street food stall in Tokyo at night&#10;• Recipe infographic with circular ingredient icons&#10;• Professional product photography of [your item] on white background"
+                      className="w-full rounded-2xl border border-brand-gold/30 bg-white focus:border-brand-gold focus:ring-2 focus:ring-brand-gold/20 text-sm p-4 transition-all min-h-[200px] placeholder:text-brand-text/40"
+                      rows={8}
+                    />
+                    <div className="flex flex-wrap gap-2">
+                      <span className="text-xs text-brand-text/50">Quick ideas:</span>
+                      {[
+                        "Recipe infographic",
+                        "Product on white",
+                        "Moody food photo",
+                        "Flat lay",
+                        "Action shot",
+                        "Minimalist design",
+                      ].map((idea) => (
+                        <button
+                          key={idea}
+                          onClick={() => setFreeformPrompt(idea + " - ")}
+                          className="px-2 py-1 text-xs bg-white rounded-lg border border-brand-gold/30 text-brand-rust hover:bg-gold-50 hover:border-brand-gold transition-colors"
+                        >
+                          {idea}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Product Selection - Only in SpiceJax Mode */}
+              {!isFreeformMode && (
               <div className="bg-white rounded-3xl border border-brand-gold/20 shadow-[0_2px_20px_-4px_rgba(0,0,0,0.06)] p-6">
                 <p className="text-sm font-bold text-brand-title mb-3">Which SpiceJax product(s)?</p>
                 
@@ -863,7 +1474,7 @@ IMPORTANT: This is a product lineup/collection shot. Make sure each jar is clear
                             </div>
                           </div>
                           <p className={`text-xs ${isSelected ? "text-white/70" : "text-brand-text/50"}`}>
-                            {product.ingredients.slice(0, 4).join(", ")}...
+                            {(product.ingredients || []).slice(0, 4).join(", ")}...
                           </p>
                         </button>
                       );
@@ -885,7 +1496,7 @@ IMPORTANT: This is a product lineup/collection shot. Make sure each jar is clear
                         </div>
                         <p className="text-[11px] text-brand-text/60 mb-2">{selectedProducts[0].description}</p>
                         <div className="flex flex-wrap gap-1">
-                          {selectedProducts[0].ingredients.map((ing) => (
+                          {(selectedProducts[0].ingredients || []).map((ing) => (
                             <span 
                               key={ing} 
                               className="px-2 py-0.5 bg-white rounded-full text-[10px] font-medium text-brand-text/70 border border-brand-gold/20"
@@ -915,7 +1526,7 @@ IMPORTANT: This is a product lineup/collection shot. Make sure each jar is clear
                           Group shot with: {selectedProducts.map(p => p.shortName).join(", ")}
                         </p>
                         <div className="flex flex-wrap gap-1">
-                          {[...new Set(selectedProducts.flatMap(p => p.ingredients))].slice(0, 8).map((ing) => (
+                          {[...new Set(selectedProducts.flatMap(p => p.ingredients || []))].slice(0, 8).map((ing) => (
                             <span 
                               key={ing} 
                               className="px-2 py-0.5 bg-white rounded-full text-[10px] font-medium text-brand-text/70 border border-brand-gold/20"
@@ -929,20 +1540,30 @@ IMPORTANT: This is a product lineup/collection shot. Make sure each jar is clear
                   </div>
                 )}
               </div>
+              )}
 
-              {/* Scene Selection */}
+              {/* Scene Selection - Only in SpiceJax Mode */}
+              {!isFreeformMode && (
               <div className="bg-white rounded-3xl border border-brand-gold/20 shadow-[0_2px_20px_-4px_rgba(0,0,0,0.06)] p-6">
                 <p className="text-sm font-bold text-brand-title mb-4">Choose a scene vibe</p>
                 
                 {/* Category Tabs */}
                 <div className="flex gap-1 overflow-x-auto no-scrollbar pb-3 mb-4 border-b border-brand-gold/10">
                   {[
-                    { id: "hero", label: "Hero", desc: "E-commerce ready" },
+                    { id: "hero", label: "Hero", desc: "Clean product shots" },
+                    { id: "ecommerce", label: "E-comm 🛒", desc: "Amazon/WooCommerce" },
+                    { id: "signature", label: "Signature 🌶️", desc: "Product-specific" },
                     { id: "lifestyle", label: "Lifestyle", desc: "Aspirational" },
-                    { id: "process", label: "Process", desc: "Trust builders" },
                     { id: "cuisine", label: "Cuisine", desc: "Use cases" },
+                    { id: "process", label: "Process", desc: "Trust builders" },
                     { id: "seasonal", label: "Seasonal", desc: "Campaigns" },
                     { id: "social", label: "Social", desc: "Platform-ready" },
+                    { id: "bundle", label: "Bundle 📦", desc: "Multi-product" },
+                    { id: "video", label: "Video 🎬", desc: "Thumbnails" },
+                    { id: "ugc", label: "UGC 📱", desc: "Authentic" },
+                    { id: "recipe", label: "Recipe 📝", desc: "Blog/Pinterest" },
+                    { id: "infographic", label: "Infographic 📊", desc: "Save-worthy guides" },
+                    { id: "design", label: "Design Studio 🎨", desc: "Agency-quality" },
                     { id: "premium", label: "Premium ✨", desc: "Showstoppers" },
                     { id: "custom", label: "Custom", desc: "Your vision" },
                   ].map((cat) => (
@@ -1002,6 +1623,7 @@ IMPORTANT: This is a product lineup/collection shot. Make sure each jar is clear
                   />
                 )}
               </div>
+              )}
 
               {/* Format Selection */}
               <div className="bg-white rounded-3xl border border-brand-gold/20 shadow-[0_2px_20px_-4px_rgba(0,0,0,0.06)] p-6">
@@ -1139,18 +1761,22 @@ IMPORTANT: This is a product lineup/collection shot. Make sure each jar is clear
               {/* Enhance Button */}
               <button
                 onClick={enhanceImage}
-                disabled={!uploadedImage || enhancing}
-                className="w-full py-4 bg-gradient-to-r from-brand-title to-brand-black text-white font-bold text-lg rounded-2xl hover:from-brand-black hover:to-brand-title disabled:from-gray-200 disabled:to-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-3 shadow-xl shadow-brand-title/20 disabled:shadow-none"
+                disabled={!uploadedImage || enhancing || (isFreeformMode && !freeformPrompt.trim())}
+                className={`w-full py-4 text-white font-bold text-lg rounded-2xl disabled:from-gray-200 disabled:to-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-3 disabled:shadow-none ${
+                  isFreeformMode 
+                    ? "bg-gradient-to-r from-brand-gold to-brand-rust hover:from-brand-rust hover:to-brand-gold shadow-xl shadow-brand-gold/30" 
+                    : "bg-gradient-to-r from-brand-title to-brand-black hover:from-brand-black hover:to-brand-title shadow-xl shadow-brand-title/20"
+                }`}
               >
                 {enhancing ? (
                   <>
                     <Sparkles className="w-5 h-5 animate-spin" />
-                    Generating Scene…
+                    {isFreeformMode ? "Creating Your Vision…" : "Generating Scene…"}
                   </>
                 ) : (
                   <>
                     <Sparkles className="w-5 h-5" />
-                    Run Enhancement
+                    {isFreeformMode ? "✨ Generate Image" : "🌶️ Run Enhancement"}
                   </>
                 )}
               </button>
