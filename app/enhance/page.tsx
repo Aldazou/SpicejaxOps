@@ -1078,7 +1078,7 @@ IMPORTANT: This is a product lineup/collection shot. Make sure each jar is clear
 
     if (isStandardType && !isIOS) return dataUrl;
 
-    const image = new Image();
+    const image = document.createElement('img');
     image.src = dataUrl;
     await new Promise<void>((resolve, reject) => {
       image.onload = () => resolve();
